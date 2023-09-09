@@ -2,6 +2,10 @@ package net.hoteljuliet.spel;
 
 import com.github.mustachejava.Mustache;
 import com.jayway.jsonpath.JsonPath;
+import net.hoteljuliet.spel.predicates.ComplexPredicateStep;
+import net.hoteljuliet.spel.statements.ComplexStatementStep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.util.*;
@@ -12,16 +16,45 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
-
+    private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private Map<String, Object> backing;
 
-    // TODO: add per-step metrics here????
+    public Map<String, StepMetrics> metricsPerStep = new HashMap<>();
+
+    public void exceptionThrown(String name, Throwable t) {
+        logger.debug("Exception in " + this.getClass().getSimpleName(), t);
+        metricsPerStep.get(name).exceptionThrown.increment();
 
 
+    }
 
+    public void softFailure(String name) {
+        metricsPerStep.get(name).softFailure.increment();
+    }
 
+    public void missingField(String name) {
+        metricsPerStep.get(name).missingField.increment();
+    }
 
+    public StepMetrics getMetrics(String name) {
+        return metricsPerStep.get(name);
+    }
 
+    public void initializeMetrics(List<Step> steps) {
+        for (Step step : steps) {
+            if (step instanceof ComplexPredicateStep) {
+                ComplexPredicateStep complexPredicateStep = (ComplexPredicateStep) step;
+                initializeMetrics(complexPredicateStep.subPredicate);
+            }
+            else if (step instanceof ComplexStatementStep) {
+                ComplexStatementStep complexStatementStep = (ComplexStatementStep) step;
+                initializeMetrics(complexStatementStep.subStatements);
+            }
+            else {
+                metricsPerStep.put(step.getName(), new StepMetrics());
+            }
+        }
+    }
 
     public Context() {
         this.backing = new HashMap<>();
@@ -149,8 +182,6 @@ public class Context implements Map<String, Object> {
     /**
      * Context access utility methods
      */
-
-
     public boolean hasField(String path) {
         Optional<Object> field = getByPath(backing, path);
         return field.isPresent();
@@ -183,7 +214,6 @@ public class Context implements Map<String, Object> {
                 context = newMap;
             }
         }
-
         context.put(leafKey, value);
     }
 
@@ -258,7 +288,6 @@ public class Context implements Map<String, Object> {
 
             return true;
         }
-
         return false;
     }
 
@@ -304,7 +333,6 @@ public class Context implements Map<String, Object> {
             }
         }
         pathTokens.add(sb.toString());
-
         return pathTokens;
     }
     public boolean replaceFieldValue(String path,Object newValue){
@@ -325,7 +353,6 @@ public class Context implements Map<String, Object> {
     public String toString() {
         return "Context: " + backing.toString();
     }
-
 
     public String render(Mustache mustache) {
         Object docContext = backing;

@@ -16,19 +16,13 @@ public class Remove extends StatementStep {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
-        try {
-            for (String path : sources) {
-                if (context.hasField(path)) {
-                    context.removeField(path);
-                    success.increment();
-                }
-                else {
-                    missing.increment();
-                }
+        for (String path : sources) {
+            if (context.hasField(path)) {
+                context.removeField(path);
             }
-        }
-        catch(Exception ex) {
-            handleException(ex);
+            else {
+                context.missingField(name);
+            }
         }
         return COMMAND_NEITHER;
     }

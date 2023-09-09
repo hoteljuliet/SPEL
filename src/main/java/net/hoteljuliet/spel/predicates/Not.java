@@ -2,18 +2,14 @@ package net.hoteljuliet.spel.predicates;
 
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-public class Not extends PredicateStep {
-
-    public List<Step> predicate;
+public class Not extends ComplexPredicateStep {
 
     public Not() {
-        predicate = new ArrayList<>();
+        subPredicate = new ArrayList<>();
     }
 
     /**
@@ -25,7 +21,7 @@ public class Not extends PredicateStep {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         boolean retVal = true;
-        for (Command c : predicate) {
+        for (Command c : subPredicate) {
             Optional<Boolean> eval = c.execute(context);
             if (eval.isPresent() && eval.get()) {
                 continue;
@@ -37,14 +33,6 @@ public class Not extends PredicateStep {
         }
 
         boolean negated = !retVal;
-
-        if (negated) {
-            evalTrue.increment();
-        }
-        else {
-            evalFalse.increment();
-        }
-
         return Optional.of(negated);
     }
 }

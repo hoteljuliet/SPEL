@@ -11,7 +11,6 @@ import org.apache.commons.text.StringSubstitutor;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.LongAdder;
 
 public class Factory {
@@ -23,7 +22,7 @@ public class Factory {
     public static Step buildStatement(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
-            buildUniqueName(type, config);
+            buildUniqueNameFromType(type, config);
 
             Class clazz = Class.forName("net.hoteljuliet.spel.statements." + CaseUtils.toCamelCase(type, true, '-'));
             return (Step) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
@@ -36,7 +35,7 @@ public class Factory {
     public static Step buildPredicate(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
-            buildUniqueName(type, config);
+            buildUniqueNameFromType(type, config);
 
             Class clazz = Class.forName("net.hoteljuliet.spel.predicates." + CaseUtils.toCamelCase(type, true, '-'));
             return (Step) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
@@ -62,7 +61,7 @@ public class Factory {
                 for (Map<String, Object> node : config) {
                     String subPredicateType = Parser.firstKey(node);
                     Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                    not.predicate.add(s);
+                    not.subPredicate.add(s);
                 }
                 retVal = not;
                 break;
@@ -72,7 +71,7 @@ public class Factory {
                 for (Map<String, Object> node : config) {
                     String subPredicateType = Parser.firstKey(node);
                     Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                    and.predicate.add(s);
+                    and.subPredicate.add(s);
                 }
                 retVal = and;
                 break;
@@ -82,7 +81,7 @@ public class Factory {
                 for (Map<String, Object> node : config) {
                     String subPredicateType = Parser.firstKey(node);
                     Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                    or.predicate.add(s);
+                    or.subPredicate.add(s);
                 }
                 retVal = or;
                 break;
@@ -91,7 +90,7 @@ public class Factory {
                 throw new IllegalArgumentException("unknown step: " + type);
             }
         }
-        // TODO: retVal.setName(name);
+        retVal.setName(buildUniqueNameFromType(type));
         return retVal;
     }
 
@@ -106,13 +105,18 @@ public class Factory {
         }
     }
 
-    public static String buildUniqueName(String type) {
+    public static String buildUniqueNameFromName(String name) {
+        instanceCounter.increment();
+        return name;
+    }
+
+    public static String buildUniqueNameFromType(String type) {
         String retVal = type + instanceCounter.longValue();
         instanceCounter.increment();
         return retVal;
     }
 
-    public static void buildUniqueName(String type, Map<String, Object> config) {
+    public static void buildUniqueNameFromType(String type, Map<String, Object> config) {
 
         if (config.containsKey("name")) {
             instanceCounter.increment();

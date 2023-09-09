@@ -26,26 +26,22 @@ public class LookUp extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            for (int i = 0; i < sources.size() && i < dests.size(); i++) {
-                if (context.hasField(sources.get(i))) {
-                    Object value = context.getField(sources.get(i));
-                    if (dict.containsKey(value)) {
-                        Object lookup = dict.get(value);
-                        context.addField(dests.get(i), lookup);
-                    } else {
-                        context.replaceFieldValue(dests.get(i), defaultValue);
-                    }
-                    success.increment();
-                }
-                else {
-                    missing.increment();
+
+        for (int i = 0; i < sources.size() && i < dests.size(); i++) {
+            if (context.hasField(sources.get(i))) {
+                Object value = context.getField(sources.get(i));
+                if (dict.containsKey(value)) {
+                    Object lookup = dict.get(value);
+                    context.addField(dests.get(i), lookup);
+                } else {
+                    context.replaceFieldValue(dests.get(i), defaultValue);
                 }
             }
+            else {
+                context.missingField(name);
+            }
         }
-        catch(Exception ex) {
-            handleException(ex);
-        }
+
         return COMMAND_NEITHER;
     }
 }

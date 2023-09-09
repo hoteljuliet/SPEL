@@ -27,28 +27,21 @@ public class Matches extends PredicateStep {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Optional<Boolean> retVal;
 
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                Matcher matcher = pattern.matcher(value);
-                success.increment();
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            Matcher matcher = pattern.matcher(value);
 
-                if (matcher.matches()) {
-                    evalTrue.increment();
-                    retVal = COMMAND_TRUE;
-                }
-                else {
-                    evalFalse.increment();
-                    retVal = COMMAND_FALSE;
-                }
-            } else {
-                missing.increment();
+            if (matcher.matches()) {
+                retVal = COMMAND_TRUE;
+            }
+            else {
                 retVal = COMMAND_FALSE;
             }
-        } catch (Exception ex) {
-            handleException(ex);
+        } else {
+            context.softFailure(name);
             retVal = COMMAND_FALSE;
         }
+
         return retVal;
     }
 }

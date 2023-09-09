@@ -37,27 +37,23 @@ public class Math extends StatementStep {
         Map<String, Double> variablesMap = new HashMap<>();
         for (String variable : variables) {
             if (!context.hasField(variable)) {
-                missing.increment();
+                context.missingField(name);
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    otherFailure.increment();
+                    context.softFailure(name);
                 }
-                variablesMap.put(variable, value);
+                else {
+                    variablesMap.put(variable, value);
+                }
             }
         }
 
         mathExpression.get().setVariables(variablesMap);
-
-        try {
-            Double result = mathExpression.get().evaluate();
-            context.addField(dest, result);
-            success.increment();
-        } catch (ArithmeticException ex) {
-            handleException(ex);
-        }
+        Double result = mathExpression.get().evaluate();
+        context.addField(dest, result);
         return COMMAND_NEITHER;
     }
 }

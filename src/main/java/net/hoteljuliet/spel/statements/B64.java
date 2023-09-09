@@ -24,25 +24,18 @@ public class B64 extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                if (encode) {
-                    String encodedString = base64.encodeAsString(value.getBytes(StandardCharsets.UTF_8));
-                    context.addField(dest, encodedString);
-                    success.increment();
-                } else {
-                    String decodedValue = new String(base64.decode(value));
-                    context.addField(dest, decodedValue);
-                    success.increment();
-                }
-            }
-            else {
-                missing.increment();
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            if (encode) {
+                String encodedString = base64.encodeAsString(value.getBytes(StandardCharsets.UTF_8));
+                context.addField(dest, encodedString);
+            } else {
+                String decodedValue = new String(base64.decode(value));
+                context.addField(dest, decodedValue);
             }
         }
-        catch(Exception ex) {
-            handleException(ex);
+        else {
+            context.missingField(name);
         }
         return Command.COMMAND_NEITHER;
     }

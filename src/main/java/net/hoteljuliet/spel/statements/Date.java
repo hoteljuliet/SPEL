@@ -28,20 +28,17 @@ public class Date extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                ZonedDateTime original = ZonedDateTime.parse(value, fromFormatter);
-                String reformatted = original.format(toFormatter);
-                context.addField(dest, reformatted);
-                success.increment();
-            }
-            else {
-                missing.increment();
-            }
-        } catch (Exception ex) {
-            handleException(ex);
+
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            ZonedDateTime original = ZonedDateTime.parse(value, fromFormatter);
+            String reformatted = original.format(toFormatter);
+            context.addField(dest, reformatted);
         }
+        else {
+            context.missingField(name);
+        }
+
         return COMMAND_NEITHER;
     }
 }

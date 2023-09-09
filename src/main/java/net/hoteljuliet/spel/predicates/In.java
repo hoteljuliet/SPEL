@@ -23,24 +23,17 @@ public class In extends PredicateStep {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Optional<Boolean> retVal;
 
-        try {
-            if (context.hasField(source)) {
-                Object value = context.getField(source);
+        if (context.hasField(source)) {
+            Object value = context.getField(source);
 
-                if (list.contains(value)) {
-                    evalTrue.increment();
-                    retVal = COMMAND_TRUE;
-                }
-                else {
-                    evalFalse.increment();
-                    retVal = COMMAND_FALSE;
-                }
-            } else {
-                missing.increment();
+            if (list.contains(value)) {
+                retVal = COMMAND_TRUE;
+            }
+            else {
                 retVal = COMMAND_FALSE;
             }
-        } catch (Exception ex) {
-            handleException(ex);
+        } else {
+            context.missingField(name);
             retVal = COMMAND_FALSE;
         }
         return retVal;

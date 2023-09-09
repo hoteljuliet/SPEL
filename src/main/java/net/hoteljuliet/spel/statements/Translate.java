@@ -21,23 +21,18 @@ public class Translate extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                if (dict.containsKey(value)) {
-                    String translation = dict.get(value);
-                    context.replaceFieldValue(source, translation);
-                } else {
-                    context.replaceFieldValue(source, defaultValue);
-                }
-                success.increment();
-            }
-            else {
-                missing.increment();
+
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            if (dict.containsKey(value)) {
+                String translation = dict.get(value);
+                context.replaceFieldValue(source, translation);
+            } else {
+                context.replaceFieldValue(source, defaultValue);
             }
         }
-        catch(Exception ex) {
-            handleException(ex);
+        else {
+            context.missingField(name);
         }
         return COMMAND_NEITHER;
     }

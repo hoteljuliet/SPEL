@@ -26,20 +26,16 @@ public class JsonMap extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                Object mappedValue = objectMapper.readValue(value, Map.class);
-                context.addField(dest, mappedValue);
-                success.increment();
-            }
-            else {
-                missing.increment();
-            }
+
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            Object mappedValue = objectMapper.readValue(value, Map.class);
+            context.addField(dest, mappedValue);
         }
-        catch(Exception ex) {
-            handleException(ex);
+        else {
+            context.missingField(name);
         }
+
         return COMMAND_NEITHER;
     }
 }

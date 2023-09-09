@@ -21,13 +21,7 @@ public class AddI extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            context.addField(dest, value);
-            success.increment();
-        }
-        catch(Exception ex) {
-            otherFailure.increment();
-        }
+        context.addField(dest, value);
         return COMMAND_NEITHER;
     }
 }

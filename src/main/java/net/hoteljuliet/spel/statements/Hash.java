@@ -25,20 +25,15 @@ public class Hash extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                byte[] hashed = messageDigest.digest(value.getBytes(StandardCharsets.UTF_8));
-                String b64 = base64.encodeAsString(hashed);
-                context.addField(dest, b64);
-                success.increment();
-            }
-            else {
-                missing.increment();
-            }
+
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            byte[] hashed = messageDigest.digest(value.getBytes(StandardCharsets.UTF_8));
+            String b64 = base64.encodeAsString(hashed);
+            context.addField(dest, b64);
         }
-        catch(Exception ex) {
-            handleException(ex);
+        else {
+            context.missingField(name);
         }
         return COMMAND_NEITHER;
     }

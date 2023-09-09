@@ -30,24 +30,21 @@ public class Delimit extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                CSVParser parser = CSVParser.parse(value, CSVFormat.DEFAULT.withDelimiter(delimiter).withQuote(quote).withTrim());
-                List<CSVRecord> records = parser.getRecords();
 
-                for (CSVRecord record : records) {
-                    for (int i = 0; i < record.size() && i < dests.size(); i++) {
-                        context.addField(dests.get(i), record.get(i));
-                    }
+        if (context.hasField(source)) {
+            String value = context.getField(source);
+            CSVParser parser = CSVParser.parse(value, CSVFormat.DEFAULT.withDelimiter(delimiter).withQuote(quote).withTrim());
+            List<CSVRecord> records = parser.getRecords();
+
+            for (CSVRecord record : records) {
+                for (int i = 0; i < record.size() && i < dests.size(); i++) {
+                    context.addField(dests.get(i), record.get(i));
                 }
-                success.increment();
-            } else {
-                missing.increment();
             }
-        } catch (Exception ex) {
-            otherFailure.increment();
+        } else {
+            context.missingField(name);
         }
+
         return COMMAND_NEITHER;
     }
 }

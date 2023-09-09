@@ -33,29 +33,24 @@ public class Compare extends PredicateStep {
         Map<String, Double> variablesMap = new HashMap<>();
         for (String variable : variables) {
             if (!context.hasField(variable)) {
-                missing.increment();
+                context.missingField(name);
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    otherFailure.increment();
+                    context.softFailure(name);
                 }
-                variablesMap.put(variable, value);
+                else {
+                    variablesMap.put(variable, value);
+                }
             }
         }
 
         mathExpression.get().setVariables(variablesMap);
-
         Boolean retVal;
-        try {
-            Double result = mathExpression.get().evaluate();
-            retVal = (result == 1) ? true : false;
-            success.increment();
-        } catch (ArithmeticException ex) {
-            otherFailure.increment();
-            throw new RuntimeException(ex);
-        }
+        Double result = mathExpression.get().evaluate();
+        retVal = (result == 1) ? true : false;
         return Optional.of(retVal);
     }
 }

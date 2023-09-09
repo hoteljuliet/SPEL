@@ -25,13 +25,11 @@ public class If extends PredicateStep {
         Optional<Boolean> eval = predicate.execute(context);
 
         if (eval.isPresent() && eval.get()) {
-            evalTrue.increment();
             for (Step step : onTrue) {
                 step.execute(context);
             }
         }
         else {
-            evalFalse.increment();
             for (Step step : onFalse) {
                 step.execute(context);
             }

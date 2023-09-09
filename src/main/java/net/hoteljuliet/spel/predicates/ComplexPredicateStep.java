@@ -4,10 +4,11 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.LongAdder;
 
-public abstract class PredicateStep extends Step {
+public abstract class ComplexPredicateStep extends PredicateStep {
+    public List<Step> subPredicate;
 
     @Override
     protected Optional<Boolean> handleException(Throwable t, Context context) {

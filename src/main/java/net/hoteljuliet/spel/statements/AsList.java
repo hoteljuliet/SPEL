@@ -6,6 +6,7 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class AsList extends StatementStep {
@@ -21,23 +22,18 @@ public class AsList extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            java.util.List<Object> list = new ArrayList<>();
-            for (String source : sources) {
-                if (context.hasField(source)) {
-                    Object value = context.getField(source);
-                    list.add(value);
-                }
-                else {
-                    missing.increment();
-                }
+
+        List<Object> list = new ArrayList<>();
+        for (String source : sources) {
+            if (context.hasField(source)) {
+                Object value = context.getField(source);
+                list.add(value);
             }
-            context.addField(dest, list);
-            success.increment();
+            else {
+                context.missingField(name);
+            }
         }
-        catch(Exception ex) {
-            handleException(ex);
-        }
+        context.addField(dest, list);
         return COMMAND_NEITHER;
     }
 }

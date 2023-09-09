@@ -23,14 +23,8 @@ public class AddM extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            Object value = context.render(mustache);
-            context.addField(dest, value);
-            success.increment();
-        }
-        catch(Exception ex) {
-            handleException(ex);
-        }
+        Object value = context.render(mustache);
+        context.addField(dest, value);
         return Command.COMMAND_NEITHER;
     }
 }

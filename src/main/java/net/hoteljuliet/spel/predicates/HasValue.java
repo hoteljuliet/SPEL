@@ -1,4 +1,12 @@
 package net.hoteljuliet.spel.predicates;
 
-public class HasValue {
+import net.hoteljuliet.spel.Context;
+
+import java.util.Optional;
+
+public class HasValue extends PredicateStep {
+    @Override
+    public Optional<Boolean> doExecute(Context context) throws Exception {
+        return Optional.empty();
+    }
 }

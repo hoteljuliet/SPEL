@@ -58,6 +58,8 @@ public class Pipeline implements Serializable {
     //
     public void execute(Context context) {
 
+        context.initializeMetrics(steps);
+
         // TODO: implement or use a watchdog - see Apache and Sawmill - Watchdog watchdog;
 
         StopWatch stopWatch = new StopWatch();
@@ -72,7 +74,7 @@ public class Pipeline implements Serializable {
             }
             catch(Exception ex) {
                 if (BooleanUtils.isTrue(logStackTrace)) {
-                    logger.error("Exception in step: " + step.getClass().getSimpleName(), ex);
+                    logger.error("Exception in step: " + step.getName(), ex);
                 }
                 if (stopOnFailure) {
                     break;
@@ -80,7 +82,7 @@ public class Pipeline implements Serializable {
             }
             finally {
                 if (BooleanUtils.isTrue(logTiming)) {
-                    logger.debug(step.getClass().getSimpleName() + " : " + String.format("%.0f", step.runTimeNanos.getMean()) + " nanos (mean)");
+                    logger.debug(step.getName() + " : " + context.getMetrics(step.getName()).lastRunNanos + " nanos");
                 }
             }
         }
@@ -91,7 +93,9 @@ public class Pipeline implements Serializable {
         }
 
         if (BooleanUtils.isTrue(logMetrics)) {
-            // TODO
+            for (Map.Entry<String, StepMetrics> entry : context.metricsPerStep.entrySet()) {
+                logger.debug("Metrics for " + entry.getKey() + " : " + entry.getValue());
+            }
         }
     }
 }

@@ -17,22 +17,18 @@ public class Rename extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            for (Map.Entry<String, String> rename : dict.entrySet()) {
-                if (context.hasField(rename.getKey())) {
-                    Object value = context.getField(rename.getKey());
-                    context.removeField(rename.getKey());
-                    context.addField(rename.getValue(), value);
-                    success.increment();
-                }
-                else {
-                    missing.increment();
-                }
+
+        for (Map.Entry<String, String> rename : dict.entrySet()) {
+            if (context.hasField(rename.getKey())) {
+                Object value = context.getField(rename.getKey());
+                context.removeField(rename.getKey());
+                context.addField(rename.getValue(), value);
+            }
+            else {
+                context.missingField(name);
             }
         }
-        catch(Exception ex) {
-            handleException(ex);
-        }
+
         return COMMAND_NEITHER;
     }
 }

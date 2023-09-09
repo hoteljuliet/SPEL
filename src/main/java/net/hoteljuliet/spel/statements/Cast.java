@@ -21,20 +21,22 @@ public class Cast extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            if (context.hasField(source)) {
-                Object original = context.getField(source);
-                Object afterCast = fieldType.convertFrom(original);
-                context.addField(source, afterCast);
-                success.increment();
+
+        if (context.hasField(source)) {
+            Object original = context.getField(source);
+            Object afterCast = fieldType.convertFrom(original);
+
+            if (afterCast != null) {
+                context.replaceFieldValue(source, afterCast);
             }
             else {
-                missing.increment();
+                context.softFailure(name);
             }
         }
-        catch(Exception ex) {
-            handleException(ex);
+        else {
+            context.missingField(name);
         }
+
         return COMMAND_NEITHER;
     }
 }

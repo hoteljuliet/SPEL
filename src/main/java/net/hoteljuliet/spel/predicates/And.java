@@ -2,17 +2,14 @@ package net.hoteljuliet.spel.predicates;
 
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-public class And extends PredicateStep {
-
-    public List<Step> predicate;
+public class And extends ComplexPredicateStep {
 
     public And() {
-        predicate = new ArrayList<>();
+        subPredicate = new ArrayList<>();
     }
 
     /**
@@ -24,7 +21,7 @@ public class And extends PredicateStep {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         boolean retval = true;
-        for (Command c : predicate) {
+        for (Command c : subPredicate) {
             Optional<Boolean> eval = c.execute(context);
             if (eval.isPresent() && eval.get()) {
                 continue;

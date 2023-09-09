@@ -33,23 +33,19 @@ public class Now extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        try {
-            ZonedDateTime original = ZonedDateTime.now(ZoneId.of(zone));
-            if (to.equalsIgnoreCase("unix_ms")) {
-                String reformatted = String.valueOf(original.toInstant().toEpochMilli());
-                context.addField(dest, reformatted);
-            }
-            else if (to.equalsIgnoreCase("unix_s")) {
-                String reformatted = String.valueOf(original.toInstant().getEpochSecond());
-                context.addField(dest, reformatted);
-            }
-            else {
-                String reformatted = original.format(toFormatter);
-                context.addField(dest, reformatted);
-            }
-            success.increment();
-        } catch (Exception ex) {
-            handleException(ex);
+
+        ZonedDateTime original = ZonedDateTime.now(ZoneId.of(zone));
+        if (to.equalsIgnoreCase("unix_ms")) {
+            String reformatted = String.valueOf(original.toInstant().toEpochMilli());
+            context.addField(dest, reformatted);
+        }
+        else if (to.equalsIgnoreCase("unix_s")) {
+            String reformatted = String.valueOf(original.toInstant().getEpochSecond());
+            context.addField(dest, reformatted);
+        }
+        else {
+            String reformatted = original.format(toFormatter);
+            context.addField(dest, reformatted);
         }
         return COMMAND_NEITHER;
     }

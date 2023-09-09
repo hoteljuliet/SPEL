@@ -19,16 +19,23 @@ public class Parser {
     public static Step parse(Map<String, Object> node) {
         String firstKey = firstKey(node);
 
-        if (firstKey.equalsIgnoreCase("if")) {
+        if (firstKey.contains("if-")) {
             node.remove(firstKey);
-            return parsePredicate(node);
+            String[] parts = firstKey.split("-");
+            String name = parts[1];
+
+            return parsePredicate(Optional.of(name), node);
+        }
+        else if (firstKey.equalsIgnoreCase("if")) {
+            node.remove(firstKey);
+            return parsePredicate(Optional.empty(), node);
         }
         else {
             return parseStatement(node);
         }
     }
 
-    public static Step parsePredicate(Map<String, Object> node) {
+    public static Step parsePredicate(Optional<String> name, Map<String, Object> node) {
 
         Object firstValue = firstValue(node);
         String type = firstKey(node);
@@ -43,13 +50,7 @@ public class Parser {
         If ifPredicate = new If();
 
         Step predicate = null;
-        // this is an "and" or "or" type predicate 9one with multiple sub-predicates)
-
-        if (firstValue instanceof List) {
-            predicate = Factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
-        }
-
-
+        // this is an "and" or "or" type predicate (one with multiple sub-predicates)
         if (firstValue instanceof List) {
             predicate = Factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
         }
@@ -69,6 +70,13 @@ public class Parser {
             ifPredicate.onFalse.add(s);
         }
 
+        if (name.isPresent()) {
+            ifPredicate.setName(Factory.buildUniqueNameFromName(name.get()));
+        }
+        else {
+            ifPredicate.setName(Factory.buildUniqueNameFromType("if"));
+        }
+
         return ifPredicate;
     }
 
@@ -84,19 +92,4 @@ public class Parser {
     public static Object firstValue(Map<String, Object> node) {
         return node.entrySet().iterator().next().getValue();
     }
-
-    /*
-    public static Object getValue(Map<String, Object> node, Integer index) {
-        Object retVal = null;
-        Iterator iterator = node.entrySet().iterator();
-
-        for(int i = 0; iterator.hasNext(); i++) {
-            retVal = iterator.next();
-            if (i == index) {
-                break;
-            }
-        }
-        return retVal;
-    }
-     */
 }
