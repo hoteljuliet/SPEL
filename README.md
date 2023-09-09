@@ -1,5 +1,5 @@
 # SPEL
-A DSL/EL design for stream processing
+A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing
 
 ## Design rules: 
 - when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/fauilure
