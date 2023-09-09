@@ -15,7 +15,6 @@ This project was started after years of great experience working with (Logzio Sa
   - they can be restored properly (user can checkpoint the entire pipeline)
 - 
 
-
 # TODO
 - the ability to serialize and restore the entire pipeline to/from a b64 string
 - benchmark tests
@@ -25,16 +24,6 @@ This project was started after years of great experience working with (Logzio Sa
 - https://mvnrepository.com/artifact/org.ahocorasick/ahocorasick/0.4.0
 - https://github.com/Redempt/Crunch
 - https://github.com/addthis/stream-lib
-- 
-
-
-# - TODO
-## 1. start with their parser and executor
-## 2. add refactoring from JPMC
-## 3. redo refactoring of each processor/conditional
-## 4. simplify everything
-## 5. add new processors
-
-
-
+- simplify everything
+- add new steps
 
