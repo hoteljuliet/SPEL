@@ -39,6 +39,11 @@ public class Factory {
         }
     }
 
+    // TODO: forEach
+    public static Step buildComplexStatement(String type, List<Map<String, Object>> config) {
+        return null;
+    }
+
     public static Step buildComplexPredicate(String type, List<Map<String, Object>> config) {
 
         switch (type) {

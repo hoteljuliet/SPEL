@@ -5,6 +5,7 @@ A DSL/EL designed for json transforms, configurable business logic, and appropri
 This project was started after years of great experience working with (Logzio Sawmill)[https://github.com/logzio/sawmill], which is an awesome project.
 
 ## Design rules:
+- keep the names small
 - keep the naming of parameters consistent and simple: source, dest, to, from, dict, list
 - when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/fauilure
 - make more, smaller steps. < 50 lines each is normal.
