@@ -6,7 +6,6 @@ import com.github.mustachejava.Mustache;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.SpelUtils;
-import net.hoteljuliet.spel.Step;
 
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class AddM extends StatementStep {
             success.increment();
         }
         catch(Exception ex) {
-            exceptionThrown.increment();
+            handleException(ex);
         }
         return Command.COMMAND_NEITHER;
     }

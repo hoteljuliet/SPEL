@@ -49,7 +49,7 @@ public class Now extends StatementStep {
             }
             success.increment();
         } catch (Exception ex) {
-            exceptionThrown.increment();
+            handleException(ex);
         }
         return COMMAND_NEITHER;
     }

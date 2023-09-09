@@ -11,14 +11,20 @@ import org.apache.commons.text.StringSubstitutor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.LongAdder;
 
 public class Factory {
+    private static final LongAdder instanceCounter = new LongAdder();
+
     private static final ObjectMapper objectMapper =
             new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
 
     public static Step buildStatement(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
+            buildUniqueName(type, config);
+
             Class clazz = Class.forName("net.hoteljuliet.spel.statements." + CaseUtils.toCamelCase(type, true, '-'));
             return (Step) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
         }
@@ -30,6 +36,7 @@ public class Factory {
     public static Step buildPredicate(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
+            buildUniqueName(type, config);
 
             Class clazz = Class.forName("net.hoteljuliet.spel.predicates." + CaseUtils.toCamelCase(type, true, '-'));
             return (Step) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
@@ -46,6 +53,9 @@ public class Factory {
 
     public static Step buildComplexPredicate(String type, List<Map<String, Object>> config) {
 
+        // TODO: give complex predicates the option for a friendly, unique name
+        Step retVal;
+
         switch (type) {
             case "not" : {
                 Not not = new Not();
@@ -54,7 +64,8 @@ public class Factory {
                     Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                     not.predicate.add(s);
                 }
-                return not;
+                retVal = not;
+                break;
             }
             case "and" : {
                 And and = new And();
@@ -63,7 +74,8 @@ public class Factory {
                     Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                     and.predicate.add(s);
                 }
-                return and;
+                retVal = and;
+                break;
             }
             case "or" : {
                 Or or = new Or();
@@ -72,12 +84,15 @@ public class Factory {
                     Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                     or.predicate.add(s);
                 }
-                return or;
+                retVal = or;
+                break;
             }
             default : {
                 throw new IllegalArgumentException("unknown step: " + type);
             }
         }
+        // TODO: retVal.setName(name);
+        return retVal;
     }
 
     public static void replaceConfigWithEnvVars(Map<String, Object> config) {
@@ -91,4 +106,20 @@ public class Factory {
         }
     }
 
+    public static String buildUniqueName(String type) {
+        String retVal = type + instanceCounter.longValue();
+        instanceCounter.increment();
+        return retVal;
+    }
+
+    public static void buildUniqueName(String type, Map<String, Object> config) {
+
+        if (config.containsKey("name")) {
+            instanceCounter.increment();
+        }
+        else {
+            instanceCounter.increment();
+            config.put("name", type + instanceCounter.longValue());
+        }
+    }
 }

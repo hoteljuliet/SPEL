@@ -60,7 +60,7 @@ public class KeyedHash extends StatementStep {
             }
         }
         catch(Exception ex) {
-            exceptionThrown.increment();
+            handleException(ex);
         }
         return COMMAND_NEITHER;
     }

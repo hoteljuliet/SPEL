@@ -3,7 +3,7 @@ logStackTrace: true
 logTiming: true
 logContext: true
 config:
-  - now: {dest: "now1", to: "MM-dd-YY", zone: Z}
+  - now: {dest: "now1", to: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
   - now: {dest: "now2", to: "unix_ms", zone: Z}
   - now: {dest: "now3", to: "unix_s", zone: Z}
   - add-i: {dest: jsonMapString, value: '{ "this": "that" }'}

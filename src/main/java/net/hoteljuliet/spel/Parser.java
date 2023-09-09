@@ -2,9 +2,7 @@ package net.hoteljuliet.spel;
 
 import net.hoteljuliet.spel.predicates.If;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Parser {
@@ -45,7 +43,13 @@ public class Parser {
         If ifPredicate = new If();
 
         Step predicate = null;
-        // this is an "and" or "or" predicate
+        // this is an "and" or "or" type predicate 9one with multiple sub-predicates)
+
+        if (firstValue instanceof List) {
+            predicate = Factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
+        }
+
+
         if (firstValue instanceof List) {
             predicate = Factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
         }
@@ -81,4 +85,18 @@ public class Parser {
         return node.entrySet().iterator().next().getValue();
     }
 
+    /*
+    public static Object getValue(Map<String, Object> node, Integer index) {
+        Object retVal = null;
+        Iterator iterator = node.entrySet().iterator();
+
+        for(int i = 0; iterator.hasNext(); i++) {
+            retVal = iterator.next();
+            if (i == index) {
+                break;
+            }
+        }
+        return retVal;
+    }
+     */
 }
