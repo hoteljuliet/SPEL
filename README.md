@@ -26,4 +26,5 @@ This project was started after years of great experience working with (Logzio Sa
 - https://github.com/addthis/stream-lib
 - simplify everything
 - add new steps
-
+- add a command line testing environment, like a shell?
+- 
