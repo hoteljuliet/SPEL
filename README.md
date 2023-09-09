@@ -23,6 +23,7 @@ This project was started after years of great experience working with (Logzio Sa
 - timing performance analysis, this must be fast!
 - make everything serializable
 - unit tests, including serializable
+- https://github.com/topics/expression-parser?l=java
 - https://mvnrepository.com/artifact/org.ahocorasick/ahocorasick/0.4.0
 - https://github.com/Redempt/Crunch (to replace exp4j)
 - https://github.com/addthis/stream-lib
