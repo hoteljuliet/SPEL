@@ -1,0 +1,23 @@
+stopOnFailure: true
+logStackTrace: true
+logTiming: true
+logContext: true
+config:
+  - addi: {dest: "a.a", value: 1.0}
+  - addi: {dest: "a.b", value: 2.0}
+  - addi: {dest: "x", value: "y"}
+  - addi: {dest: "x.y", value: "1"}
+  - addi: {dest: "x.z", value: "this is a string"}
+  - addi: {dest: "x.csv", value: "this, is, a, csv, string"}
+  - cast: {source: "x.y", to: "int"}
+  - translate: {source: "x.y", default: "unknown", dict: {"1": "one"} }
+  - b64: {source: "x.z", dest: "encoded", encode: true}
+  - b64: {source: "encoded", dest: "decoded", encode: false}
+  - hash: {source: "decoded", dest: "hashed", algo: "SHA-256"}
+  - hmacsha256: {source: "decoded", dest: "hashed", iter: 10000, salt: "somesalt", pass: "pass"}
+  - delimit: {source: x.csv, delimiter: ',', quote: '"', dests: [a.first, a.second, a.third, a.fourth, a.fifth] }
+  - if:
+    compare: {first: "{{a.a}}", second: "{{a.b}}", exp: "{{a.a}} > {{a.b}}"}
+    then:
+      - remove: {sources: ["x.y"]}
+#  - addjson: {source: "z", expression: "$.concat($.x.y, \" \", $.x.y)"}
