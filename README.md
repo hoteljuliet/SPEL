@@ -1,6 +1,10 @@
 # SPEL
 A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing
 
+## Inspiration
+This project saw started after years of great experience working with (Logzio Sawmill)[https://github.com/logzio/sawmill], which is an awesome project.
+
+
 ## Design rules: 
 - when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/fauilure
 - make more, smaller steps. < 50 lines each is normal.
