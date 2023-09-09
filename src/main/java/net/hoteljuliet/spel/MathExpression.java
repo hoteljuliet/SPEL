@@ -6,6 +6,8 @@ import net.objecthunter.exp4j.operator.Operator;
 
 import java.util.Set;
 
+// TODO: consider migrating from exp4j to Crunch: https://github.com/Redempt/Crunch
+
 public class MathExpression {
 
     public static ThreadLocal<Expression> get(String expression, Set<String> variables) {

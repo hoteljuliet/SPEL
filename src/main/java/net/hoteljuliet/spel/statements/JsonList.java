@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class JsonList extends Step {
+public class JsonList extends StatementStep {
 
     private String source;
     private String dest;

@@ -6,13 +6,10 @@ config:
   - now: {dest: "now1", to: "MM-dd-YY", zone: Z}
   - now: {dest: "now2", to: "unix_ms", zone: Z}
   - now: {dest: "now3", to: "unix_s", zone: Z}
-
   - add-i: {dest: jsonMapString, value: '{ "this": "that" }'}
   - json-map: {source: jsonMapString, dest: jsonMapped}
-
   - add-i: {dest: jsonListString, value: '[ "this", "that" ]'}
   - json-list: {source: jsonListString, dest: jsonListed}
-
   - as-list: {sources: [now1, now2, now3], dest: list1}
   - add-i: {dest: "a.a", value: 1.0}
   - add-i: {dest: "z.z", value: 1.0}
@@ -49,5 +46,12 @@ config:
       - matches: {source: "user", regex: ".*truck*"}
     then:
       - add-i: {dest: "matches1", value: "user does not match .*truck*"}
+
+  - add-i: {dest: someString, value: y}
+  - if:
+    in: {source: someString, list: [a, b, c, y]}
+    then:
+      - add-i: {dest: "matches1", value: "someString in: [a, b, c, y]"}
+
 
   - rename: {dict: {"a.a" : "a1.a1", "z.z" : "z1.z1"}}

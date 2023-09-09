@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.MathExpression;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.SpelUtils;
 import net.objecthunter.exp4j.Expression;
 
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class Compare extends Step {
+public class Compare extends PredicateStep {
 
     private String expression;
     private ThreadLocal<Expression> mathExpression;
@@ -22,7 +22,7 @@ public class Compare extends Step {
     @JsonCreator
     public Compare(@JsonProperty(value = "exp", required = true) String expression) {
         this.expression = expression;
-        variables = findVariables(expression);
+        variables = SpelUtils.findVariables(expression);
 
         String replacedExpression = expression.replaceAll("(\\{\\{|\\}\\})", "");
         mathExpression = MathExpression.get(replacedExpression, variables);

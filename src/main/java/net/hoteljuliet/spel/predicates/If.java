@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class If extends Step {
+public class If extends PredicateStep {
 
     public Step predicate;
     public List<Step> onTrue;

@@ -11,7 +11,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class KeyedHash extends Step {
+public class KeyedHash extends StatementStep {
     private String source;
     private String dest;
     private Integer iterations;

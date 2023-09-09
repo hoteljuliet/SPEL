@@ -15,6 +15,14 @@ public class Context implements Map<String, Object> {
 
     private Map<String, Object> backing;
 
+    // TODO: add per-step metrics here????
+
+
+
+
+
+
+
     public Context() {
         this.backing = new HashMap<>();
     }

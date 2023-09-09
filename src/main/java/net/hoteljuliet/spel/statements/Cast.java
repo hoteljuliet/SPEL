@@ -8,7 +8,7 @@ import net.hoteljuliet.spel.Context;
 
 import java.util.Optional;
 
-public class Cast extends Step {
+public class Cast extends StatementStep {
 
     private String source;
     private FieldType fieldType;

@@ -9,7 +9,7 @@ import net.hoteljuliet.spel.Context;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class B64 extends Step {
+public class B64 extends StatementStep {
     private String source;
     private String dest;
     private Boolean encode;

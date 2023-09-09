@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Not extends Step {
+public class Not extends PredicateStep {
 
     public List<Step> predicate;
 
@@ -24,17 +24,27 @@ public class Not extends Step {
      */
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        boolean retval = true;
+        boolean retVal = true;
         for (Command c : predicate) {
             Optional<Boolean> eval = c.execute(context);
             if (eval.isPresent() && eval.get()) {
                 continue;
             }
             else {
-                retval = false;
+                retVal = false;
                 break;
             }
         }
-        return Optional.of(!retval);
+
+        boolean negated = !retVal;
+
+        if (negated) {
+            evalTrue.increment();
+        }
+        else {
+            evalFalse.increment();
+        }
+
+        return Optional.of(negated);
     }
 }

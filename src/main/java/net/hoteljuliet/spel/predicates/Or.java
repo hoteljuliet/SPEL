@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Or extends Step {
+public class Or extends PredicateStep {
 
     public List<Step> predicate;
 
@@ -37,6 +37,14 @@ public class Or extends Step {
                 continue;
             }
         }
+
+        if (retval) {
+            evalTrue.increment();
+        }
+        else {
+            evalFalse.increment();
+        }
+
         return Optional.of(retval);
     }
 }

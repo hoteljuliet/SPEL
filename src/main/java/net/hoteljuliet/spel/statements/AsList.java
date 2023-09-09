@@ -8,7 +8,7 @@ import net.hoteljuliet.spel.Step;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class AsList extends Step {
+public class AsList extends StatementStep {
 
     private java.util.List<String> sources;
     private String dest;

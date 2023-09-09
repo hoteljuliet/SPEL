@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Matches extends Step {
+public class Matches extends PredicateStep {
 
     private String source;
     private String regex;

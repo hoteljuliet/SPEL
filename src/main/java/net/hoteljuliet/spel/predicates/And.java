@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class And extends Step {
+public class And extends PredicateStep {
 
     public List<Step> predicate;
 

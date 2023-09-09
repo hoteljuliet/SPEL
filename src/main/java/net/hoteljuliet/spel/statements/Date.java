@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class Date extends Step {
+public class Date extends StatementStep {
     private String source;
     private String dest;
 

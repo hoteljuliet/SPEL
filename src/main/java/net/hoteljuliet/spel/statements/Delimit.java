@@ -11,7 +11,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.util.List;
 import java.util.Optional;
 
-public class Delimit extends Step {
+public class Delimit extends StatementStep {
     private String source;
     private Character delimiter;
     private Character quote;

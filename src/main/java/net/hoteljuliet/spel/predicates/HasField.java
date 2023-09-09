@@ -8,7 +8,7 @@ import net.hoteljuliet.spel.Context;
 
 import java.util.Optional;
 
-public class HasField extends Step {
+public class HasField extends PredicateStep {
     private String source;
     @JsonCreator
     public HasField(@JsonProperty(value = "source", required = true) String source) {

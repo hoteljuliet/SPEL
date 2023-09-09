@@ -2,13 +2,12 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.Context;
 
 import java.util.List;
 import java.util.Optional;
 
-public class Remove extends Step {
+public class Remove extends StatementStep {
     private List<String> sources;
     @JsonCreator
     public Remove(@JsonProperty(value = "sources", required = true) List<String> sources) {
@@ -29,7 +28,7 @@ public class Remove extends Step {
             }
         }
         catch(Exception ex) {
-            exceptionThrown.increment();
+            handleException(ex);
         }
         return COMMAND_NEITHER;
     }

@@ -1,8 +1,0 @@
-config:
-  - add: {path: "x", value: y}
-  - add: {path: "x.y", value: "1"}
-
-stopOnFailure: true
-
-
-

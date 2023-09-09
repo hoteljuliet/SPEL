@@ -9,7 +9,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Optional;
-public class Hash extends Step {
+public class Hash extends StatementStep {
     private String source;
     private String dest;
     private MessageDigest messageDigest;

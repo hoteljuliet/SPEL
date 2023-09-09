@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.mustachejava.Mustache;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.SpelUtils;
 import net.hoteljuliet.spel.Step;
 
-import java.io.StringReader;
 import java.util.Optional;
 
-public class AddM extends Step {
+public class AddM extends StatementStep {
     private String dest;
 
     private Mustache mustache;
@@ -19,7 +19,7 @@ public class AddM extends Step {
     public AddM(@JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "exp", required = true) String exp) {
         this.dest = dest;
-        this.mustache = mustacheFactory.compile(new StringReader(exp), "");
+        this.mustache = SpelUtils.compile(exp);
     }
 
     @Override

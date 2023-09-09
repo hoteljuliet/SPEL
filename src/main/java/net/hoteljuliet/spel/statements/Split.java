@@ -1,4 +1,12 @@
 package net.hoteljuliet.spel.statements;
 
-public class Split {
+import net.hoteljuliet.spel.Context;
+
+import java.util.Optional;
+
+public class Split extends StatementStep {
+    @Override
+    public Optional<Boolean> doExecute(Context context) throws Exception {
+        return Optional.empty();
+    }
 }

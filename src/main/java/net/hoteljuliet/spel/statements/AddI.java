@@ -7,7 +7,7 @@ import net.hoteljuliet.spel.Step;
 
 import java.util.Optional;
 
-public class AddI extends Step {
+public class AddI extends StatementStep {
 
     private String dest;
     private Object value;

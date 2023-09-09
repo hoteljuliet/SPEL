@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.MathExpression;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.SpelUtils;
 import net.objecthunter.exp4j.Expression;
 
 import java.util.HashMap;
@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class Math extends Step {
+public class Math extends StatementStep {
 
+    // TODO: consider migraating from exp4j to Crunch: https://github.com/Redempt/Crunch
     private String dest;
     private String expression;
     private ThreadLocal<Expression> mathExpression;
@@ -25,7 +26,7 @@ public class Math extends Step {
                 @JsonProperty(value = "exp", required = true) String expression) {
         this.dest = dest;
         this.expression = expression;
-        variables = findVariables(expression);
+        variables = SpelUtils.findVariables(expression);
 
         String replacedExpression = expression.replaceAll("(\\{\\{|\\}\\})", "");
         mathExpression = MathExpression.get(replacedExpression, variables);

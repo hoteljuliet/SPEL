@@ -1,7 +1,6 @@
 package net.hoteljuliet.spel;
 
 import net.hoteljuliet.spel.predicates.If;
-import org.apache.commons.text.StringSubstitutor;
 
 import java.util.ArrayList;
 import java.util.List;
