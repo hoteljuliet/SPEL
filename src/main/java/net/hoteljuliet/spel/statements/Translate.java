@@ -21,7 +21,7 @@ public class Translate extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             if (context.hasField(source)) {
                 String value = context.getField(source);
@@ -38,7 +38,7 @@ public class Translate extends Step {
             }
         }
         catch(Exception ex) {
-            otherFailure.increment();
+            handleException(ex);
         }
         return COMMAND_NEITHER;
     }

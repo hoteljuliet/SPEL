@@ -13,6 +13,7 @@ public class B64 extends Step {
     private String source;
     private String dest;
     private Boolean encode;
+    protected org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
     @JsonCreator
     public B64(@JsonProperty(value = "source", required = true) String source,
                @JsonProperty(value = "dest", required = true) String dest,
@@ -23,7 +24,7 @@ public class B64 extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             if (context.hasField(source)) {
                 String value = context.getField(source);

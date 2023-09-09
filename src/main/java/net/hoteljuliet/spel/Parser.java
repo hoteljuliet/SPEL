@@ -15,18 +15,6 @@ public class Parser {
             throw new RuntimeException("empty config");
         }
         else {
-            // 1) replace env vars in all configuration
-            Map<String, String> env = System.getenv();
-            for (Map<String, Object> map : config) {
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    if (entry.getValue() instanceof String) {
-                        String replaced = StringSubstitutor.replace(entry.getValue(), env);
-                        map.put(entry.getKey(), replaced);
-                    }
-                }
-            }
-
-            // 2)
             return config.stream().map(Parser::parse).collect(Collectors.toList());
         }
     }

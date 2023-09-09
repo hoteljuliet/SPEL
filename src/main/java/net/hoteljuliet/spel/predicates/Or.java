@@ -23,7 +23,7 @@ public class Or extends Step {
      * @throws Exception
      */
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
 
         boolean retval = false;
         for (Command c : predicate) {

@@ -28,7 +28,7 @@ public class Date extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             if (context.hasField(source)) {
                 String value = context.getField(source);

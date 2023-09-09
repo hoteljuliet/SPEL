@@ -15,7 +15,7 @@ public class Remove extends Step {
         this.sources = sources;
     }
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
 
         try {
             for (String path : sources) {

@@ -28,11 +28,11 @@ public class PipelineTest {
 
         assertThat(pipeline.getSteps().get(0).success.intValue()).isEqualTo(1);
         assertThat(pipeline.getSteps().get(0).otherFailure.intValue()).isEqualTo(0);
-        assertThat(pipeline.getSteps().get(0).nanos.intValue()).isGreaterThan(0);
+        assertThat(pipeline.getSteps().get(0).runTimeNanos.getMax()).isGreaterThan(0);
 
         assertThat(pipeline.getSteps().get(1).success.intValue()).isEqualTo(1);
         assertThat(pipeline.getSteps().get(1).otherFailure.intValue()).isEqualTo(0);
-        assertThat(pipeline.getSteps().get(1).nanos.intValue()).isGreaterThan(0);
+        assertThat(pipeline.getSteps().get(1).runTimeNanos.getMax()).isGreaterThan(0);
     }
 
     @Test

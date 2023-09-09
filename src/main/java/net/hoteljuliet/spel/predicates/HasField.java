@@ -15,7 +15,7 @@ public class HasField extends Step {
         this.source = source;
     }
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         if (context.hasField(source)) {
             evalTrue.increment();
             return Command.COMMAND_TRUE;

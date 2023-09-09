@@ -11,7 +11,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class Hmacsha256 extends Step {
+public class KeyedHash extends Step {
     private String source;
     private String dest;
     private Integer iterations;
@@ -19,13 +19,14 @@ public class Hmacsha256 extends Step {
     private String password;
 
     private javax.crypto.Mac mac;
+    protected org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
 
     @JsonCreator
-    public Hmacsha256(@JsonProperty(value = "source", required = true) String source,
-                      @JsonProperty(value = "dest", required = true) String dest,
-                      @JsonProperty(value = "iter", required = true) Integer iterations,
-                      @JsonProperty(value = "salt", required = true) String salt,
-                      @JsonProperty(value = "pass", required = true) String password) {
+    public KeyedHash(@JsonProperty(value = "source", required = true) String source,
+                     @JsonProperty(value = "dest", required = true) String dest,
+                     @JsonProperty(value = "iter", required = true) Integer iterations,
+                     @JsonProperty(value = "salt", required = true) String salt,
+                     @JsonProperty(value = "pass", required = true) String password) {
         this.source = source;
         this.dest = dest;
         this.iterations = iterations;
@@ -45,7 +46,7 @@ public class Hmacsha256 extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             if (context.hasField(source)) {
                 String value = context.getField(source);

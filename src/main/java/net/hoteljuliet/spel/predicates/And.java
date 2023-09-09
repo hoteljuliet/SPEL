@@ -22,7 +22,7 @@ public class And extends Step {
      * @throws Exception
      */
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         boolean retval = true;
         for (Command c : predicate) {
             Optional<Boolean> eval = c.execute(context);

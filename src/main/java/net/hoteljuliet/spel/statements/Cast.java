@@ -21,7 +21,7 @@ public class Cast extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             if (context.hasField(source)) {
                 Object original = context.getField(source);

@@ -20,20 +20,20 @@ public class If extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
 
         Optional<Boolean> eval = predicate.execute(context);
 
         if (eval.isPresent() && eval.get()) {
             evalTrue.increment();
-            for (Step s : onTrue) {
-                s.execute(context);
+            for (Step step : onTrue) {
+                step.execute(context);
             }
         }
         else {
             evalFalse.increment();
-            for (Step s : onFalse) {
-                s.execute(context);
+            for (Step step : onFalse) {
+                step.execute(context);
             }
         }
         return Command.COMMAND_NEITHER;

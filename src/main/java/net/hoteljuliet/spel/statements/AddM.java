@@ -10,20 +10,20 @@ import net.hoteljuliet.spel.Step;
 import java.io.StringReader;
 import java.util.Optional;
 
-public class Addm extends Step {
+public class AddM extends Step {
     private String dest;
 
     private Mustache mustache;
 
     @JsonCreator
-    public Addm(@JsonProperty(value = "dest", required = true) String dest,
+    public AddM(@JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "exp", required = true) String exp) {
         this.dest = dest;
         this.mustache = mustacheFactory.compile(new StringReader(exp), "");
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             Object value = context.render(mustache);
             context.addField(dest, value);

@@ -13,6 +13,7 @@ public class Hash extends Step {
     private String source;
     private String dest;
     private MessageDigest messageDigest;
+    protected org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
     @JsonCreator
     public Hash(@JsonProperty(value = "source", required = true) String source,
                 @JsonProperty(value = "dest", required = true) String dest,
@@ -23,7 +24,7 @@ public class Hash extends Step {
     }
 
     @Override
-    public Optional<Boolean> execute(Context context) throws Exception {
+    public Optional<Boolean> doExecute(Context context) throws Exception {
         try {
             if (context.hasField(source)) {
                 String value = context.getField(source);
@@ -37,7 +38,7 @@ public class Hash extends Step {
             }
         }
         catch(Exception ex) {
-            exceptionThrown.increment();
+            handleException(ex);
         }
         return COMMAND_NEITHER;
     }

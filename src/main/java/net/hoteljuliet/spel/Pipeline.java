@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.apache.commons.exec.Watchdog;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -53,41 +54,40 @@ public class Pipeline implements Serializable {
         execute(new Context());
     }
 
+    // TODO: consider making this walk the entire graph, not just the top level
+    //
     public void execute(Context context) {
-        StopWatch stopWatchPerStep = new StopWatch();
-        StopWatch stopWatchOverall = new StopWatch();
-        stopWatchOverall.start();
-        for (Step s : steps) {
 
+        // TODO: implement or use a watchdog - see Apache and Sawmill - Watchdog watchdog;
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        for (Step step : steps) {
             if (BooleanUtils.isTrue(logContext)) {
                 logger.debug(context.toString());
             }
 
             try {
-                stopWatchPerStep.reset();
-                stopWatchPerStep.start();
-                s.execute(context);
+                step.execute(context);
             }
             catch(Exception ex) {
                 if (BooleanUtils.isTrue(logStackTrace)) {
-                    logger.error("Exception in step: " + s.getClass().getSimpleName(), ex);
+                    logger.error("Exception in step: " + step.getClass().getSimpleName(), ex);
                 }
                 if (stopOnFailure) {
                     break;
                 }
             }
             finally {
-                stopWatchPerStep.stop();
-                s.nanos.add(stopWatchPerStep.getNanoTime());
                 if (BooleanUtils.isTrue(logTiming)) {
-                    logger.debug(s.getClass().getSimpleName() + " : " + stopWatchPerStep.getNanoTime() + " nanos");
+                    logger.debug(step.getClass().getSimpleName() + " : " + String.format("%.0f", step.runTimeNanos.getMean()) + " nanos (mean)");
                 }
             }
         }
 
-        stopWatchOverall.stop();
+        stopWatch.stop();
         if (BooleanUtils.isTrue(logTiming)) {
-            logger.debug("Total : " + stopWatchOverall.getNanoTime() / 1000000 + " millis");
+            logger.debug("Total : " + stopWatch.getNanoTime() / 1000000 + " millis");
         }
 
         if (BooleanUtils.isTrue(logMetrics)) {
