@@ -36,7 +36,6 @@ public class Cast extends StatementStep {
         else {
             context.missingField(name);
         }
-
         return COMMAND_NEITHER;
     }
 }

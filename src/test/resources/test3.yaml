@@ -65,3 +65,11 @@ config:
           - add-i: {dest: "nextedIf", value: "worked"}
 
   - rename: {dict: {"a.a" : "a1.a1", "z.z" : "z1.z1"}}
+  - add-i: {dest: someDouble, value: 12345.123456789}
+  - round: {source: someDouble, format: "######.###" }
+  - add-i: {dest: whitespace, value: "lots o spaces         here"}
+  - strip: {source: whitespace}
+  - add-i: {dest: s1, value: "string1"}
+  - add-i: {dest: s2, value: "string2"}
+  - add-i: {dest: s3, value: "string3"}
+  - concat: {sources: [s1, s2, s3], dest: concatenation}

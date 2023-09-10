@@ -338,7 +338,7 @@ public class Context implements Map<String, Object> {
     public boolean replaceFieldValue(String path,Object newValue){
         if (hasField(path)) {
             removeField(path);
-            addField(path,newValue);
+            addField(path, newValue);
             return true;
         }
         return false;
