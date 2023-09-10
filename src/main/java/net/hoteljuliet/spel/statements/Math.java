@@ -10,9 +10,9 @@ import net.objecthunter.exp4j.Expression;
 
 import java.util.*;
 
+// TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
 public class Math extends StatementStep {
 
-    // TODO: consider migraating from exp4j to Crunch: https://github.com/Redempt/Crunch
     private String dest;
     private String expression;
     private ThreadLocal<Expression> mathExpression;

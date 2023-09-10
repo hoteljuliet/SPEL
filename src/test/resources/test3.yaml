@@ -1,11 +1,19 @@
 stopOnFailure: true
 logStackTrace: true
-logTiming: true
-logContext: false
-logMetrics: true
+logPerformance: true
+
 config:
-  - add-i: {dest: kvString, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
-  - key-value: {source: kvString, delimiter: ',', separator: '=',  dest: kvMap}
+
+  - add-i: {dest: translate1, value: '404'}
+  - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"} }
+
+
+  - add-i: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
+  - key-value: {source: kvString1, delimiter: ',', separator: '=',  dest: kvMap1}
+
+  - add-i: {dest: kvString2, value: 'this:that; you:me; potatoe:potatoh; tomatoe:tomahtoh'}
+  - key-value: {source: kvString2, delimiter: ';', separator: ':',  dest: kvMap2}
+
   - now: {dest: "now1", to: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
   - now: {dest: "now2", to: "unix_ms", zone: Z}
   - now: {dest: "now3", to: "unix_s", zone: Z}
@@ -17,7 +25,7 @@ config:
   - append: {source: jsonMapString, dest: list1}
   - add-i: {dest: "a.a", value: 1.0}
   - add-i: {dest: "z.z", value: 1.0}
-  - math: {dest: "mathResult_exp4j", exp: "{{a.a}} + {{z.z}}"}
+  # - math: {dest: "mathResult_exp4j", exp: "{{a.a}} + {{z.z}}"}
   - crunch: {dest: "mathResult_crunch", exp: "$1 + $2", variables: ["a.a", "z.z"]}
   - add-i: {dest: "user", value: "${USER}"}
   - add-m: {dest: "copy", exp: "{{a.a}}"}
@@ -31,17 +39,22 @@ config:
   - cast: {source: "x.y", to: "int"}
   - add-i: {dest: "notANumber", value: "notANumber"}
   - cast: {source: "notANumber", to: "int"}
-  - translate: {source: "x.y", default: "unknown", dict: {"1": "one"} }
   - b64: {source: "x.z", dest: "encoded", encode: true}
   - b64: {source: "encoded", dest: "decoded", encode: false}
   - hash: {source: "decoded", dest: "hashed", algo: "SHA-256"}
   - keyed-hash: {source: "decoded", dest: "hashed", iter: 10000, salt: "somesalt", pass: "${USER}"}
   - delimit: {source: x.csv, delimiter: ',', quote: '"', dests: [a.first, a.second, a.third, a.fourth, a.fifth] }
   - delimit: {source: p.pipe, delimiter: '|', quote: '"', dests: [b.first, b.second, b.third, b.fourth, b.fifth] }
-  - if-isGrater?:
-    compare: {exp: "{{a.a}} > {{a.b}}"}
+  #- if-isGraterExp4j?:
+  #  math: {exp: "{{a.a}} > {{a.b}}"}
+  #  then:
+  #    - remove: {sources: ["x.y"]}
+
+  - if-isGraterCrunch?:
+    crunch: {exp: "$1 > $2", variables: ["a.a", "a.b"]}
     then:
       - remove: {sources: ["x.y"]}
+
 
   - if-matches?:
     matches: {source: "user", regex: ".*dennis*"}

@@ -6,7 +6,7 @@ import net.objecthunter.exp4j.operator.Operator;
 
 import java.util.Set;
 
-// TODO: consider migrating from exp4j to Crunch: https://github.com/Redempt/Crunch
+// TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
 
 public class MathExpression {
 

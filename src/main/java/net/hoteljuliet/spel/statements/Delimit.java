@@ -33,6 +33,7 @@ public class Delimit extends StatementStep {
 
         if (context.hasField(source)) {
             String value = context.getField(source);
+            // TODO: rip this out and di it without a library, just pure java (its slow)
             CSVParser parser = CSVParser.parse(value, CSVFormat.DEFAULT.withDelimiter(delimiter).withQuote(quote).withTrim());
             List<CSVRecord> records = parser.getRecords();
 

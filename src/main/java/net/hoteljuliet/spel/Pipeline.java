@@ -4,17 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.commons.exec.Watchdog;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.time.StopWatch;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class Pipeline {
 
@@ -42,11 +41,8 @@ public class Pipeline {
     public List<Map<String, Object>> config;
     private List<Step> steps;
     public Boolean stopOnFailure;
-
     public Boolean logStackTrace;
-    public Boolean logMetrics;
-    public Boolean logTiming;
-    public Boolean logContext;
+    public Boolean logPerformance;
 
     public void build() {
         steps = Parser.build(config);
@@ -68,8 +64,8 @@ public class Pipeline {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         for (Step step : steps) {
-            if (BooleanUtils.isTrue(logContext)) {
-                logger.debug(context.toString());
+            if (BooleanUtils.isTrue(logPerformance)) {
+                logger.debug("Context before " + step.getName() + ": " + context.toString());
             }
 
             try {
@@ -77,29 +73,29 @@ public class Pipeline {
             }
             catch(Exception ex) {
                 if (BooleanUtils.isTrue(logStackTrace)) {
-                    logger.error("Exception in step: " + step.getName(), ex);
+                    logger.debug("Exception in step: " + step.getName(), ex);
                 }
                 if (stopOnFailure) {
                     break;
                 }
             }
             finally {
-                if (BooleanUtils.isTrue(logTiming)) {
-                    logger.debug(step.getName() + " : " + context.getMetrics(step.getName()).lastRunNanos + " nanos");
-                }
+                ;
             }
         }
 
         stopWatch.stop();
-        if (BooleanUtils.isTrue(logTiming)) {
-            logger.debug("Total : " + stopWatch.getNanoTime() / 1000000 + " millis");
-        }
 
-        if (BooleanUtils.isTrue(logMetrics)) {
-            List<Long> top10 = new ArrayList<>();
+        if (BooleanUtils.isTrue(logPerformance)) {
+            logger.debug("----------pipeline performance-----------------");
+            Long pipelineTotalNanos = stopWatch.getNanoTime();
+            Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
+            logger.debug("Total : " + pipelineTotalMillis + " millis");
 
             for (Map.Entry<String, StepMetrics> entry : context.metricsPerStep.entrySet()) {
-                logger.debug("Metrics for " + entry.getKey() + " : " + entry.getValue());
+                double pct = (entry.getValue().runTimeNanos.getMean() / pipelineTotalNanos) * 100;
+                String message = entry.getKey() + ": " + entry.getValue() + ",pct=" + String.format("%,.2f", pct);
+                logger.debug(message);
             }
         }
     }

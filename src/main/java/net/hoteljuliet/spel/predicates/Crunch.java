@@ -1,27 +1,25 @@
-package net.hoteljuliet.spel.statements;
+package net.hoteljuliet.spel.predicates;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.statements.StatementStep;
 import redempt.crunch.CompiledExpression;
 
 import java.util.List;
 import java.util.Optional;
 
-public class Crunch extends StatementStep {
+public class Crunch extends PredicateStep {
 
-    private final String dest;
     private final String expression;
     private final List<String> variables;
 
     private final CompiledExpression compiledExpression;
 
     @JsonCreator
-    public Crunch(@JsonProperty(value = "dest", required = true) String dest,
-                  @JsonProperty(value = "exp", required = true) String expression,
+    public Crunch(@JsonProperty(value = "exp", required = true) String expression,
                   @JsonProperty(value = "variables", required = true) List<String> variables) {
-        this.dest = dest;
         this.expression = expression;
         this.variables = variables;
         compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
@@ -50,7 +48,6 @@ public class Crunch extends StatementStep {
         }
 
         double result = compiledExpression.evaluate(vars);
-        context.addField(dest, result);
-        return COMMAND_NEITHER;
+        return (result == 1.0) ? COMMAND_TRUE : COMMAND_FALSE;
     }
 }

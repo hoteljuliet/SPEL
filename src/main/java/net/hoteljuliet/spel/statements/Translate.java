@@ -24,8 +24,8 @@ public class Translate extends StatementStep {
 
         if (context.hasField(source)) {
             String value = context.getField(source);
-            if (dict.containsKey(value)) {
-                String translation = dict.get(value);
+            String translation = dict.get(value);
+            if (translation != null) {
                 context.replaceFieldValue(source, translation);
             } else {
                 context.replaceFieldValue(source, defaultValue);

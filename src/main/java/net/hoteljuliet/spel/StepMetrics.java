@@ -22,17 +22,17 @@ public class StepMetrics {
 
     @Override
     public String toString() {
-        ToStringBuilder toStringBuilder = new ToStringBuilder(this);
-        toStringBuilder.append("evalTrue", evalTrue.longValue());
-        toStringBuilder.append("evalFalse", evalTrue.longValue());
-        toStringBuilder.append("success", success.longValue());
-        toStringBuilder.append("missingField", missingField.longValue());
-        toStringBuilder.append("exceptionThrown", exceptionThrown.longValue());
-        toStringBuilder.append("softFailure", softFailure.longValue());
-        toStringBuilder.append("runTimeNanos (Mean)", runTimeNanos.getMean());
-        toStringBuilder.append("runTimeNanos (Min)", runTimeNanos.getMin());
-        toStringBuilder.append("runTimeNanos (Max)", runTimeNanos.getMax());
-        toStringBuilder.append("exceptionsCounter", exceptionsCounter.toString());
-        return toStringBuilder.build();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("evalTrue: ").append(evalTrue.longValue());
+        stringBuilder.append(", evalFalse: ").append(evalTrue.longValue());
+        stringBuilder.append(", success: ").append(success.longValue());
+        stringBuilder.append(", missingField: ").append(missingField.longValue());
+        stringBuilder.append(", exceptionThrown: ").append(exceptionThrown.longValue());
+        stringBuilder.append(", softFailure: ").append(softFailure.longValue());
+        stringBuilder.append(", runTimeNanos (Mean): ").append(runTimeNanos.getMean());
+        stringBuilder.append(", runTimeNanos (Min): ").append(runTimeNanos.getMin());
+        stringBuilder.append(", runTimeNanos (Max): ").append(runTimeNanos.getMax());
+        stringBuilder.append(", exceptionsCounter: ").append(exceptionsCounter.toString());
+        return stringBuilder.toString();
     }
 }

@@ -10,14 +10,15 @@ import net.objecthunter.exp4j.Expression;
 
 import java.util.*;
 
-public class Compare extends PredicateStep {
+// TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
+public class Math extends PredicateStep {
 
     private String expression;
     private ThreadLocal<Expression> mathExpression;
     private final List<String> variables;
 
     @JsonCreator
-    public Compare(@JsonProperty(value = "exp", required = true) String expression) {
+    public Math(@JsonProperty(value = "exp", required = true) String expression) {
         this.expression = expression;
         variables = SpelUtils.findVariables(expression);
 
@@ -45,9 +46,7 @@ public class Compare extends PredicateStep {
         }
 
         mathExpression.get().setVariables(variablesMap);
-        Boolean retVal;
         Double result = mathExpression.get().evaluate();
-        retVal = (result == 1) ? true : false;
-        return Optional.of(retVal);
+        return (result == 1.0) ? COMMAND_TRUE : COMMAND_FALSE;
     }
 }
