@@ -4,6 +4,9 @@ logTiming: true
 logContext: true
 logMetrics: true
 config:
+  - add-i: {dest: kvString, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
+  - key-value: {source: kvString, delimiter: ',', separator: '=',  dest: kvMap}
+
   - now: {dest: "now1", to: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
   - now: {dest: "now2", to: "unix_ms", zone: Z}
   - now: {dest: "now3", to: "unix_s", zone: Z}
@@ -12,6 +15,7 @@ config:
   - add-i: {dest: jsonListString, value: '[ "this", "that" ]'}
   - json-list: {source: jsonListString, dest: jsonListed}
   - as-list: {sources: [now1, now2, now3], dest: list1}
+  - append: {source: jsonMapString, dest: list1}
   - add-i: {dest: "a.a", value: 1.0}
   - add-i: {dest: "z.z", value: 1.0}
   - math: {dest: "mathResult", exp: "{{a.a}} + {{z.z}}"}

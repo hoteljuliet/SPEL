@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class AsList extends StatementStep {
 
-    private java.util.List<String> sources;
+    private List<String> sources;
     private String dest;
     @JsonCreator
     public AsList(@JsonProperty(value = "sources", required = true) java.util.List<String> sources,

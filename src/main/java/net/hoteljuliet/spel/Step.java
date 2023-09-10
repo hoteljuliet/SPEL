@@ -1,17 +1,10 @@
 package net.hoteljuliet.spel;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.LongAdder;
 
 public abstract class Step implements Command {
-
-    protected static final Logger logger = LoggerFactory.getLogger(Step.class);
 
     protected StopWatch stopWatch = new StopWatch();
 
@@ -19,6 +12,10 @@ public abstract class Step implements Command {
 
     protected String name;
 
+    /**
+     * Called before a Step executes, mostly for metric updates
+     * @param context
+     */
     public void before(Context context) {
         if (!context.metricsPerStep.containsKey(name)) {
             context.metricsPerStep.put(name, new StepMetrics());
@@ -27,6 +24,11 @@ public abstract class Step implements Command {
         stopWatch.start();
     }
 
+    /**
+     * Called after a Step executes, mostly for metric updates
+     * @param evaluation
+     * @param context
+     */
     public void after(Optional<Boolean> evaluation, Context context) {
         stopWatch.stop();
         context.getMetrics(name).runTimeNanos.addValue((double)stopWatch.getNanoTime());
@@ -40,6 +42,13 @@ public abstract class Step implements Command {
         }
     }
 
+    /**
+     * Step has an execute to make behavior for all other Steps consistent - derived classes just implement doExecute(),
+     * while the base classes define before, after, and exception handling.
+     * @param context
+     * @return
+     * @throws Exception
+     */
     @Override
     public final Optional<Boolean> execute(Context context) throws Exception {
         Optional<Boolean> retVal = COMMAND_NEITHER;
@@ -57,6 +66,12 @@ public abstract class Step implements Command {
         return retVal;
     }
 
+    /**
+     * Behavior deferred to derived classes
+     * @param t
+     * @param context
+     * @return
+     */
     protected abstract Optional<Boolean> handleException(Throwable t, Context context);
 
     public String getName() {

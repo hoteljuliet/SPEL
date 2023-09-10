@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class JsonList extends StatementStep {
@@ -32,7 +30,6 @@ public class JsonList extends StatementStep {
             String value = context.getField(source);
             Object mappedValue = objectMapper.readValue(value, List.class);
             context.addField(dest, mappedValue);
-
         }
         else {
             context.missingField(name);

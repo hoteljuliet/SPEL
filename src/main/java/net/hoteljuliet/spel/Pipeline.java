@@ -15,7 +15,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Pipeline implements Serializable {
+public class Pipeline {
+
     public List<Step> getSteps() {
         return steps;
     }
@@ -60,7 +61,9 @@ public class Pipeline implements Serializable {
 
         context.initializeMetrics(steps);
 
-        // TODO: implement or use a watchdog - see Apache and Sawmill - Watchdog watchdog;
+        // TODO: implement or use a watchdog - see Apache and Sawmill -
+
+        Watchdog watchdog;
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
