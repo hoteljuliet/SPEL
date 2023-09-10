@@ -33,3 +33,4 @@ This project was started after years of great experience working with (Logzio Sa
 - add a command line testing environment, like a shell?
 - look into other DSLs/ELs like SawMill, https://github.com/google/cel-spec, and https://docs.spring.io/spring-framework/docs/3.0.x/reference/expressions.html
 - looking into DQ libraries like https://aws.amazon.com/blogs/big-data/test-data-quality-at-scale-with-deequ/
+- 
