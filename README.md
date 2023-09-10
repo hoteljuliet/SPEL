@@ -1,11 +1,13 @@
 # SPEL
-A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing
+A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing.
 
 ## Inspiration
 This project was started after years of great experience working with (Logzio Sawmill)[https://github.com/logzio/sawmill], which is an awesome project and worth checking out.
 
 ## Design rules:
-- #1 keep everything fast!
+- #1 keep everything fast! steps are measured in nanos, and a decent sized pipeline should run in double-digit millis.
+- #2 minimal boilerplate in the actual steps, use OO + Jackson
+- #3 i'll think of something
 - as much as possible, it should look like a bash script in yaml format
 - keep the names small
 - keep the naming of parameters consistent and simple: source, dest, to, from, dict, list
@@ -20,6 +22,7 @@ This project was started after years of great experience working with (Logzio Sa
 - 
 
 # TODO
+- rip out exp4j and just use crunch? crunch is A LOT faster, plus has more built-in
 - parse a markdown with yaml blocks
 - the ability to serialize and restore the entire pipeline to/from a b64 string
 - benchmark tests
