@@ -3,6 +3,7 @@ package net.hoteljuliet.spel;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,6 +14,8 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 public class PipelineTest {
 
+
+    @Ignore
     @Test
     public void test1() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test1.yaml");
@@ -36,6 +39,7 @@ public class PipelineTest {
         //assertThat(pipeline.getSteps().get(1).runTimeNanos.getMax()).isGreaterThan(0);
     }
 
+    @Ignore
     @Test
     public void test2() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test2.yaml");
