@@ -5,10 +5,12 @@ A DSL/EL designed for json transforms, configurable business logic, and appropri
 This project was started after years of great experience working with (Logzio Sawmill)[https://github.com/logzio/sawmill], which is an awesome project and worth checking out.
 
 ## Design rules:
+- #1 keep everything fast!
+- as much as possible, it should look like a bash script in yaml format
 - keep the names small
 - keep the naming of parameters consistent and simple: source, dest, to, from, dict, list
-- when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/fauilure
-- make more, smaller steps. < 50 lines each is normal.
+- when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/failure
+- make more, smaller steps vs bigger ones with lots of options. ~50 lines for a step is normal/average.
 - use jackson annotations for all parsing rules, optional fields, etc
 - https://en.wikipedia.org/wiki/Principle_of_least_astonishment
 - 
@@ -18,6 +20,7 @@ This project was started after years of great experience working with (Logzio Sa
 - 
 
 # TODO
+- parse a markdown with yaml blocks
 - the ability to serialize and restore the entire pipeline to/from a b64 string
 - benchmark tests
 - timing performance analysis, this must be fast!
