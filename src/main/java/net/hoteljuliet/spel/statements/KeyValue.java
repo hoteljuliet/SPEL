@@ -29,6 +29,12 @@ public class KeyValue extends StatementStep {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        // TODO: re-implements, this is taking 10 ms!
+        //  - add-i: {dest: kvString, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
+        //  - key-value: {source: kvString, delimiter: ',', separator: '=',  dest: kvMap}
+        //  key-value2 : 10997831 nanos
+
         if (context.hasField(source)) {
             String value = context.getField(source);
 

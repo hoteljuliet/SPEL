@@ -7,32 +7,35 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.MathExpression;
 import net.hoteljuliet.spel.SpelUtils;
 import net.objecthunter.exp4j.Expression;
+import redempt.crunch.CompiledExpression;
 
 import java.util.*;
 
-public class Math extends StatementStep {
+public class Crunch extends StatementStep {
 
-    // TODO: consider migraating from exp4j to Crunch: https://github.com/Redempt/Crunch
-    private String dest;
-    private String expression;
-    private ThreadLocal<Expression> mathExpression;
+    private final String dest;
+    private final String expression;
     private final List<String> variables;
 
+    private final CompiledExpression compiledExpression;
+
     @JsonCreator
-    public Math(@JsonProperty(value = "dest", required = true) String dest,
-                @JsonProperty(value = "exp", required = true) String expression) {
+    public Crunch(@JsonProperty(value = "dest", required = true) String dest,
+                  @JsonProperty(value = "exp", required = true) String expression,
+                  @JsonProperty(value = "variables", required = true) List<String> variables) {
         this.dest = dest;
         this.expression = expression;
-        variables = SpelUtils.findVariables(expression);
-
-        String replacedExpression = expression.replaceAll("(\\{\\{|\\}\\})", "");
-        mathExpression = MathExpression.get(replacedExpression, new HashSet<>(variables));
+        this.variables = variables;
+        compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Map<String, Double> variablesMap = new HashMap<>();
-        for (String variable : variables) {
+        double[] vars = new double[variables.size()];
+
+        for (int i = 0; i < vars.length; i++) {
+            String variable = variables.get(i);
+
             if (!context.hasField(variable)) {
                 context.missingField(name);
             }
@@ -43,13 +46,12 @@ public class Math extends StatementStep {
                     context.softFailure(name);
                 }
                 else {
-                    variablesMap.put(variable, value);
+                    vars[i] = value;
                 }
             }
         }
 
-        mathExpression.get().setVariables(variablesMap);
-        Double result = mathExpression.get().evaluate();
+        double result = compiledExpression.evaluate(vars);
         context.addField(dest, result);
         return COMMAND_NEITHER;
     }

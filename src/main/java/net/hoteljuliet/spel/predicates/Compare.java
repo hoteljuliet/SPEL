@@ -8,16 +8,13 @@ import net.hoteljuliet.spel.MathExpression;
 import net.hoteljuliet.spel.SpelUtils;
 import net.objecthunter.exp4j.Expression;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Compare extends PredicateStep {
 
     private String expression;
     private ThreadLocal<Expression> mathExpression;
-    private final Set<String> variables;
+    private final List<String> variables;
 
     @JsonCreator
     public Compare(@JsonProperty(value = "exp", required = true) String expression) {
@@ -25,7 +22,7 @@ public class Compare extends PredicateStep {
         variables = SpelUtils.findVariables(expression);
 
         String replacedExpression = expression.replaceAll("(\\{\\{|\\}\\})", "");
-        mathExpression = MathExpression.get(replacedExpression, variables);
+        mathExpression = MathExpression.get(replacedExpression, new HashSet<>(variables));
     }
 
     @Override

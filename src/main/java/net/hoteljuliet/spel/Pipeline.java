@@ -9,6 +9,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -62,8 +63,7 @@ public class Pipeline {
         context.initializeMetrics(steps);
 
         // TODO: implement or use a watchdog - see Apache and Sawmill -
-
-        Watchdog watchdog;
+        // TODO: Watchdog watchdog;
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -96,6 +96,8 @@ public class Pipeline {
         }
 
         if (BooleanUtils.isTrue(logMetrics)) {
+            List<Long> top10 = new ArrayList<>();
+
             for (Map.Entry<String, StepMetrics> entry : context.metricsPerStep.entrySet()) {
                 logger.debug("Metrics for " + entry.getKey() + " : " + entry.getValue());
             }

@@ -1,12 +1,11 @@
 stopOnFailure: true
 logStackTrace: true
 logTiming: true
-logContext: true
+logContext: false
 logMetrics: true
 config:
   - add-i: {dest: kvString, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
   - key-value: {source: kvString, delimiter: ',', separator: '=',  dest: kvMap}
-
   - now: {dest: "now1", to: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
   - now: {dest: "now2", to: "unix_ms", zone: Z}
   - now: {dest: "now3", to: "unix_s", zone: Z}
@@ -18,7 +17,8 @@ config:
   - append: {source: jsonMapString, dest: list1}
   - add-i: {dest: "a.a", value: 1.0}
   - add-i: {dest: "z.z", value: 1.0}
-  - math: {dest: "mathResult", exp: "{{a.a}} + {{z.z}}"}
+  - math: {dest: "mathResult_exp4j", exp: "{{a.a}} + {{z.z}}"}
+  - crunch: {dest: "mathResult_crunch", exp: "$1 + $2", variables: ["a.a", "z.z"]}
   - add-i: {dest: "user", value: "${USER}"}
   - add-m: {dest: "copy", exp: "{{a.a}}"}
   - add-i: {dest: "a.b", value: 2.0}
