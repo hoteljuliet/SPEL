@@ -112,7 +112,7 @@ public class Pipeline implements Serializable {
         stopWatch.start();
         for (Step step : steps) {
             if (BooleanUtils.isTrue(logPerformance)) {
-                logger.debug("Context before " + step.getName() + ": " + context.toString());
+                logger.debug("Context before " + step.getName() + ": " + context);
             }
             try {
                 step.execute(context);

@@ -3,15 +3,25 @@ package net.hoteljuliet.spel;
 import org.apache.commons.lang3.time.StopWatch;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public abstract class Step implements Command, Serializable {
 
     protected transient StopWatch stopWatch = new StopWatch();
 
+    /**
+     *
+     * @param context
+     * @return
+     * @throws Exception
+     */
     public abstract Optional<Boolean> doExecute(Context context) throws Exception;
 
+    /**
+     * Called when restoring from a snapshot. any transient fields should be re-initialized using other fields that are serializable.
+     * I.e., after serialization it will be as if the constructor was called, but ignoring transient fields. This method will complete the
+     * object's construction.
+     */
     public void restore() {
         stopWatch = new StopWatch();
     }

@@ -22,6 +22,8 @@ This project was started after years of great experience working with (Logzio Sa
 - 
 
 # TODO
+- add a command line testing environment, like a shell where users get an empty context but can run commands that are parsed and run as they are entered
+- documentation
 - move all restore() methods to just below the constructor - will be more obvious if/when an error is made
 - move all metrics tracking into the pipeline object (will make serialization simpler, just the pipeline)
 - rip out exp4j and just use crunch? crunch is A LOT faster, plus has more built-in
@@ -38,7 +40,6 @@ This project was started after years of great experience working with (Logzio Sa
   - output rare and common values for strings
 - simplify everything
 - add new steps
-- add a command line testing environment, like a shell?
 - look into other DSLs/ELs like SawMill, https://github.com/google/cel-spec, and https://docs.spring.io/spring-framework/docs/3.0.x/reference/expressions.html
 - looking into DQ libraries like https://aws.amazon.com/blogs/big-data/test-data-quality-at-scale-with-deequ/
 - 
