@@ -22,13 +22,11 @@ public class Context implements Map<String, Object> {
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private Map<String, Object> backing;
 
-    public Map<String, StepMetrics> metricsPerStep = new HashMap<>();
+    public Map<String, StepMetrics> metricsPerStep;
 
     public void exceptionThrown(String name, Throwable t) {
         logger.debug("Exception in " + this.getClass().getSimpleName(), t);
         metricsPerStep.get(name).exceptionThrown.increment();
-
-
     }
 
     public void softFailure(String name) {
@@ -60,10 +58,12 @@ public class Context implements Map<String, Object> {
     }
 
     public Context() {
+        metricsPerStep = new HashMap<>();
         this.backing = new HashMap<>();
     }
 
     public Context(Map<String, Object> backing) {
+        this();
         this.backing = backing;
     }
 
