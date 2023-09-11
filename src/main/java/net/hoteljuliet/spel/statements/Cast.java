@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.FieldType;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class Cast extends StatementStep {
+public class Cast extends StatementStep implements Serializable {
 
     private String source;
     private FieldType fieldType;

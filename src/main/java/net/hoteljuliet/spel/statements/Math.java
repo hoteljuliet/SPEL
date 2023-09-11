@@ -8,10 +8,11 @@ import net.hoteljuliet.spel.MathExpression;
 import net.hoteljuliet.spel.SpelUtils;
 import net.objecthunter.exp4j.Expression;
 
+import java.io.Serializable;
 import java.util.*;
 
 // TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
-public class Math extends StatementStep {
+public class Math extends StatementStep implements Serializable {
 
     private String dest;
     private String expression;

@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class In extends PredicateStep {
+public class In extends PredicateStep implements Serializable {
 
     private String source;
     private List<Object> list;

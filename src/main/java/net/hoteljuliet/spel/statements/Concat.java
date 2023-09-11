@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Concat extends StatementStep {
+public class Concat extends StatementStep implements Serializable {
 
     private List<String> sources;
     private String dest;

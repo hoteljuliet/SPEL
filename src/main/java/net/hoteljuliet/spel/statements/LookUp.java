@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class LookUp extends StatementStep {
+public class LookUp extends StatementStep implements Serializable {
     private final List<String> sources;
     private final List<String> dests;
     private final String defaultValue;

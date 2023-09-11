@@ -5,11 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Matches extends PredicateStep {
+public class Matches extends PredicateStep implements Serializable {
 
     private String source;
     private String regex;

@@ -4,15 +4,17 @@ import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class If extends PredicateStep {
+public class If extends PredicateStep implements Serializable {
 
-    public Step predicate;
     public List<Step> onTrue;
     public List<Step> onFalse;
+
+    public Step predicate;
 
     public If() {
         onTrue = new ArrayList<>();
@@ -35,5 +37,16 @@ public class If extends PredicateStep {
             }
         }
         return Command.COMMAND_NEITHER;
+    }
+
+    public void restore() {
+        super.restore();
+        predicate.restore();
+        for (Step s : onTrue) {
+            s.restore();
+        }
+        for (Step s : onFalse) {
+            s.restore();
+        }
     }
 }

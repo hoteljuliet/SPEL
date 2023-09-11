@@ -3,10 +3,11 @@ package net.hoteljuliet.spel.predicates;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Or extends ComplexPredicateStep {
+public class Or extends ComplexPredicateStep implements Serializable {
 
     public Or() {
         subPredicate = new ArrayList<>();

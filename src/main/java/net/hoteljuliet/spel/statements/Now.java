@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class Now extends StatementStep {
+public class Now extends StatementStep implements Serializable {
     private String dest;
     private String to;
 
     private String zone;
-    private DateTimeFormatter toFormatter;
+    private transient DateTimeFormatter toFormatter;
 
     @JsonCreator
     public Now(@JsonProperty(value = "dest", required = true) String dest,
@@ -48,5 +49,16 @@ public class Now extends StatementStep {
             context.addField(dest, reformatted);
         }
         return COMMAND_NEITHER;
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+        if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
+            toFormatter = null;
+        }
+        else {
+            toFormatter = DateTimeFormatter.ofPattern(to);
+        }
     }
 }

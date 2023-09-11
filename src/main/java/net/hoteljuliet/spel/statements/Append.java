@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-public class Append extends StatementStep {
+public class Append extends StatementStep implements Serializable {
     private String source;
     private String dest;
     @JsonCreator

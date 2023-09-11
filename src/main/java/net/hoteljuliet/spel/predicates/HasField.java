@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.Optional;
 
-public class HasField extends PredicateStep {
+public class HasField extends PredicateStep implements Serializable {
     private String source;
     @JsonCreator
     public HasField(@JsonProperty(value = "source", required = true) String source) {

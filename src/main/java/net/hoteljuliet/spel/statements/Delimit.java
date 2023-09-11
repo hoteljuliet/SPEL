@@ -8,10 +8,11 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Delimit extends StatementStep {
+public class Delimit extends StatementStep implements Serializable {
     private String source;
     private Character delimiter;
     private Character quote;

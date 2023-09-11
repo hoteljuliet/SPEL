@@ -16,6 +16,9 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
+
+    // TODO: move all metrics tracking into the pipeline object
+
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private Map<String, Object> backing;
 

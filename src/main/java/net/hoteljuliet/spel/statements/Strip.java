@@ -6,10 +6,11 @@ import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
 import org.apache.commons.codec.binary.Base64;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class Strip extends StatementStep {
+public class Strip extends StatementStep implements Serializable {
     private String source;
 
     @JsonCreator

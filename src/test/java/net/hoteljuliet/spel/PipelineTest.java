@@ -14,6 +14,20 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 public class PipelineTest {
 
+    @Test
+    public void test_serializable() throws IOException {
+        Pipeline pipeline = Pipeline.fromResource("/test3.yaml");
+        pipeline.build();
+
+        Context context = new Context();
+        pipeline.execute(context);
+
+        String snapShotB64 = pipeline.snapshot();
+
+        Pipeline restored = Pipeline.restore(snapShotB64);
+
+        restored.execute(context);
+    }
 
     @Ignore
     @Test

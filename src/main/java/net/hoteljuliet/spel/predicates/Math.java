@@ -8,10 +8,11 @@ import net.hoteljuliet.spel.MathExpression;
 import net.hoteljuliet.spel.SpelUtils;
 import net.objecthunter.exp4j.Expression;
 
+import java.io.Serializable;
 import java.util.*;
 
 // TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
-public class Math extends PredicateStep {
+public class Math extends PredicateStep implements Serializable {
 
     private String expression;
     private ThreadLocal<Expression> mathExpression;

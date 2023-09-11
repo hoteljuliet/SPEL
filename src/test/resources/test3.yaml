@@ -4,9 +4,13 @@ logPerformance: true
 
 config:
 
+  - if:
+    at-rate: {percentage: 5}
+    then:
+      - add-i: {dest: "fivePct", value: true}
+
   - add-i: {dest: translate1, value: '404'}
   - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"} }
-
 
   - add-i: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
   - key-value: {source: kvString1, delimiter: ',', separator: '=',  dest: kvMap1}

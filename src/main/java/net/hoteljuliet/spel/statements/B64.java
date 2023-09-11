@@ -4,16 +4,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.SpelUtils;
 import org.apache.commons.codec.binary.Base64;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class B64 extends StatementStep {
+public class B64 extends StatementStep implements Serializable {
     private String source;
     private String dest;
     private Boolean encode;
-    protected Base64 base64 = new Base64();
+    private transient Base64 base64;
     @JsonCreator
     public B64(@JsonProperty(value = "source", required = true) String source,
                @JsonProperty(value = "dest", required = true) String dest,
@@ -21,6 +23,7 @@ public class B64 extends StatementStep {
         this.source = source;
         this.dest = dest;
         this.encode = encode;
+        this.base64 = new Base64();
     }
 
     @Override
@@ -39,5 +42,11 @@ public class B64 extends StatementStep {
             context.missingField(name);
         }
         return Command.COMMAND_NEITHER;
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+        this.base64 = new Base64();
     }
 }

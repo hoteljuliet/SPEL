@@ -4,16 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class Date extends StatementStep {
+public class Date extends StatementStep implements Serializable {
     private String source;
     private String dest;
 
-    private DateTimeFormatter fromFormatter;
-    private DateTimeFormatter toFormatter;
+    private String from;
+    private String to;
+
+    private transient DateTimeFormatter fromFormatter;
+    private transient DateTimeFormatter toFormatter;
 
     @JsonCreator
     public Date(@JsonProperty(value = "source", required = true) String source,
@@ -22,6 +26,8 @@ public class Date extends StatementStep {
                 @JsonProperty(value = "to", required = true) String to) {
         this.source = source;
         this.dest = dest;
+        this.from = from;
+        this.to = to;
         fromFormatter = DateTimeFormatter.ofPattern(from);
         toFormatter = DateTimeFormatter.ofPattern(to);
     }
@@ -40,5 +46,12 @@ public class Date extends StatementStep {
         }
 
         return COMMAND_NEITHER;
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+        fromFormatter = DateTimeFormatter.ofPattern(from);
+        toFormatter = DateTimeFormatter.ofPattern(to);
     }
 }

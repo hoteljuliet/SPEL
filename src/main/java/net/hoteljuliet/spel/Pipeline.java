@@ -4,18 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-public class Pipeline {
+public class Pipeline implements Serializable {
 
     public List<Step> getSteps() {
         return steps;
@@ -25,6 +25,7 @@ public class Pipeline {
 
     private static final ObjectMapper objectMapper =
             new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
+
     public static Pipeline fromFile(String path) throws IOException {
         File file = new File(path);
         FileReader fileReader = new FileReader(file);
@@ -38,6 +39,52 @@ public class Pipeline {
     public static Pipeline fromResource(String path) throws IOException {
         return objectMapper.readValue(Pipeline.class.getResourceAsStream(path), Pipeline.class);
     }
+
+    public String snapshot() {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = null;
+
+        try {
+            objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.flush();
+            return Base64.encodeBase64String(byteArrayOutputStream.toByteArray());
+        }
+        catch(Exception ex) {
+            logger.error("exception in Pipeline snapshot", ex);
+            throw new RuntimeException(ex);
+        }
+        finally {
+            IOUtils.closeQuietly(byteArrayOutputStream, objectOutputStream);
+        }
+    }
+
+    public static Pipeline restore(String snapshot) {
+        ByteArrayInputStream byteArrayInputStream = null;
+        ObjectInputStream objectInputStream = null;
+        try {
+            byte[] bytes = Base64.decodeBase64(snapshot);
+            byteArrayInputStream = new ByteArrayInputStream(bytes);
+            objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            Pipeline pipeline = (Pipeline) objectInputStream.readObject();
+            pipeline.restore();
+            return pipeline;
+        }
+        catch(Exception ex) {
+            logger.error("exception in Pipeline snapshot", ex);
+            throw new RuntimeException(ex);
+        }
+        finally {
+            IOUtils.closeQuietly(byteArrayInputStream, objectInputStream);
+        }
+    }
+
+    public void restore() {
+        for (Step s : steps) {
+            s.restore();
+        }
+    }
+
     public List<Map<String, Object>> config;
     private List<Step> steps;
     public Boolean stopOnFailure;
@@ -67,7 +114,6 @@ public class Pipeline {
             if (BooleanUtils.isTrue(logPerformance)) {
                 logger.debug("Context before " + step.getName() + ": " + context.toString());
             }
-
             try {
                 step.execute(context);
             }

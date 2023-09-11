@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
-public class Rename extends StatementStep {
+public class Rename extends StatementStep implements Serializable {
 
     private Map<String, String> dict;
     @JsonCreator

@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class JsonList extends StatementStep {
+public class JsonList extends StatementStep implements Serializable {
 
     private String source;
     private String dest;

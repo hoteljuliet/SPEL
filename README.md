@@ -22,6 +22,8 @@ This project was started after years of great experience working with (Logzio Sa
 - 
 
 # TODO
+- move all restore() methods to just below the constructor - will be more obvious if/when an error is made
+- move all metrics tracking into the pipeline object (will make serialization simpler, just the pipeline)
 - rip out exp4j and just use crunch? crunch is A LOT faster, plus has more built-in
 - parse a markdown with yaml blocks
 - the ability to serialize and restore the entire pipeline to/from a b64 string

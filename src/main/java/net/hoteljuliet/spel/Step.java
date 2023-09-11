@@ -2,13 +2,19 @@ package net.hoteljuliet.spel;
 
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public abstract class Step implements Command {
+public abstract class Step implements Command, Serializable {
 
-    protected StopWatch stopWatch = new StopWatch();
+    protected transient StopWatch stopWatch = new StopWatch();
 
     public abstract Optional<Boolean> doExecute(Context context) throws Exception;
+
+    public void restore() {
+        stopWatch = new StopWatch();
+    }
 
     protected String name;
 

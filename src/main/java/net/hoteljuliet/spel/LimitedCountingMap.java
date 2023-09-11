@@ -31,4 +31,8 @@ public class LimitedCountingMap {
             map.put(key, count);
         }
     }
+
+    public HashMap<String, LongAdder> getMap() {
+        return map;
+    }
 }

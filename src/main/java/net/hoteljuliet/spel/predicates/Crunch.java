@@ -7,15 +7,16 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.statements.StatementStep;
 import redempt.crunch.CompiledExpression;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Crunch extends PredicateStep {
+public class Crunch extends PredicateStep implements Serializable {
 
     private final String expression;
     private final List<String> variables;
 
-    private final CompiledExpression compiledExpression;
+    private transient CompiledExpression compiledExpression;
 
     @JsonCreator
     public Crunch(@JsonProperty(value = "exp", required = true) String expression,
@@ -49,5 +50,10 @@ public class Crunch extends PredicateStep {
 
         double result = compiledExpression.evaluate(vars);
         return (result == 1.0) ? COMMAND_TRUE : COMMAND_FALSE;
+    }
+
+    @Override
+    public void restore() {
+        this.compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
     }
 }

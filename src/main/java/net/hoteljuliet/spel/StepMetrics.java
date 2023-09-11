@@ -32,7 +32,7 @@ public class StepMetrics {
         stringBuilder.append(", runTimeNanos (Mean): ").append(runTimeNanos.getMean());
         stringBuilder.append(", runTimeNanos (Min): ").append(runTimeNanos.getMin());
         stringBuilder.append(", runTimeNanos (Max): ").append(runTimeNanos.getMax());
-        stringBuilder.append(", exceptionsCounter: ").append(exceptionsCounter.toString());
+        stringBuilder.append(", exceptionsCounter: ").append(exceptionsCounter.getMap());
         return stringBuilder.toString();
     }
 }

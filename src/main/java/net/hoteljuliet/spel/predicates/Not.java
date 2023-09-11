@@ -3,10 +3,11 @@ package net.hoteljuliet.spel.predicates;
 import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class Not extends ComplexPredicateStep {
+public class Not extends ComplexPredicateStep implements Serializable {
 
     public Not() {
         subPredicate = new ArrayList<>();

@@ -4,22 +4,26 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-public class KeyedHash extends StatementStep {
+public class KeyedHash extends StatementStep implements Serializable {
     private String source;
     private String dest;
     private Integer iterations;
     private String salt;
     private String password;
 
-    private javax.crypto.Mac mac;
-    protected org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
+    private transient Mac mac;
+    private transient Base64 base64;
 
     @JsonCreator
     public KeyedHash(@JsonProperty(value = "source", required = true) String source,
@@ -34,6 +38,7 @@ public class KeyedHash extends StatementStep {
         this.password = password;
 
         try {
+            this.base64 = new Base64();
             PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
@@ -59,6 +64,22 @@ public class KeyedHash extends StatementStep {
         }
 
         return COMMAND_NEITHER;
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+        try {
+            this.base64 = new Base64();
+            PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
+            mac = javax.crypto.Mac.getInstance("HmacSHA256");
+            mac.init(secretKey);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
 

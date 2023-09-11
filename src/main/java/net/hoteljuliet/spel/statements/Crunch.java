@@ -6,16 +6,16 @@ import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
 import redempt.crunch.CompiledExpression;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Crunch extends StatementStep {
+public class Crunch extends StatementStep implements Serializable {
 
     private final String dest;
     private final String expression;
     private final List<String> variables;
-
-    private final CompiledExpression compiledExpression;
+    private transient CompiledExpression compiledExpression;
 
     @JsonCreator
     public Crunch(@JsonProperty(value = "dest", required = true) String dest,
@@ -52,5 +52,11 @@ public class Crunch extends StatementStep {
         double result = compiledExpression.evaluate(vars);
         context.addField(dest, result);
         return COMMAND_NEITHER;
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+        this.compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
     }
 }

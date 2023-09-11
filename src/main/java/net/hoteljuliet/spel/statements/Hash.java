@@ -4,23 +4,29 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Optional;
-public class Hash extends StatementStep {
+public class Hash extends StatementStep implements Serializable {
     private String source;
     private String dest;
-    private MessageDigest messageDigest;
-    protected org.apache.commons.codec.binary.Base64 base64 = new org.apache.commons.codec.binary.Base64();
+
+    private String algo;
+    private transient MessageDigest messageDigest;
+    private transient Base64 base64;
     @JsonCreator
     public Hash(@JsonProperty(value = "source", required = true) String source,
                 @JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "algo", required = true) String algo) {
         this.source = source;
         this.dest = dest;
+        this.algo = algo;
         this.messageDigest = DigestUtils.getDigest(algo);
+        this.base64 = new Base64();
     }
 
     @Override
@@ -36,5 +42,12 @@ public class Hash extends StatementStep {
             context.missingField(name);
         }
         return COMMAND_NEITHER;
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+        this.messageDigest = DigestUtils.getDigest(algo);
+        this.base64 = new Base64();
     }
 }
