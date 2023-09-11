@@ -22,6 +22,7 @@ This project was started after years of great experience working with (Logzio Sa
 - 
 
 # TODO
+- add expression parsing to crunch, so expressions can be {{a.a + a.b}} and the constructor find/replaces, just like was done for exp4j
 - add a command line testing environment, like a shell where users get an empty context but can run commands that are parsed and run as they are entered
 - documentation
 - move all restore() methods to just below the constructor - will be more obvious if/when an error is made
