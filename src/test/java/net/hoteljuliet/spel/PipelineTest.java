@@ -91,4 +91,18 @@ public class PipelineTest {
         writer.flush();
         System.out.println(writer.toString());
     }
+
+    @Test
+    public void test5() throws Exception {
+        List<String> prefixes = new ArrayList<>();
+        prefixes.add("net.hoteljuliet.spel");
+
+        ApplicationContext.initialize(prefixes);
+
+        ExampleValue exampleValue = new ExampleValue();
+        ApplicationContext.initialize(exampleValue);
+        assertThat(exampleValue.name).isEqualTo("dennis");
+
+    }
+
 }
