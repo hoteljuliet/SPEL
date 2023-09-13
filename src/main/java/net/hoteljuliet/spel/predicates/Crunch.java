@@ -21,6 +21,7 @@ public class Crunch extends PredicateStep implements Serializable {
     @JsonCreator
     public Crunch(@JsonProperty(value = "exp", required = true) String expression,
                   @JsonProperty(value = "variables", required = true) List<String> variables) {
+        super();
         this.expression = expression;
         this.variables = variables;
         compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
@@ -34,13 +35,13 @@ public class Crunch extends PredicateStep implements Serializable {
             String variable = variables.get(i);
 
             if (!context.hasField(variable)) {
-                context.missingField(name);
+                missingField.increment();
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    context.softFailure(name);
+                    softFailure.increment();
                 }
                 else {
                     vars[i] = value;

@@ -21,6 +21,7 @@ public class Now extends StatementStep implements Serializable {
     public Now(@JsonProperty(value = "dest", required = true) String dest,
                @JsonProperty(value = "to", required = true) String to,
                @JsonProperty(value = "zone", required = true) String zone) {
+        super();
         this.dest = dest;
         this.to = to;
         this.zone = zone;
@@ -34,7 +35,6 @@ public class Now extends StatementStep implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
         ZonedDateTime original = ZonedDateTime.now(ZoneId.of(zone));
         if (to.equalsIgnoreCase("unix_ms")) {
             String reformatted = String.valueOf(original.toInstant().toEpochMilli());

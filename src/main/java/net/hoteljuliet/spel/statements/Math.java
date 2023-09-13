@@ -22,6 +22,7 @@ public class Math extends StatementStep implements Serializable {
     @JsonCreator
     public Math(@JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "exp", required = true) String expression) {
+        super();
         this.dest = dest;
         this.expression = expression;
         variables = SpelUtils.findVariables(expression);
@@ -35,20 +36,19 @@ public class Math extends StatementStep implements Serializable {
         Map<String, Double> variablesMap = new HashMap<>();
         for (String variable : variables) {
             if (!context.hasField(variable)) {
-                context.missingField(name);
+                missingField.increment();
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    context.softFailure(name);
+                    softFailure.increment();
                 }
                 else {
                     variablesMap.put(variable, value);
                 }
             }
         }
-
         mathExpression.get().setVariables(variablesMap);
         Double result = mathExpression.get().evaluate();
         context.addField(dest, result);

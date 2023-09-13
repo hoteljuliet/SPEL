@@ -1,7 +1,6 @@
 package net.hoteljuliet.spel;
 
 import com.github.mustachejava.Mustache;
-import com.jayway.jsonpath.JsonPath;
 import net.hoteljuliet.spel.predicates.ComplexPredicateStep;
 import net.hoteljuliet.spel.statements.ComplexStatementStep;
 import org.slf4j.Logger;
@@ -17,48 +16,12 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
 
-    // TODO: move all metrics tracking into the pipeline object
-
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private Map<String, Object> backing;
-
-    public Map<String, StepMetrics> metricsPerStep;
-
-    public void exceptionThrown(String name, Throwable t) {
-        logger.debug("Exception in " + this.getClass().getSimpleName(), t);
-        metricsPerStep.get(name).exceptionThrown.increment();
-    }
-
-    public void softFailure(String name) {
-        metricsPerStep.get(name).softFailure.increment();
-    }
-
-    public void missingField(String name) {
-        metricsPerStep.get(name).missingField.increment();
-    }
-
-    public StepMetrics getMetrics(String name) {
-        return metricsPerStep.get(name);
-    }
-
-    public void initializeMetrics(List<Step> steps) {
-        for (Step step : steps) {
-            if (step instanceof ComplexPredicateStep) {
-                ComplexPredicateStep complexPredicateStep = (ComplexPredicateStep) step;
-                initializeMetrics(complexPredicateStep.subPredicate);
-            }
-            else if (step instanceof ComplexStatementStep) {
-                ComplexStatementStep complexStatementStep = (ComplexStatementStep) step;
-                initializeMetrics(complexStatementStep.subStatements);
-            }
-            else {
-                metricsPerStep.put(step.getName(), new StepMetrics());
-            }
-        }
-    }
+    private List<Step> executedSteps;
 
     public Context() {
-        metricsPerStep = new HashMap<>();
+        executedSteps = new ArrayList<>();
         this.backing = new HashMap<>();
     }
 
@@ -363,5 +326,9 @@ public class Context implements Map<String, Object> {
         mustache.execute(writer, Arrays.asList(docContext));
         writer.flush();
         return writer.toString();
+    }
+
+    public List<Step> getExecutedSteps() {
+        return executedSteps;
     }
 }

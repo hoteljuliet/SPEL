@@ -1,9 +1,10 @@
 package net.hoteljuliet.spel;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.LongAdder;
 
-public class LimitedCountingMap {
+public class LimitedCountingMap implements Serializable {
 
     private final Integer maxSize;
     private final HashMap<String, LongAdder> map;

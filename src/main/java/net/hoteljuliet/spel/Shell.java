@@ -42,7 +42,7 @@ public class Shell {
                         Step step = Parser.parse(node);
                         step.execute(context);
                         System.out.println("-> " + context);
-                        System.out.println("-> Took " + context.getMetrics(step.getName()).lastRunNanos.get() + " nanos");
+                        System.out.println("-> Took " + step.lastRunNanos + " nanos");
                     }
                 }
                 catch(Exception ex) {

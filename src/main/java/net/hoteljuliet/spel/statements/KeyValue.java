@@ -21,6 +21,7 @@ public class KeyValue extends StatementStep implements Serializable {
                     @JsonProperty(value = "delimiter", required = true) String delimiter,
                     @JsonProperty(value = "separator", required = true) String separator,
                     @JsonProperty(value = "dest", required = true) String dest) {
+        super();
         this.source = source;
         this.delimiter = delimiter;
         this.dest = dest;
@@ -40,7 +41,7 @@ public class KeyValue extends StatementStep implements Serializable {
             context.addField(dest, result);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
 
         return COMMAND_NEITHER;

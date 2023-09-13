@@ -10,7 +10,7 @@ import java.util.Optional;
 public class And extends ComplexPredicateStep implements Serializable {
 
     public And() {
-        subPredicate = new ArrayList<>();
+        super();
     }
 
     /**

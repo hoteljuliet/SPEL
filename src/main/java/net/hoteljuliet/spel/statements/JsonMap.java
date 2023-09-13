@@ -13,7 +13,6 @@ public class JsonMap extends StatementStep implements Serializable {
 
     private String source;
     private String dest;
-
     private ObjectMapper objectMapper;
 
     @JsonCreator
@@ -34,9 +33,8 @@ public class JsonMap extends StatementStep implements Serializable {
             context.addField(dest, mappedValue);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
-
         return COMMAND_NEITHER;
     }
 }

@@ -17,10 +17,6 @@ import java.util.Map;
 
 public class Pipeline implements Serializable {
 
-    public List<Step> getSteps() {
-        return steps;
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
 
     private static final ObjectMapper objectMapper =
@@ -41,6 +37,11 @@ public class Pipeline implements Serializable {
     }
 
     public String snapshot() {
+
+        for (Step s : steps) {
+            s.snapshot();
+        }
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = null;
 
@@ -100,10 +101,7 @@ public class Pipeline implements Serializable {
     }
 
     // TODO: consider making this walk the entire graph, not just the top level
-    //
     public void execute(Context context) {
-
-        context.initializeMetrics(steps);
 
         // TODO: implement or use a watchdog - see Apache and Sawmill -
         // TODO: Watchdog watchdog;
@@ -134,15 +132,20 @@ public class Pipeline implements Serializable {
 
         if (BooleanUtils.isTrue(logPerformance)) {
             logger.debug("----------pipeline performance-----------------");
-            Long pipelineTotalNanos = stopWatch.getNanoTime();
             Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
             logger.debug("Total : " + pipelineTotalMillis + " millis");
 
-            for (Map.Entry<String, StepMetrics> entry : context.metricsPerStep.entrySet()) {
+            /* TODO: determine how to collect all metrics, since their in each individual step
+            for (Map.Entry<String, StatementMetrics> entry : context.metricsPerStep.entrySet()) {
                 double pct = (entry.getValue().runTimeNanos.getMean() / pipelineTotalNanos) * 100;
                 String message = entry.getKey() + ": " + entry.getValue() + ",pct=" + String.format("%,.2f", pct);
                 logger.debug(message);
             }
+             */
         }
+    }
+
+    public List<Step> getSteps() {
+        return steps;
     }
 }

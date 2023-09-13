@@ -11,11 +11,20 @@ public enum FieldType {
         public Object convertFrom(Object value) {
             return Longs.tryParse(String.valueOf(value));
         }
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof Integer;
+        }
     },
     LONG {
         @Override
         public Object convertFrom(Object value) {
             return Longs.tryParse(String.valueOf(value));
+        }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof Long;
         }
     },
     FLOAT {
@@ -23,16 +32,31 @@ public enum FieldType {
         public Object convertFrom(Object value) {
             return Doubles.tryParse(String.valueOf(value));
         }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof Float;
+        }
     },
     DOUBLE {
         @Override
         public Object convertFrom(Object value) {
             return Doubles.tryParse(String.valueOf(value)); }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof Double;
+        }
     },
     STRING {
         @Override
         public Object convertFrom(Object value) {
             return String.valueOf(value);
+        }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof String;
         }
     },
     BOOLEAN {
@@ -45,6 +69,11 @@ public enum FieldType {
             } else {
                 return null;
             }
+        }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof Boolean;
         }
     };
 
@@ -63,6 +92,8 @@ public enum FieldType {
     }
 
     public abstract Object convertFrom(Object value);
+
+    public abstract Boolean isInstance(Object value);
 
     public Object convertFrom(Object value, Object defaultValue) {
         return MoreObjects.firstNonNull(convertFrom(value), defaultValue);

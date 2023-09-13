@@ -24,6 +24,7 @@ public class Date extends StatementStep implements Serializable {
                 @JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "from", required = true) String from,
                 @JsonProperty(value = "to", required = true) String to) {
+        super();
         this.source = source;
         this.dest = dest;
         this.from = from;
@@ -42,9 +43,8 @@ public class Date extends StatementStep implements Serializable {
             context.addField(dest, reformatted);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
-
         return COMMAND_NEITHER;
     }
 

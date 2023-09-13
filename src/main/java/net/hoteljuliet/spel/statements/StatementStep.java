@@ -1,9 +1,7 @@
 package net.hoteljuliet.spel.statements;
 
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Pipeline;
 import net.hoteljuliet.spel.Step;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,11 +12,12 @@ public abstract class StatementStep extends Step implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(StatementStep.class);
 
+    public StatementStep() {
+        super();
+    }
+
     @Override
-    protected Optional<Boolean> handleException(Throwable t, Context context) {
-        context.getMetrics(name).exceptionThrown.increment();
-        String rootCase = ExceptionUtils.getRootCauseMessage(t);
-        context.getMetrics(name).exceptionsCounter.put(rootCase);
+    protected Optional<Boolean> onException(Throwable t, Context context) {
         return COMMAND_NEITHER;
     }
 

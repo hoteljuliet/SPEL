@@ -20,6 +20,7 @@ public class B64 extends StatementStep implements Serializable {
     public B64(@JsonProperty(value = "source", required = true) String source,
                @JsonProperty(value = "dest", required = true) String dest,
                @JsonProperty(value = "encode", required = true) Boolean encode) {
+        super();
         this.source = source;
         this.dest = dest;
         this.encode = encode;
@@ -39,7 +40,7 @@ public class B64 extends StatementStep implements Serializable {
             }
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
         return Command.COMMAND_NEITHER;
     }

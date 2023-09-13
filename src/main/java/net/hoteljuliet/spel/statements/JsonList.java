@@ -18,6 +18,7 @@ public class JsonList extends StatementStep implements Serializable {
     @JsonCreator
     public JsonList(@JsonProperty(value = "source", required = true) String source,
                     @JsonProperty(value = "dest", required = true) String dest) {
+        super();
         this.source = source;
         this.dest = dest;
         objectMapper = new ObjectMapper();
@@ -33,7 +34,7 @@ public class JsonList extends StatementStep implements Serializable {
             context.addField(dest, mappedValue);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
 
         return COMMAND_NEITHER;

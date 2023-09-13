@@ -25,6 +25,8 @@ config:
   - json-map: {source: jsonMapString, dest: jsonMapped}
   - add-i: {dest: jsonListString, value: '[ "this", "that" ]'}
   - json-list: {source: jsonListString, dest: jsonListed}
+  - foreach-jsonListed:
+      - hash : {source: "i", dest: "i", algo: "SHA-256"}
   - as-list: {sources: [now1, now2, now3], dest: list1}
   - append: {source: jsonMapString, dest: list1}
   - add-i: {dest: "a.a", value: 1.0}

@@ -11,8 +11,10 @@ import java.util.Optional;
 public class Rename extends StatementStep implements Serializable {
 
     private Map<String, String> dict;
+
     @JsonCreator
     public Rename(@JsonProperty(value = "dict", required = true) Map<String, String> dict) {
+        super();
         this.dict = dict;
     }
 
@@ -26,7 +28,7 @@ public class Rename extends StatementStep implements Serializable {
                 context.addField(rename.getValue(), value);
             }
             else {
-                context.missingField(name);
+                missingField.increment();
             }
         }
 

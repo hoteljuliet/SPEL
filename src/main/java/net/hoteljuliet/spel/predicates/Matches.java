@@ -19,6 +19,7 @@ public class Matches extends PredicateStep implements Serializable {
     @JsonCreator
     public Matches(@JsonProperty(value = "source", required = true) String source,
                    @JsonProperty(value = "regex", required = true) String regex) {
+        super();
         this.source = source;
         this.regex = regex;
         pattern = Pattern.compile(regex);
@@ -39,7 +40,7 @@ public class Matches extends PredicateStep implements Serializable {
                 retVal = COMMAND_FALSE;
             }
         } else {
-            context.softFailure(name);
+            softFailure.increment();
             retVal = COMMAND_FALSE;
         }
 

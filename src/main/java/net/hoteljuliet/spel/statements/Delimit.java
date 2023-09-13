@@ -23,6 +23,7 @@ public class Delimit extends StatementStep implements Serializable {
                    @JsonProperty(value = "delimiter", required = true) Character delimiter,
                    @JsonProperty(value = "quote", required = true) Character quote,
                    @JsonProperty(value = "dests", required = true) List<String> dests) {
+        super();
         this.source = source;
         this.delimiter = delimiter;
         this.dests = dests;
@@ -44,7 +45,7 @@ public class Delimit extends StatementStep implements Serializable {
                 }
             }
         } else {
-            context.missingField(name);
+            missingField.increment();
         }
 
         return COMMAND_NEITHER;

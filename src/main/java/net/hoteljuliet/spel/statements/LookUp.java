@@ -19,6 +19,7 @@ public class LookUp extends StatementStep implements Serializable {
                   @JsonProperty(value = "dests", required = true) List<String> dests,
                   @JsonProperty(value = "default", required = true) String defaultValue,
                   @JsonProperty(value = "dict", required = true) Map<Object, Object> dict) {
+        super();
         this.sources = sources;
         this.dests = dests;
         this.defaultValue = defaultValue;
@@ -39,10 +40,9 @@ public class LookUp extends StatementStep implements Serializable {
                 }
             }
             else {
-                context.missingField(name);
+                missingField.increment();
             }
         }
-
         return COMMAND_NEITHER;
     }
 }

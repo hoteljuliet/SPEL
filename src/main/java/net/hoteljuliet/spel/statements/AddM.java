@@ -11,14 +11,14 @@ import java.io.Serializable;
 import java.util.Optional;
 
 public class AddM extends StatementStep implements Serializable {
-    private String dest;
-    private String exp;
-
+    private final String dest;
+    private final String exp;
     private transient Mustache mustache;
 
     @JsonCreator
     public AddM(@JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "exp", required = true) String exp) {
+        super();
         this.dest = dest;
         this.exp = exp;
         this.mustache = SpelUtils.compile(exp);

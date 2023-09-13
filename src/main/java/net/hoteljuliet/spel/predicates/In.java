@@ -16,6 +16,7 @@ public class In extends PredicateStep implements Serializable {
     @JsonCreator
     public In(@JsonProperty(value = "source", required = true) String source,
               @JsonProperty(value = "list", required = true) List<Object> list) {
+        super();
         this.source = source;
         this.list = list;
     }
@@ -34,7 +35,7 @@ public class In extends PredicateStep implements Serializable {
                 retVal = COMMAND_FALSE;
             }
         } else {
-            context.missingField(name);
+            missingField.increment();
             retVal = COMMAND_FALSE;
         }
         return retVal;

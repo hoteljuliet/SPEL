@@ -14,9 +14,11 @@ public class Stats extends StatementStep implements Serializable {
     private final String source;
     private final String dest;
     private final SummaryStatistics summaryStatistics;
+
     @JsonCreator
     public Stats(@JsonProperty(value = "source", required = true) String source,
                  @JsonProperty(value = "dest", required = true) String dest) {
+        super();
         this.source = source;
         this.dest = dest;
         summaryStatistics = new SummaryStatistics();
@@ -25,7 +27,6 @@ public class Stats extends StatementStep implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (context.hasField(source)) {
-
             Double value = context.getField(source);
             summaryStatistics.addValue(value);
             Map<String, Double> map = new HashMap<>();
@@ -38,7 +39,7 @@ public class Stats extends StatementStep implements Serializable {
             context.addField(dest, map);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
         return COMMAND_NEITHER;
     }

@@ -1,23 +1,24 @@
 package net.hoteljuliet.spel.predicates;
 
-import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.io.Serializable;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class ComplexPredicateStep extends PredicateStep implements Serializable {
     public List<Step> subPredicate;
 
+    public ComplexPredicateStep() {
+        subPredicate = new ArrayList<>();
+    }
+
     @Override
-    protected Optional<Boolean> handleException(Throwable t, Context context) {
-        context.getMetrics(name).exceptionThrown.increment();
-        String rootCase = ExceptionUtils.getRootCauseMessage(t);
-        context.getMetrics(name).exceptionsCounter.put(rootCase);
-        return COMMAND_FALSE;
+    public void snapshot() {
+        super.snapshot();
+        for (Step s : subPredicate) {
+            s.snapshot();
+        }
     }
 
     @Override

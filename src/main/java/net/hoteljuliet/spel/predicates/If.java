@@ -17,6 +17,7 @@ public class If extends PredicateStep implements Serializable {
     public Step predicate;
 
     public If() {
+        super();
         onTrue = new ArrayList<>();
         onFalse = new ArrayList<>();
     }
@@ -39,6 +40,19 @@ public class If extends PredicateStep implements Serializable {
         return Command.COMMAND_NEITHER;
     }
 
+    @Override
+    public void snapshot() {
+        super.snapshot();
+        predicate.snapshot();
+        for (Step s : onTrue) {
+            s.snapshot();
+        }
+        for (Step s : onFalse) {
+            s.snapshot();
+        }
+    }
+
+    @Override
     public void restore() {
         super.restore();
         predicate.restore();

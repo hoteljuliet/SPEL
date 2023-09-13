@@ -15,6 +15,7 @@ public class AtRate extends PredicateStep implements Serializable {
 
     @JsonCreator
     public AtRate(@JsonProperty(value = "percentage", required = true) Integer percentage) {
+        super();
         this.percentage = percentage;
         random = new Random();
     }

@@ -10,10 +10,13 @@ import java.util.Optional;
 
 public class HasField extends PredicateStep implements Serializable {
     private String source;
+
     @JsonCreator
     public HasField(@JsonProperty(value = "source", required = true) String source) {
+        super();
         this.source = source;
     }
+
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (context.hasField(source)) {

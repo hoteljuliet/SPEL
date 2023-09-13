@@ -10,11 +10,12 @@ import java.util.Optional;
 
 public class Concat extends StatementStep implements Serializable {
 
-    private List<String> sources;
-    private String dest;
+    private final List<String> sources;
+    private final String dest;
     @JsonCreator
     public Concat(@JsonProperty(value = "sources", required = true) List<String> sources,
                   @JsonProperty(value = "dest", required = true) String dest) {
+        super();
         this.sources = sources;
         this.dest = dest;
     }
@@ -29,7 +30,7 @@ public class Concat extends StatementStep implements Serializable {
                 stringBuilder.append(value);
             }
             else {
-                context.missingField(name);
+                missingField.increment();
             }
         }
         context.addField(dest, stringBuilder.toString());

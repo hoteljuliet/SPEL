@@ -7,14 +7,17 @@ import net.hoteljuliet.spel.Context;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
+
 public class Translate extends StatementStep implements Serializable {
     private String source;
     private String defaultValue;
     private Map<String, String> dict;
+
     @JsonCreator
     public Translate(@JsonProperty(value = "source", required = true) String source,
                      @JsonProperty(value = "default", required = true) String defaultValue,
                      @JsonProperty(value = "dict", required = true) Map<String, String> dict) {
+        super();
         this.source = source;
         this.defaultValue = defaultValue;
         this.dict = dict;
@@ -33,7 +36,7 @@ public class Translate extends StatementStep implements Serializable {
             }
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
         return COMMAND_NEITHER;
     }

@@ -23,7 +23,6 @@ public class Parser {
             node.remove(firstKey);
             String[] parts = firstKey.split("-");
             String name = parts[1];
-
             return parsePredicate(Optional.of(name), node);
         }
         else if (firstKey.equalsIgnoreCase("if")) {
@@ -82,7 +81,16 @@ public class Parser {
 
     public static Step parseStatement(Map<String, Object> node) {
         String type = firstKey(node);
-        return Factory.buildStatement(type, (Map<String, Object>) node.get(type));
+
+        if (type.startsWith("foreach")) {
+            String[] parts = type.split("-");
+            String typeName = parts[0];
+            String source = parts[1];
+            return Factory.buildComplexStatement(typeName, source, (List<Map<String, Object>>) node.get(type));
+        }
+        else {
+            return Factory.buildStatement(type, (Map<String, Object>) node.get(type));
+        }
     }
 
     public static String firstKey(Map<String, Object> node) {

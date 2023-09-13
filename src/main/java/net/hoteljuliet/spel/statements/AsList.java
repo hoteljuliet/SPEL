@@ -17,6 +17,7 @@ public class AsList extends StatementStep implements Serializable {
     @JsonCreator
     public AsList(@JsonProperty(value = "sources", required = true) java.util.List<String> sources,
                   @JsonProperty(value = "dest", required = true) String dest) {
+        super();
         this.sources = sources;
         this.dest = dest;
     }
@@ -31,7 +32,7 @@ public class AsList extends StatementStep implements Serializable {
                 list.add(value);
             }
             else {
-                context.missingField(name);
+                missingField.increment();
             }
         }
         context.addField(dest, list);

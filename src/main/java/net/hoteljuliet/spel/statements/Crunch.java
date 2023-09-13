@@ -21,6 +21,7 @@ public class Crunch extends StatementStep implements Serializable {
     public Crunch(@JsonProperty(value = "dest", required = true) String dest,
                   @JsonProperty(value = "exp", required = true) String expression,
                   @JsonProperty(value = "variables", required = true) List<String> variables) {
+        super();
         this.dest = dest;
         this.expression = expression;
         this.variables = variables;
@@ -35,13 +36,13 @@ public class Crunch extends StatementStep implements Serializable {
             String variable = variables.get(i);
 
             if (!context.hasField(variable)) {
-                context.missingField(name);
+                missingField.increment();
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    context.softFailure(name);
+                    softFailure.increment();
                 }
                 else {
                     vars[i] = value;

@@ -13,9 +13,11 @@ public class Round extends StatementStep implements Serializable {
 
     private String source;
     private String format;
+
     @JsonCreator
     public Round(@JsonProperty(value = "source", required = true) String source,
                  @JsonProperty(value = "format", required = true) String format) {
+        super();
         this.source = source;
         this.format = format;
     }
@@ -29,7 +31,7 @@ public class Round extends StatementStep implements Serializable {
             context.replaceFieldValue(source, df.format(value));
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
         return COMMAND_NEITHER;
     }

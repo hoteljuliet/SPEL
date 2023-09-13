@@ -3,7 +3,6 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -11,6 +10,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Optional;
+
 public class Hash extends StatementStep implements Serializable {
     private String source;
     private String dest;
@@ -22,6 +22,7 @@ public class Hash extends StatementStep implements Serializable {
     public Hash(@JsonProperty(value = "source", required = true) String source,
                 @JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "algo", required = true) String algo) {
+        super();
         this.source = source;
         this.dest = dest;
         this.algo = algo;
@@ -39,7 +40,7 @@ public class Hash extends StatementStep implements Serializable {
             context.addField(dest, b64);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
         return COMMAND_NEITHER;
     }

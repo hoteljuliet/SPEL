@@ -10,7 +10,7 @@ import java.util.Optional;
 public class Not extends ComplexPredicateStep implements Serializable {
 
     public Not() {
-        subPredicate = new ArrayList<>();
+        super();
     }
 
     /**

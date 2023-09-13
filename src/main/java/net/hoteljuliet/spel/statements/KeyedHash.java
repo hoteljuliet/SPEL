@@ -3,9 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -31,6 +29,7 @@ public class KeyedHash extends StatementStep implements Serializable {
                      @JsonProperty(value = "iter", required = true) Integer iterations,
                      @JsonProperty(value = "salt", required = true) String salt,
                      @JsonProperty(value = "pass", required = true) String password) {
+        super();
         this.source = source;
         this.dest = dest;
         this.iterations = iterations;
@@ -60,9 +59,8 @@ public class KeyedHash extends StatementStep implements Serializable {
             context.addField(dest, b64);
         }
         else {
-            context.missingField(name);
+            missingField.increment();
         }
-
         return COMMAND_NEITHER;
     }
 

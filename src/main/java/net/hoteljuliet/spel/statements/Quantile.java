@@ -1,6 +1,5 @@
 package net.hoteljuliet.spel.statements;
 
-import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import com.clearspring.analytics.stream.quantile.TDigest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,6 +22,7 @@ public class Quantile extends StatementStep implements Serializable {
                     @JsonProperty(value = "compression", required = true) Integer compression,
                     @JsonProperty(value = "quantiles", required = true) List<Double> quantiles,
                     @JsonProperty(value = "dest", required = true) String dest) {
+        super();
         this.source = source;
         this.compression = compression;
         this.quantiles = quantiles;
@@ -42,7 +42,7 @@ public class Quantile extends StatementStep implements Serializable {
             }
             context.addField(dest, map);
         } else {
-            context.missingField(name);
+            missingField.increment();
         }
         return COMMAND_NEITHER;
     }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.hoteljuliet.spel.predicates.And;
 import net.hoteljuliet.spel.predicates.Not;
 import net.hoteljuliet.spel.predicates.Or;
+import net.hoteljuliet.spel.predicates.Xor;
+import net.hoteljuliet.spel.statements.ForEach;
 import org.apache.commons.text.CaseUtils;
 import org.apache.commons.text.StringSubstitutor;
 
@@ -45,9 +47,26 @@ public class Factory {
         }
     }
 
-    // TODO: forEach
-    public static Step buildComplexStatement(String type, List<Map<String, Object>> config) {
-        return null;
+    public static Step buildComplexStatement(String type, String source, List<Map<String, Object>> config) {
+
+        Step retVal;
+        switch (type) {
+            case "foreach": {
+                ForEach forEach = new ForEach(source);
+                for (Map<String, Object> node : config) {
+                    String subStatementType = Parser.firstKey(node);
+                    Step s = buildStatement(subStatementType, (Map<String, Object>) node.get(subStatementType));
+                    forEach.subStatements.add(s);
+                }
+                retVal = forEach;
+                break;
+            }
+            default : {
+                throw new IllegalArgumentException("unknown step: " + type);
+            }
+        }
+        retVal.setName(buildUniqueNameFromType(type));
+        return retVal;
     }
 
     public static Step buildComplexPredicate(String type, List<Map<String, Object>> config) {
@@ -56,6 +75,22 @@ public class Factory {
         Step retVal;
 
         switch (type) {
+            case "xor" : {
+                Xor xor = new Xor();
+
+                if (config.size() > 2) {
+                    throw new IllegalArgumentException("xor max sub-predicate is 2");
+                }
+                else {
+                    for (Map<String, Object> node : config) {
+                        String subPredicateType = Parser.firstKey(node);
+                        Step s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                        xor.subPredicate.add(s);
+                    }
+                    retVal = xor;
+                    break;
+                }
+            }
             case "not" : {
                 Not not = new Not();
                 for (Map<String, Object> node : config) {

@@ -10,10 +10,13 @@ import java.util.Optional;
 
 public class Remove extends StatementStep implements Serializable {
     private List<String> sources;
+
     @JsonCreator
     public Remove(@JsonProperty(value = "sources", required = true) List<String> sources) {
+        super();
         this.sources = sources;
     }
+
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
@@ -22,7 +25,7 @@ public class Remove extends StatementStep implements Serializable {
                 context.removeField(path);
             }
             else {
-                context.missingField(name);
+                missingField.increment();
             }
         }
         return COMMAND_NEITHER;
