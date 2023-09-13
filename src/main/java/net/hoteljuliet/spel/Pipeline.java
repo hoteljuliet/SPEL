@@ -133,15 +133,13 @@ public class Pipeline implements Serializable {
         if (BooleanUtils.isTrue(logPerformance)) {
             logger.debug("----------pipeline performance-----------------");
             Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
-            logger.debug("Total : " + pipelineTotalMillis + " millis");
+            logger.debug("Pipeline total : " + pipelineTotalMillis + " millis");
 
-            /* TODO: determine how to collect all metrics, since their in each individual step
-            for (Map.Entry<String, StatementMetrics> entry : context.metricsPerStep.entrySet()) {
-                double pct = (entry.getValue().runTimeNanos.getMean() / pipelineTotalNanos) * 100;
-                String message = entry.getKey() + ": " + entry.getValue() + ",pct=" + String.format("%,.2f", pct);
+            for (Step step : context.getExecutedSteps()) {
+                Double pct = Double.valueOf(step.lastRunNanos.get() / stopWatch.getNanoTime()) * 100;
+                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", step.getName(), step.runTimeNanos.getMean(), pct);
                 logger.debug(message);
             }
-             */
         }
     }
 
