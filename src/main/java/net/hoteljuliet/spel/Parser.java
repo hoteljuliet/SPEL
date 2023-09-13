@@ -11,9 +11,16 @@ public class Parser {
         if (config == null) {
             throw new RuntimeException("empty config");
         }
-        else {
-            return config.stream().map(Parser::parse).collect(Collectors.toList());
+
+
+        for (int i = 0; i < config.size(); i++) {
+            Map<String, Object> node = config.get(i);
+            if (null == node) {
+                throw new RuntimeException("config entries cannot be null, see entry #" + (i+1));
+            }
         }
+
+        return config.stream().map(Parser::parse).collect(Collectors.toList());
     }
 
     public static Step parse(Map<String, Object> node) {
