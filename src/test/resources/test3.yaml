@@ -4,6 +4,10 @@ logPerformance: true
 
 config:
 
+  - add-i: {dest: "listOfMaps", value: [{name: dennis, age: 25}, {name: dennis, age: 25}, {name: dennis, age: 15}] }
+  - foreach-listOfMaps:
+      - remove: {sources: ["i.age"]}
+  -
   - if:
     at-rate: {percentage: 5}
     then:
@@ -11,6 +15,8 @@ config:
 
   - add-i: {dest: translate1, value: '404'}
   - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"} }
+
+  - cardinality: {source: translate1, precision: 5, dest: card}
 
   - add-i: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
   - key-value: {source: kvString1, delimiter: ',', separator: '=',  dest: kvMap1}
