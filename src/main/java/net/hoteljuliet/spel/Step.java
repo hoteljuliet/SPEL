@@ -9,7 +9,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
-public abstract class Step implements Command, Serializable {
+public abstract class Step implements Serializable {
+
+    public static final Optional<Boolean> COMMAND_TRUE = Optional.of(true);
+    public static final Optional<Boolean> COMMAND_FALSE = Optional.of(false);
+    public static final Optional<Boolean> COMMAND_NEITHER = Optional.empty();
 
     protected transient StopWatch stopWatch;
     protected String name;
@@ -100,7 +104,6 @@ public abstract class Step implements Command, Serializable {
      * @return
      * @throws Exception
      */
-    @Override
     public final Optional<Boolean> execute(Context context) throws Exception {
         Optional<Boolean> retVal = COMMAND_NEITHER;
         try {

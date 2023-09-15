@@ -92,8 +92,8 @@ public class Pipeline implements Serializable {
     public Boolean logStackTrace;
     public Boolean logPerformance;
 
-    public void build() {
-        steps = Parser.build(config);
+    public void parse() {
+        steps = Parser.parse(config);
     }
 
     public void execute() {

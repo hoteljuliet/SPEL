@@ -2,8 +2,8 @@ package net.hoteljuliet.spel.predicates;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -21,6 +21,6 @@ public class AtRate extends PredicateStep implements Serializable {
     }
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        return (random.nextInt(100) < percentage) ? Command.COMMAND_TRUE : Command.COMMAND_FALSE;
+        return (random.nextInt(100) < percentage) ? Step.COMMAND_TRUE : Step.COMMAND_FALSE;
     }
 }

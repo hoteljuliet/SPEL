@@ -1,7 +1,7 @@
 package net.hoteljuliet.spel.predicates;
 
-import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class Or extends ComplexPredicateStep implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
         boolean retval = false;
-        for (Command c : subPredicate) {
+        for (Step s : subPredicate) {
 
-            Optional<Boolean> eval = c.execute(context);
+            Optional<Boolean> eval = s.execute(context);
             if (eval.isPresent() && eval.get()) {
                 retval = true;
                 break;

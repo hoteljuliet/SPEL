@@ -146,7 +146,7 @@ public class Factory {
     }
 
     public static String buildUniqueNameFromType(String type) {
-        String retVal = type + instanceCounter.longValue();
+        String retVal = type + "[" + instanceCounter.longValue() + "]";
         instanceCounter.increment();
         return retVal;
     }

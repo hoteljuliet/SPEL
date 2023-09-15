@@ -7,11 +7,10 @@ import java.util.stream.Collectors;
 
 public class Parser {
 
-    public static List<Step> build(List<Map<String, Object>> config) {
+    public static List<Step> parse(List<Map<String, Object>> config) {
         if (config == null) {
             throw new RuntimeException("empty config");
         }
-
 
         for (int i = 0; i < config.size(); i++) {
             Map<String, Object> node = config.get(i);

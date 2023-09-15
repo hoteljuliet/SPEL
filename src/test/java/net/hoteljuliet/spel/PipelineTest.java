@@ -17,7 +17,7 @@ public class PipelineTest {
     @Test
     public void test_serializable() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test3.yaml");
-        pipeline.build();
+        pipeline.parse();
 
         Context context = new Context();
         pipeline.execute(context);
@@ -33,7 +33,7 @@ public class PipelineTest {
     @Test
     public void test1() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test1.yaml");
-        pipeline.build();
+        pipeline.parse();
 
         Context context = new Context();
         pipeline.execute(context);
@@ -57,7 +57,7 @@ public class PipelineTest {
     @Test
     public void test2() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test2.yaml");
-        pipeline.build();
+        pipeline.parse();
 
         Context context = new Context();
         pipeline.execute(context);
@@ -71,7 +71,7 @@ public class PipelineTest {
     @Test
     public void test3() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test3.yaml");
-        pipeline.build();
+        pipeline.parse();
         Context context = new Context();
         pipeline.execute(context);
     }

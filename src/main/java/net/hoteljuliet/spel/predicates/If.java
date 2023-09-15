@@ -1,6 +1,5 @@
 package net.hoteljuliet.spel.predicates;
 
-import net.hoteljuliet.spel.Command;
 import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.Context;
 
@@ -37,7 +36,7 @@ public class If extends PredicateStep implements Serializable {
                 step.execute(context);
             }
         }
-        return Command.COMMAND_NEITHER;
+        return Step.COMMAND_NEITHER;
     }
 
     @Override
