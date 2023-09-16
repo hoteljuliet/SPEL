@@ -4,43 +4,18 @@ A DSL/EL designed for json transforms, configurable business logic, and appropri
 ## Inspiration
 This project was started after years of great experience working with (Logzio Sawmill)[https://github.com/logzio/sawmill], which is an awesome project and worth checking out.
 
-## Design rules:
-- #1 keep everything fast! steps are measured in nanos, and a decent sized pipeline should run in double-digit millis.
-- #2 minimal boilerplate in the actual steps, use OO + Jackson
-- #3 i'll think of something
-- as much as possible, it should look like a bash script in yaml format
-- keep the names small
-- keep the naming of parameters consistent and simple: source, dest, to, from, dict, list
-- when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/failure
-- make more, smaller steps vs bigger ones with lots of options. ~50 lines for a baseStep is normal/average.
-- use jackson annotations for all parsing rules, optional fields, etc
-- https://en.wikipedia.org/wiki/Principle_of_least_astonishment
-- 
-- it is ok to do stateful things in Statements/Predicates, so long as 
-  - they output their state (can be set by user in a backed-up state object)
-  - they can be restored properly (user can checkpoint the entire pipeline)
-- 
-
-# TODO
-- add expression parsing to crunch, so expressions can be {{a.a + a.b}} and the constructor find/replaces, just like was done for exp4j
-- add a command line testing environment, like a shell where users get an empty context but can run commands that are parsed and run as they are entered
-- documentation
-- move all restore() methods to just below the constructor - will be more obvious if/when an error is made
-- move all metrics tracking into the pipeline object (will make serialization simpler, just the pipeline)
-- rip out exp4j and just use crunch? crunch is A LOT faster, plus has more built-in
-- parse a markdown with yaml blocks
-- the ability to serialize and restore the entire pipeline to/from a b64 string
-- benchmark tests
-- timing performance analysis, this must be fast!
-- make everything serializable
-- unit tests, including serializable
-- https://github.com/topics/expression-parser?l=java
-- https://mvnrepository.com/artifact/org.ahocorasick/ahocorasick/0.4.0
-- https://github.com/Redempt/Crunch (to replace exp4j)
-- https://github.com/addthis/stream-lib
-  - output rare and common values for strings
-- simplify everything
-- add new steps
-- look into other DSLs/ELs like SawMill, https://github.com/google/cel-spec, and https://docs.spring.io/spring-framework/docs/3.0.x/reference/expressions.html
-- looking into DQ libraries like https://aws.amazon.com/blogs/big-data/test-data-quality-at-scale-with-deequ/
-- 
+## Design Goals and Rules:
+1. https://en.wikipedia.org/wiki/Principle_of_least_astonishment
+2. Keep everything fast! Steps are measured in nanos, pipelines in millis. A decent sized pipeline of 50-100 Steps should run in < 100 ms. 
+3. We want to constantly improve the speed/efficiency of the steps 
+4. Steps should be easy to add, just the logic of the new step. Minimize boilerplate code in the actual steps. Leverage base classes + Jackson serializer.
+5. Keep the steps atomic - they should just do one thing, and do it very well.
+6. As much as possible, a pipeline should look like a bash script in yaml format
+7. Keep the names of steps and parameters short
+8. Keep the naming of parameters consistent and simple: source(s), dest(s), to, from, dict, list, action (which is an enumeration of common actions)
+9. Make more, smaller steps vs bigger ones with lots of options. ~50 lines for a baseStep is normal/average.
+10. Use jackson annotations for all parsing rules, optional fields, etc
+11. It's fine/great to do stateful things in Statements/Predicates, so long as they
+  - output their state (i.e., to something like Flink's ValueState - aka stream state) *OR*
+  - they can be snapshot + restored (i.e., to/from something like a Flink ListState - aka operator state)
+ 
