@@ -16,6 +16,7 @@ This project was started after years of great experience working with (Logzio Sa
 9. Make more, smaller steps vs bigger ones with lots of options. ~50 lines for a baseStep is normal/average.
 10. Use jackson annotations for all parsing rules, optional fields, etc
 11. It's fine/great to do stateful things in Statements/Predicates, so long as they
+  - don't require too much RAM
   - output their state (i.e., to something like Flink's ValueState - aka stream state) *OR*
   - they can be snapshot + restored (i.e., to/from something like a Flink ListState - aka operator state)
  
