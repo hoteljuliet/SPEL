@@ -12,7 +12,7 @@ This project was started after years of great experience working with (Logzio Sa
 - keep the names small
 - keep the naming of parameters consistent and simple: source, dest, to, from, dict, list
 - when dealing with lists, allow partial success but track each success/failure individually, otherwise its one success/failure
-- make more, smaller steps vs bigger ones with lots of options. ~50 lines for a step is normal/average.
+- make more, smaller steps vs bigger ones with lots of options. ~50 lines for a baseStep is normal/average.
 - use jackson annotations for all parsing rules, optional fields, etc
 - https://en.wikipedia.org/wiki/Principle_of_least_astonishment
 - 

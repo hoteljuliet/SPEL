@@ -21,6 +21,16 @@
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
+      <groupId>software.amazon.randomcutforest</groupId>
+      <artifactId>randomcutforest-core</artifactId>
+      <version>3.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>software.amazon.randomcutforest</groupId>
+      <artifactId>randomcutforest-serialization</artifactId>
+      <version>3.8.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
       <version>0.10.2</version>

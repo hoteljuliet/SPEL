@@ -3,6 +3,7 @@ package net.hoteljuliet.spel;
 
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
+import net.hoteljuliet.spel.statements.Flatten;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -105,4 +106,27 @@ public class PipelineTest {
 
     }
 
+    @Test
+    public void test6() {
+        Flatten flatten = new Flatten();
+
+        Map<String, Object> in = new HashMap<>();
+        Map<String, Object> out = new HashMap<>();
+
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("k1", "v1");
+        map1.put("k2", "v2");
+
+        List<String> list1 = new ArrayList<>();
+        list1.add("list1Value");
+
+        in.put("map1", map1);
+        in.put("list1", list1);
+
+        in.put("this", "that");
+
+        flatten.flatten("root", in, out);
+
+        System.out.println(out);
+    }
 }

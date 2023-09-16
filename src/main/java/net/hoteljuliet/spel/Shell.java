@@ -17,6 +17,7 @@ public class Shell {
     public static void main(String[] args) {
         Scanner reader = null;
         Context context = new Context();
+        Parser parser = new Parser();
         try {
             do {
                 try {
@@ -39,10 +40,10 @@ public class Shell {
                     }
                     else {
                         Map<String, Object> node = objectMapper.readValue(userInput, Map.class);
-                        Step step = Parser.parse(node);
-                        step.execute(context);
+                        BaseStep baseStep = parser.parse(node);
+                        baseStep.execute(context);
                         System.out.println("-> " + context);
-                        System.out.println("-> Took " + step.lastRunNanos + " nanos");
+                        System.out.println("-> Took " + baseStep.lastRunNanos + " nanos");
                     }
                 }
                 catch(Exception ex) {

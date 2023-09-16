@@ -3,12 +3,14 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Concat extends StatementStep implements Serializable {
+@Step(tag = "concat")
+public class Concat extends StatementBaseStep implements Serializable {
 
     private final List<String> sources;
     private final String dest;
@@ -34,7 +36,7 @@ public class Concat extends StatementStep implements Serializable {
             }
         }
         context.addField(dest, stringBuilder.toString());
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }
 

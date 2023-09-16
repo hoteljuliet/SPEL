@@ -8,7 +8,7 @@ config:
   - foreach-listOfMaps:
       - remove: {sources: ["i.age"]}
   - if:
-    at-rate: {percentage: 5}
+    sample: {percentage: 5}
     then:
       - add-i: {dest: "fivePct", value: true}
 
@@ -43,15 +43,15 @@ config:
   - add-i: {dest: "a.b", value: 2.0}
   - add-i: {dest: "x", value: "y"}
   - add-i: {dest: "x.y", value: "1"}
-  - look-up: {sources: ["x.y"], dests: ["x.y.lookup"], default: "unknown", dict: {"1": "some_metadata"} }
+  - lookup-i: {sources: ["x.y"], dests: ["x.y.lookup"], default: "unknown", dict: {"1": "some_metadata"} }
   - add-i: {dest: "x.z", value: "this is a string"}
   - add-i: {dest: "x.csv", value: "this, is, a, csv, string"}
   - add-i: {dest: "p.pipe", value: "this|is|a|piped|string"}
   - cast: {source: "x.y", to: "int"}
   - add-i: {dest: "notANumber", value: "notANumber"}
   - cast: {source: "notANumber", to: "int"}
-  - b64: {source: "x.z", dest: "encoded", encode: true}
-  - b64: {source: "encoded", dest: "decoded", encode: false}
+  - b64: {source: "x.z", dest: "encoded", action: encode}
+  - b64: {source: "encoded", dest: "decoded", action: decode}
   - hash: {source: "decoded", dest: "hashed", algo: "SHA-256"}
   - keyed-hash: {source: "decoded", dest: "hashed", iter: 10000, salt: "somesalt", pass: "${USER}"}
   - delimit: {source: x.csv, delimiter: ',', quote: '"', dests: [a.first, a.second, a.third, a.fourth, a.fifth] }

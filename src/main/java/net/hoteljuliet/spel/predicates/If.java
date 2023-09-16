@@ -1,6 +1,6 @@
 package net.hoteljuliet.spel.predicates;
 
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.BaseStep;
 import net.hoteljuliet.spel.Context;
 
 import java.io.Serializable;
@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class If extends PredicateStep implements Serializable {
+public class If extends PredicateBaseStep implements Serializable {
 
-    public List<Step> onTrue;
-    public List<Step> onFalse;
+    public List<BaseStep> onTrue;
+    public List<BaseStep> onFalse;
 
-    public Step predicate;
+    public BaseStep predicate;
 
     public If() {
         super();
@@ -27,26 +27,26 @@ public class If extends PredicateStep implements Serializable {
         Optional<Boolean> eval = predicate.execute(context);
 
         if (eval.isPresent() && eval.get()) {
-            for (Step step : onTrue) {
-                step.execute(context);
+            for (BaseStep baseStep : onTrue) {
+                baseStep.execute(context);
             }
         }
         else {
-            for (Step step : onFalse) {
-                step.execute(context);
+            for (BaseStep baseStep : onFalse) {
+                baseStep.execute(context);
             }
         }
-        return Step.COMMAND_NEITHER;
+        return BaseStep.NEITHER;
     }
 
     @Override
     public void snapshot() {
         super.snapshot();
         predicate.snapshot();
-        for (Step s : onTrue) {
+        for (BaseStep s : onTrue) {
             s.snapshot();
         }
-        for (Step s : onFalse) {
+        for (BaseStep s : onFalse) {
             s.snapshot();
         }
     }
@@ -55,10 +55,10 @@ public class If extends PredicateStep implements Serializable {
     public void restore() {
         super.restore();
         predicate.restore();
-        for (Step s : onTrue) {
+        for (BaseStep s : onTrue) {
             s.restore();
         }
-        for (Step s : onFalse) {
+        for (BaseStep s : onFalse) {
             s.restore();
         }
     }

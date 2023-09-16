@@ -7,7 +7,17 @@ import java.util.stream.Collectors;
 
 public class Parser {
 
-    public static List<Step> parse(List<Map<String, Object>> config) {
+    private Factory factory;
+
+    public Parser() {
+        factory = new Factory(Pipeline.defaultPredicatePackages, Pipeline.defaultPredicatePackages);
+    }
+
+    public Parser(String[] predicatePackages, String[] statementPackages) {
+        factory = new Factory(predicatePackages, statementPackages);
+    }
+
+    public List<BaseStep> parse(List<Map<String, Object>> config) {
         if (config == null) {
             throw new RuntimeException("empty config");
         }
@@ -18,11 +28,10 @@ public class Parser {
                 throw new RuntimeException("config entries cannot be null, see entry #" + (i+1));
             }
         }
-
-        return config.stream().map(Parser::parse).collect(Collectors.toList());
+        return config.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static Step parse(Map<String, Object> node) {
+    public BaseStep parse(Map<String, Object> node) {
         String firstKey = firstKey(node);
 
         if (firstKey.contains("if-")) {
@@ -40,7 +49,7 @@ public class Parser {
         }
     }
 
-    public static Step parsePredicate(Optional<String> name, Map<String, Object> node) {
+    public BaseStep parsePredicate(Optional<String> name, Map<String, Object> node) {
 
         Object firstValue = firstValue(node);
         String type = firstKey(node);
@@ -54,48 +63,48 @@ public class Parser {
 
         If ifPredicate = new If();
 
-        Step predicate = null;
+        BaseStep predicate = null;
         // this is an "and" or "or" type predicate (one with multiple sub-predicates)
         if (firstValue instanceof List) {
-            predicate = Factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
+            predicate = factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
         }
         // this is a simple/single predicate
         else {
-            predicate = Factory.buildPredicate(type, (Map<String, Object>) node.get(type));
+            predicate = factory.buildPredicate(type, (Map<String, Object>) node.get(type));
         }
         ifPredicate.predicate = predicate;
 
         for (Map<String, Object> map : onTrue) {
-            Step s = parse(map);
+            BaseStep s = parse(map);
             ifPredicate.onTrue.add(s);
         }
 
         for (Map<String, Object> map : onFalse) {
-            Step s = parse(map);
+            BaseStep s = parse(map);
             ifPredicate.onFalse.add(s);
         }
 
         if (name.isPresent()) {
-            ifPredicate.setName(Factory.buildUniqueNameFromName(name.get()));
+            ifPredicate.setName(factory.buildUniqueNameFromName(name.get()));
         }
         else {
-            ifPredicate.setName(Factory.buildUniqueNameFromType("if"));
+            ifPredicate.setName(factory.buildUniqueNameFromType("if"));
         }
 
         return ifPredicate;
     }
 
-    public static Step parseStatement(Map<String, Object> node) {
+    public BaseStep parseStatement(Map<String, Object> node) {
         String type = firstKey(node);
 
         if (type.startsWith("foreach")) {
             String[] parts = type.split("-");
             String typeName = parts[0];
             String source = parts[1];
-            return Factory.buildComplexStatement(typeName, source, (List<Map<String, Object>>) node.get(type));
+            return factory.buildComplexStatement(typeName, source, (List<Map<String, Object>>) node.get(type));
         }
         else {
-            return Factory.buildStatement(type, (Map<String, Object>) node.get(type));
+            return factory.buildStatement(type, (Map<String, Object>) node.get(type));
         }
     }
 

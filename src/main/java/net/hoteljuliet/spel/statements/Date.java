@@ -3,13 +3,15 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class Date extends StatementStep implements Serializable {
+@Step(tag = "date")
+public class Date extends StatementBaseStep implements Serializable {
     private String source;
     private String dest;
 
@@ -45,7 +47,7 @@ public class Date extends StatementStep implements Serializable {
         else {
             missingField.increment();
         }
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 
     @Override

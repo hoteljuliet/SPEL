@@ -2,15 +2,15 @@ package net.hoteljuliet.spel.predicates;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.hoteljuliet.spel.BaseStep;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
-import net.hoteljuliet.spel.StepProvider;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-@StepProvider(tag = "has-value")
-public class HasValue extends PredicateStep implements Serializable {
+@Step(tag = "has-value")
+public class HasValue extends PredicateBaseStep implements Serializable {
     private final String source;
     private final Object value;
 
@@ -26,10 +26,10 @@ public class HasValue extends PredicateStep implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (context.hasField(source)) {
             Object fieldValue = context.get(source);
-            return fieldValue.equals(value) ? Step.COMMAND_TRUE : Step.COMMAND_FALSE;
+            return fieldValue.equals(value) ? BaseStep.TRUE : BaseStep.FALSE;
         }
         else {
-            return Step.COMMAND_FALSE;
+            return BaseStep.FALSE;
         }
     }
 }

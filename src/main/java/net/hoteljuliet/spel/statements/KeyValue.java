@@ -3,13 +3,15 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class KeyValue extends StatementStep implements Serializable {
+@Step(tag = "key-value")
+public class KeyValue extends StatementBaseStep implements Serializable {
 
     private String source;
     private String delimiter;
@@ -44,6 +46,6 @@ public class KeyValue extends StatementStep implements Serializable {
             missingField.increment();
         }
 
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

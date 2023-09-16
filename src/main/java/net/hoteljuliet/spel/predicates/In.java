@@ -3,12 +3,14 @@ package net.hoteljuliet.spel.predicates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class In extends PredicateStep implements Serializable {
+@Step(tag = "in")
+public class In extends PredicateBaseStep implements Serializable {
 
     private String source;
     private List<Object> list;
@@ -29,14 +31,14 @@ public class In extends PredicateStep implements Serializable {
             Object value = context.getField(source);
 
             if (list.contains(value)) {
-                retVal = COMMAND_TRUE;
+                retVal = TRUE;
             }
             else {
-                retVal = COMMAND_FALSE;
+                retVal = FALSE;
             }
         } else {
             missingField.increment();
-            retVal = COMMAND_FALSE;
+            retVal = FALSE;
         }
         return retVal;
     }

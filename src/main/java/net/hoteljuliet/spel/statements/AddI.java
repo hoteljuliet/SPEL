@@ -3,11 +3,13 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-public class AddI extends StatementStep implements Serializable {
+@Step(tag = "add-i")
+public class AddI extends StatementBaseStep implements Serializable {
 
     private final String dest;
     private final Object value;
@@ -23,6 +25,6 @@ public class AddI extends StatementStep implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         context.addField(dest, value);
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

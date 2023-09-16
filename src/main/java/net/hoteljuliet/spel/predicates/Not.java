@@ -1,12 +1,12 @@
 package net.hoteljuliet.spel.predicates;
 
+import net.hoteljuliet.spel.BaseStep;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-public class Not extends ComplexPredicateStep implements Serializable {
+public class Not extends ComplexPredicateBaseStep implements Serializable {
 
     public Not() {
         super();
@@ -21,7 +21,7 @@ public class Not extends ComplexPredicateStep implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         boolean retVal = true;
-        for (Step s : subPredicate) {
+        for (BaseStep s : subPredicate) {
             Optional<Boolean> eval = s.execute(context);
             if (eval.isPresent() && eval.get()) {
                 continue;

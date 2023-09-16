@@ -6,13 +6,15 @@ import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.MathExpression;
 import net.hoteljuliet.spel.SpelUtils;
+import net.hoteljuliet.spel.Step;
 import net.objecthunter.exp4j.Expression;
 
 import java.io.Serializable;
 import java.util.*;
 
 // TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
-public class Math extends PredicateStep implements Serializable {
+@Step(tag = "math")
+public class Math extends PredicateBaseStep implements Serializable {
 
     private String expression;
     private ThreadLocal<Expression> mathExpression;
@@ -49,6 +51,6 @@ public class Math extends PredicateStep implements Serializable {
 
         mathExpression.get().setVariables(variablesMap);
         Double result = mathExpression.get().evaluate();
-        return (result == 1.0) ? COMMAND_TRUE : COMMAND_FALSE;
+        return (result == 1.0) ? TRUE : FALSE;
     }
 }

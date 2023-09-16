@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 import redempt.crunch.CompiledExpression;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Crunch extends StatementStep implements Serializable {
+@Step(tag = "crunch")
+public class Crunch extends StatementBaseStep implements Serializable {
 
     private final String dest;
     private final String expression;
@@ -52,7 +54,7 @@ public class Crunch extends StatementStep implements Serializable {
 
         double result = compiledExpression.evaluate(vars);
         context.addField(dest, result);
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 
     @Override

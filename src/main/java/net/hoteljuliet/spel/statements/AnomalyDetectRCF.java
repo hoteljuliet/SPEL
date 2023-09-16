@@ -11,16 +11,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Step(tag = "split")
-public class Split extends StatementBaseStep implements Serializable {
+/**
+ * TODO: implement anomaly detect ion via RCF - must be serializable + restoreable!
+ */
+@Step(tag = "anomaly-rcf")
+public class AnomalyDetectRCF extends StatementBaseStep implements Serializable {
     private final String source;
     private final String dest;
     private final String delimiter;
 
     @JsonCreator
-    public Split(@JsonProperty(value = "source", required = true) String source,
-                 @JsonProperty(value = "delimiter", required = true) String delimiter,
-                 @JsonProperty(value = "dest", required = true) String dest) {
+    public AnomalyDetectRCF(@JsonProperty(value = "source", required = true) String source,
+                            @JsonProperty(value = "delimiter", required = true) String delimiter,
+                            @JsonProperty(value = "dest", required = true) String dest) {
         super();
         this.source = source;
         this.delimiter = delimiter;
@@ -30,10 +33,8 @@ public class Split extends StatementBaseStep implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (context.hasField(source)) {
-            String value = context.getField(source);
-            String[] split = value.split(delimiter);
-            List<String> output = Arrays.asList(split);
-            context.replaceFieldValue(dest, output);
+            // TODO: implement
+            // see https://github.com/aws/random-cut-forest-by-aws/blob/main/Java/examples/src/main/java/com/amazon/randomcutforest/examples/parkservices/SequentialAnomalyExample.java
         }
         else {
             missingField.increment();

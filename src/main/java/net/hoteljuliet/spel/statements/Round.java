@@ -3,13 +3,15 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Optional;
 
-public class Round extends StatementStep implements Serializable {
+@Step(tag = "round")
+public class Round extends StatementBaseStep implements Serializable {
 
     private String source;
     private String format;
@@ -33,6 +35,6 @@ public class Round extends StatementStep implements Serializable {
         else {
             missingField.increment();
         }
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

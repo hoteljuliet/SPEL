@@ -3,13 +3,15 @@ package net.hoteljuliet.spel.predicates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Matches extends PredicateStep implements Serializable {
+@Step(tag = "matches")
+public class Matches extends PredicateBaseStep implements Serializable {
 
     private String source;
     private String regex;
@@ -33,14 +35,14 @@ public class Matches extends PredicateStep implements Serializable {
             Matcher matcher = pattern.matcher(value);
 
             if (matcher.matches()) {
-                retVal = COMMAND_TRUE;
+                retVal = TRUE;
             }
             else {
-                retVal = COMMAND_FALSE;
+                retVal = FALSE;
             }
         } else {
             softFailure.increment();
-            retVal = COMMAND_FALSE;
+            retVal = FALSE;
         }
 
         return retVal;

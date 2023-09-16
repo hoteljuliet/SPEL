@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class JsonList extends StatementStep implements Serializable {
+@Step(tag = "json-list")
+public class JsonList extends StatementBaseStep implements Serializable {
 
     private String source;
     private String dest;
@@ -37,6 +39,6 @@ public class JsonList extends StatementStep implements Serializable {
             missingField.increment();
         }
 
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

@@ -1,12 +1,41 @@
 package net.hoteljuliet.spel.statements;
 
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class Flatten extends StatementStep {
+@Step(tag = "flatten")
+public class Flatten extends StatementBaseStep {
+
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         return Optional.empty();
+    }
+
+    public void flatten(String key, Map<String, Object> in, Map<String, Object> out) {
+        for (Map.Entry<String, Object> entry : in.entrySet()) {
+
+            String newKey = key + "." + entry.getKey();
+
+            if (entry.getValue() instanceof Map) {
+                flatten(newKey, (Map<String, Object>) entry.getValue(), out);
+            }
+            else if (entry.getValue() instanceof List) {
+                flattenList(newKey, (List<Object>) entry.getValue(), out);
+            }
+            else {
+                out.put(newKey, entry.getValue());
+            }
+        }
+    }
+
+    private void flattenList(String key, List<Object> in, Map<String, Object> out)  {
+        for (int i = 0; i < in.size(); i++) {
+            String newKey = key + "["+ i + "]";
+            out.put(newKey, in.get(i));
+        }
     }
 }

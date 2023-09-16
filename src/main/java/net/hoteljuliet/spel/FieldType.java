@@ -86,8 +86,8 @@ public enum FieldType {
     public static FieldType tryParseOrDefault(String type) {
         try {
             return FieldType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return STRING;
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

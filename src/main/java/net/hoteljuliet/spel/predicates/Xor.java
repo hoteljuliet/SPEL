@@ -5,7 +5,7 @@ import net.hoteljuliet.spel.Context;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class Xor extends ComplexPredicateStep implements Serializable {
+public class Xor extends ComplexPredicateBaseStep implements Serializable {
 
     public Xor() {
         super();
@@ -21,6 +21,6 @@ public class Xor extends ComplexPredicateStep implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Boolean eval1 = subPredicate.get(0).doExecute(context).get();
         Boolean eval2 = subPredicate.get(1).doExecute(context).get();
-        return eval1 ^ eval2 ? COMMAND_TRUE : COMMAND_FALSE;
+        return eval1 ^ eval2 ? TRUE : FALSE;
     }
 }

@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -11,7 +12,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-public class Delimit extends StatementStep implements Serializable {
+@Step(tag = "delimit")
+public class Delimit extends StatementBaseStep implements Serializable {
     private String source;
     private Character delimiter;
     private Character quote;
@@ -47,6 +49,6 @@ public class Delimit extends StatementStep implements Serializable {
             missingField.increment();
         }
 
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

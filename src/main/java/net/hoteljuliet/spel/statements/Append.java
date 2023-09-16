@@ -2,6 +2,7 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.hoteljuliet.spel.BaseStep;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 
@@ -9,7 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-public class Append extends StatementStep implements Serializable {
+
+@Step(tag = "append")
+public class Append extends StatementBaseStep implements Serializable {
     private final String source;
     private final String dest;
 
@@ -39,6 +42,6 @@ public class Append extends StatementStep implements Serializable {
         else {
             softFailure.increment();
         }
-        return Step.COMMAND_NEITHER;
+        return BaseStep.NEITHER;
     }
 }

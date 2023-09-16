@@ -4,6 +4,7 @@ import com.clearspring.analytics.stream.quantile.TDigest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class Quantile extends StatementStep implements Serializable {
+@Step(tag = "quantile")
+public class Quantile extends StatementBaseStep implements Serializable {
     private final String source;
     private final String dest;
     private final Integer compression;
@@ -44,6 +46,6 @@ public class Quantile extends StatementStep implements Serializable {
         } else {
             missingField.increment();
         }
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Pipeline implements Serializable {
+
+    public static final String[] defaultPredicatePackages = {"net.hoteljuliet.spel.predicates"};
+    public static final String[] defaultStatementPackages = {"net.hoteljuliet.spel.statements"};
 
     private static final Logger logger = LoggerFactory.getLogger(Pipeline.class);
 
@@ -38,7 +42,9 @@ public class Pipeline implements Serializable {
 
     public String snapshot() {
 
-        for (Step s : steps) {
+        // TODO synchronize execute and snapshot
+
+        for (BaseStep s : baseSteps) {
             s.snapshot();
         }
 
@@ -81,19 +87,27 @@ public class Pipeline implements Serializable {
     }
 
     public void restore() {
-        for (Step s : steps) {
+        for (BaseStep s : baseSteps) {
             s.restore();
         }
     }
 
     public List<Map<String, Object>> config;
-    private List<Step> steps;
+    private List<BaseStep> baseSteps;
     public Boolean stopOnFailure;
     public Boolean logStackTrace;
     public Boolean logPerformance;
 
     public void parse() {
-        steps = Parser.parse(config);
+        Parser parser = new Parser(defaultPredicatePackages, defaultStatementPackages);
+        baseSteps = parser.parse(config);
+    }
+
+    public void parse(String[] predicatePackages, String[] statementPackages) {
+        String[] allPredicatePackages = ArrayUtils.addAll(defaultPredicatePackages, predicatePackages);
+        String[] allStatementPackages = ArrayUtils.addAll(defaultStatementPackages, statementPackages);
+        Parser parser = new Parser(allPredicatePackages, allStatementPackages);
+        baseSteps = parser.parse(config);
     }
 
     public void execute() {
@@ -108,16 +122,16 @@ public class Pipeline implements Serializable {
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        for (Step step : steps) {
+        for (BaseStep baseStep : baseSteps) {
             if (BooleanUtils.isTrue(logPerformance)) {
-                logger.debug("Context before " + step.getName() + ": " + context);
+                logger.debug("Context before " + baseStep.getName() + ": " + context);
             }
             try {
-                step.execute(context);
+                baseStep.execute(context);
             }
             catch(Exception ex) {
                 if (BooleanUtils.isTrue(logStackTrace)) {
-                    logger.debug("Exception in step: " + step.getName(), ex);
+                    logger.debug("Exception in step: " + baseStep.getName(), ex);
                 }
                 if (stopOnFailure) {
                     break;
@@ -135,15 +149,15 @@ public class Pipeline implements Serializable {
             Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
             logger.debug("Pipeline total : " + pipelineTotalMillis + " millis");
 
-            for (Step step : context.getExecutedSteps()) {
-                Double pct = Double.valueOf(step.lastRunNanos.get() / stopWatch.getNanoTime()) * 100;
-                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", step.getName(), step.runTimeNanos.getMean(), pct);
+            for (BaseStep baseStep : context.getExecutedBaseSteps()) {
+                Double pct = Double.valueOf(baseStep.runTimeNanos.getMean() / stopWatch.getNanoTime()) * 100;
+                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", baseStep.getName(), baseStep.runTimeNanos.getMean(), pct);
                 logger.debug(message);
             }
         }
     }
 
-    public List<Step> getSteps() {
-        return steps;
+    public List<BaseStep> getBaseSteps() {
+        return baseSteps;
     }
 }

@@ -6,13 +6,15 @@ import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.MathExpression;
 import net.hoteljuliet.spel.SpelUtils;
+import net.hoteljuliet.spel.Step;
 import net.objecthunter.exp4j.Expression;
 
 import java.io.Serializable;
 import java.util.*;
 
 // TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
-public class Math extends StatementStep implements Serializable {
+@Step(tag = "math")
+public class Math extends StatementBaseStep implements Serializable {
 
     private String dest;
     private String expression;
@@ -52,6 +54,6 @@ public class Math extends StatementStep implements Serializable {
         mathExpression.get().setVariables(variablesMap);
         Double result = mathExpression.get().evaluate();
         context.addField(dest, result);
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

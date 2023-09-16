@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
-public class JsonMap extends StatementStep implements Serializable {
+@Step(tag = "json-map")
+public class JsonMap extends StatementBaseStep implements Serializable {
 
     private String source;
     private String dest;
@@ -35,6 +37,6 @@ public class JsonMap extends StatementStep implements Serializable {
         else {
             missingField.increment();
         }
-        return COMMAND_NEITHER;
+        return NEITHER;
     }
 }

@@ -2,6 +2,7 @@ package net.hoteljuliet.spel.predicates;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import net.hoteljuliet.spel.BaseStep;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.FieldType;
 import net.hoteljuliet.spel.Step;
@@ -9,7 +10,8 @@ import net.hoteljuliet.spel.Step;
 import java.io.Serializable;
 import java.util.Optional;
 
-public class HasType extends PredicateStep implements Serializable {
+@Step(tag = "has-type")
+public class HasType extends PredicateBaseStep implements Serializable {
     private final String source;
     private final FieldType type;
 
@@ -25,10 +27,10 @@ public class HasType extends PredicateStep implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (context.hasField(source)) {
             Object fieldValue = context.get(source);
-            return type.isInstance(fieldValue) ? Step.COMMAND_TRUE : Step.COMMAND_FALSE;
+            return type.isInstance(fieldValue) ? BaseStep.TRUE : BaseStep.FALSE;
         }
         else {
-            return Step.COMMAND_FALSE;
+            return BaseStep.FALSE;
         }
     }
 }

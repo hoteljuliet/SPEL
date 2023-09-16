@@ -16,10 +16,10 @@ public class Context implements Map<String, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private Map<String, Object> backing;
-    private List<Step> executedSteps;
+    private List<BaseStep> executedBaseSteps;
 
     public Context() {
-        executedSteps = new ArrayList<>();
+        executedBaseSteps = new ArrayList<>();
         this.backing = new HashMap<>();
     }
 
@@ -149,6 +149,18 @@ public class Context implements Map<String, Object> {
     public boolean hasField(String path) {
         Optional<Object> field = getByPath(backing, path);
         return field.isPresent();
+    }
+
+    public boolean hasFields(String... paths) {
+        boolean retVal = true;
+        for (String path : paths) {
+            Optional<Object> field = getByPath(backing, path);
+            if (!field.isPresent()) {
+                retVal = false;
+                break;
+            }
+        }
+        return retVal;
     }
 
     public boolean hasField(String path, Class clazz) {
@@ -326,7 +338,7 @@ public class Context implements Map<String, Object> {
         return writer.toString();
     }
 
-    public List<Step> getExecutedSteps() {
-        return executedSteps;
+    public List<BaseStep> getExecutedBaseSteps() {
+        return executedBaseSteps;
     }
 }

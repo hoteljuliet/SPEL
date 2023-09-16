@@ -3,12 +3,14 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.BaseStep;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-public class SubString extends StatementStep implements Serializable {
+@Step(tag = "substring")
+public class SubString extends StatementBaseStep implements Serializable {
     private final String source;
     private final String dest;
     private final Integer from;
@@ -36,6 +38,6 @@ public class SubString extends StatementStep implements Serializable {
         else {
             missingField.increment();
         }
-        return Step.COMMAND_NEITHER;
+        return BaseStep.NEITHER;
     }
 }
