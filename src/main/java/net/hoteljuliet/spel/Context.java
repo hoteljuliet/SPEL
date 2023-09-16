@@ -14,7 +14,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Context.class);
     private Map<String, Object> backing;
     private List<BaseStep> executedBaseSteps;
 
