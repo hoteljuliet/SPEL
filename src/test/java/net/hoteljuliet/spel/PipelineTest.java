@@ -108,7 +108,7 @@ public class PipelineTest {
 
     @Test
     public void test6() {
-        Flatten flatten = new Flatten();
+        Flatten flatten = new Flatten("", "", "");
 
         Map<String, Object> in = new HashMap<>();
         Map<String, Object> out = new HashMap<>();
