@@ -40,6 +40,11 @@
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
+      <groupId>com.tdunning</groupId>
+      <artifactId>t-digest</artifactId>
+      <version>3.3</version>
+    </dependency>
+    <dependency>
       <groupId>software.amazon.randomcutforest</groupId>
       <artifactId>randomcutforest-core</artifactId>
       <version>3.8.0</version>

@@ -22,8 +22,7 @@ public class Context implements Map<String, Object> {
         this();
         backing.put("_input", event);
         backing.put("_state", new HashMap<String, Object>());
-        //List<StepMetrics> metrics = new ArrayList<>();
-        //backing.put("_state.stepMetrics", metrics);
+        backing.put("_volatile_state", new HashMap<String, Object>());
     }
 
     @Override

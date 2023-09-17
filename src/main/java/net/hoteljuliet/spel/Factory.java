@@ -18,19 +18,22 @@ import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
 
 public class Factory {
-    private final LongAdder instanceCounter = new LongAdder();
+    private final LongAdder instanceCounter;
 
-    private final ObjectMapper objectMapper =
-            new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
+    private final ObjectMapper objectMapper;
 
     private Map<String, Class> predicateTypesMap;
     private Map<String, Class> statementTypesMap;
 
     public Factory(String[] predicatePackages, String[] statementPackages) {
+        instanceCounter = new LongAdder();
         predicateTypesMap = new HashMap<>();
         statementTypesMap = new HashMap<>();
         populateTypesMap(predicatePackages, predicateTypesMap);
         populateTypesMap(statementPackages, statementTypesMap);
+        objectMapper = new ObjectMapper(new YAMLFactory())
+                .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
     }
 
     private void populateTypesMap(String[] packages, Map<String, Class> typesMap) {

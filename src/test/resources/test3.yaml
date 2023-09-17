@@ -13,7 +13,7 @@ config:
       - add-i: {dest: "fivePct", value: true}
 
   - add-i: {dest: translate1, value: '404'}
-  - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"} }
+  - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"}}
 
   - cardinality: {source: translate1, precision: 5, dest: card}
 

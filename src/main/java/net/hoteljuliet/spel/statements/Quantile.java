@@ -1,8 +1,8 @@
 package net.hoteljuliet.spel.statements;
 
-import com.clearspring.analytics.stream.quantile.TDigest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tdunning.math.stats.TDigest;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
@@ -19,23 +19,29 @@ public class Quantile extends StepStatement implements Serializable {
     private final String dest;
     private final Integer compression;
     private final List<Double> quantiles;
-    // TODO: refactor to be externalized in the context + serializable
-    private final TDigest tDigest;
+    private final Boolean volatileState;
+    private transient TDigest tDigest;
     @JsonCreator
     public Quantile(@JsonProperty(value = "source", required = true) String source,
                     @JsonProperty(value = "compression", required = true) Integer compression,
                     @JsonProperty(value = "quantiles", required = true) List<Double> quantiles,
-                    @JsonProperty(value = "dest", required = true) String dest) {
+                    @JsonProperty(value = "dest", required = true) String dest,
+                    @JsonProperty(value = "volatile", required = false, defaultValue = "false") Boolean volatileState) {
         super();
         this.source = source;
         this.compression = compression;
         this.quantiles = quantiles;
         this.dest = dest;
-        tDigest = new TDigest(compression);
+        this.volatileState = volatileState;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (requiresExternal(context, "tDigest", volatileState)) {
+            tDigest = externalize(context, "tDigest", TDigest.createDigest(compression), volatileState);
+        }
+
         if (context.hasField(source)) {
             Double value = context.getField(source);
             tDigest.add(value);
