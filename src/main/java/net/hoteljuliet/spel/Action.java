@@ -7,6 +7,8 @@ public enum Action {
     DECODE,
     ENCRYPT,
     DECRYPT,
+    COMPRESS,
+    DECOMPRESS
     ;
 
     @JsonCreator

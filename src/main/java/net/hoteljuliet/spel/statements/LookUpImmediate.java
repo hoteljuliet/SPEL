@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.util.Optional;
  * Lookup data against a Dictoinary that is provided via config
  */
 @Step(tag = "lookup-i")
-public class LookUpImmediate extends StatementBaseStep implements Serializable {
+public class LookUpImmediate extends StepStatement implements Serializable {
     private final List<String> sources;
     private final List<String> dests;
     private final String defaultValue;

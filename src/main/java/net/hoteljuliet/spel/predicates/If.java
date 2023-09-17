@@ -1,19 +1,20 @@
 package net.hoteljuliet.spel.predicates;
 
-import net.hoteljuliet.spel.BaseStep;
+import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepPredicate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class If extends PredicateBaseStep implements Serializable {
+public class If extends StepPredicate implements Serializable {
 
-    public List<BaseStep> onTrue;
-    public List<BaseStep> onFalse;
+    public List<StepBase> onTrue;
+    public List<StepBase> onFalse;
 
-    public BaseStep predicate;
+    public StepBase predicate;
 
     public If() {
         super();
@@ -27,39 +28,15 @@ public class If extends PredicateBaseStep implements Serializable {
         Optional<Boolean> eval = predicate.execute(context);
 
         if (eval.isPresent() && eval.get()) {
-            for (BaseStep baseStep : onTrue) {
-                baseStep.execute(context);
+            for (StepBase stepBase : onTrue) {
+                stepBase.execute(context);
             }
         }
         else {
-            for (BaseStep baseStep : onFalse) {
-                baseStep.execute(context);
+            for (StepBase stepBase : onFalse) {
+                stepBase.execute(context);
             }
         }
-        return BaseStep.NEITHER;
-    }
-
-    @Override
-    public void snapshot() {
-        super.snapshot();
-        predicate.snapshot();
-        for (BaseStep s : onTrue) {
-            s.snapshot();
-        }
-        for (BaseStep s : onFalse) {
-            s.snapshot();
-        }
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        predicate.restore();
-        for (BaseStep s : onTrue) {
-            s.restore();
-        }
-        for (BaseStep s : onFalse) {
-            s.restore();
-        }
+        return StepBase.NEITHER;
     }
 }

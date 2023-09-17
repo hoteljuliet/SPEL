@@ -2,20 +2,19 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.BaseStep;
+import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 /**
  * TODO: implement anomaly detect ion via RCF - must be serializable + restoreable!
  */
 @Step(tag = "anomaly-rcf")
-public class AnomalyDetectRCF extends StatementBaseStep implements Serializable {
+public class AnomalyDetectRCF extends StepStatement implements Serializable {
     private final String source;
     private final String dest;
     private final String delimiter;
@@ -39,6 +38,6 @@ public class AnomalyDetectRCF extends StatementBaseStep implements Serializable 
         else {
             missingField.increment();
         }
-        return BaseStep.NEITHER;
+        return StepBase.NEITHER;
     }
 }

@@ -2,15 +2,16 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.BaseStep;
+import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 @Step(tag = "strip")
-public class Strip extends StatementBaseStep implements Serializable {
+public class Strip extends StepStatement implements Serializable {
     private String source;
 
     @JsonCreator
@@ -29,7 +30,7 @@ public class Strip extends StatementBaseStep implements Serializable {
         else {
             missingField.increment();
         }
-        return BaseStep.NEITHER;
+        return StepBase.NEITHER;
     }
 }
 

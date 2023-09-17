@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.text.DecimalFormat;
 import java.util.Optional;
 
 @Step(tag = "round")
-public class Round extends StatementBaseStep implements Serializable {
+public class Round extends StepStatement implements Serializable {
 
     private String source;
     private String format;

@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.predicates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepPredicate;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Step(tag = "in")
-public class In extends PredicateBaseStep implements Serializable {
+public class In extends StepPredicate implements Serializable {
 
     private String source;
     private List<Object> list;

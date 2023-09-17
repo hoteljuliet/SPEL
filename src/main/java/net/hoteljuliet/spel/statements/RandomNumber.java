@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.FieldType;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.security.SecureRandom;
 import java.util.Optional;
 
 @Step(tag = "rng")
-public class RandomNumber extends StatementBaseStep implements Serializable {
+public class RandomNumber extends StepStatement implements Serializable {
 
     private final String dest;
     private final FieldType fieldType;
@@ -23,6 +24,17 @@ public class RandomNumber extends StatementBaseStep implements Serializable {
         this.dest = dest;
         this.fieldType = fieldType;
         secureRandom = new SecureRandom();
+    }
+
+    @Override
+    public void reinitialize() {
+        super.reinitialize();
+        try {
+            secureRandom = new SecureRandom();
+        }
+        catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
@@ -48,13 +60,4 @@ public class RandomNumber extends StatementBaseStep implements Serializable {
         return NEITHER;
     }
 
-    @Override
-    public void restore() {
-        try {
-            secureRandom = new SecureRandom();
-        }
-        catch(Exception ex) {
-            ;
-        }
-    }
 }

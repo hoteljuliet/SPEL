@@ -1,12 +1,13 @@
 package net.hoteljuliet.spel.predicates;
 
+import net.hoteljuliet.spel.StepPredicateComplex;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.BaseStep;
+import net.hoteljuliet.spel.StepBase;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-public class And extends ComplexPredicateBaseStep implements Serializable {
+public class And extends StepPredicateComplex implements Serializable {
 
     public And() {
         super();
@@ -21,7 +22,7 @@ public class And extends ComplexPredicateBaseStep implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         boolean retval = true;
-        for (BaseStep s : subPredicate) {
+        for (StepBase s : subPredicate) {
             Optional<Boolean> eval = s.execute(context);
             if (eval.isPresent() && eval.get()) {
                 continue;

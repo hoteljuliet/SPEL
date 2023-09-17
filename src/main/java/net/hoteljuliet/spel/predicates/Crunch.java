@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepPredicate;
 import net.hoteljuliet.spel.Step;
 import redempt.crunch.CompiledExpression;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Step(tag = "crunch")
-public class Crunch extends PredicateBaseStep implements Serializable {
+public class Crunch extends StepPredicate implements Serializable {
 
     private final String expression;
     private final List<String> variables;
@@ -26,6 +27,12 @@ public class Crunch extends PredicateBaseStep implements Serializable {
         this.expression = expression;
         this.variables = variables;
         compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
+    }
+
+    @Override
+    public void reinitialize() {
+        super.reinitialize();
+        this.compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
     }
 
     @Override
@@ -52,10 +59,5 @@ public class Crunch extends PredicateBaseStep implements Serializable {
 
         double result = compiledExpression.evaluate(vars);
         return (result == 1.0) ? TRUE : FALSE;
-    }
-
-    @Override
-    public void restore() {
-        this.compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
     }
 }

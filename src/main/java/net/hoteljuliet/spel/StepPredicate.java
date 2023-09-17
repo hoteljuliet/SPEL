@@ -1,7 +1,5 @@
-package net.hoteljuliet.spel.predicates;
+package net.hoteljuliet.spel;
 
-import net.hoteljuliet.spel.BaseStep;
-import net.hoteljuliet.spel.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,13 +7,13 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.concurrent.atomic.LongAdder;
 
-public abstract class PredicateBaseStep extends BaseStep implements Serializable {
+public abstract class StepPredicate extends StepBase implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(PredicateBaseStep.class);
+    private static final Logger logger = LoggerFactory.getLogger(StepPredicate.class);
     protected LongAdder evalTrue;
     protected LongAdder evalFalse;
 
-    public PredicateBaseStep() {
+    public StepPredicate() {
         super();
         evalTrue = new LongAdder();
         evalFalse = new LongAdder();
@@ -47,11 +45,5 @@ public abstract class PredicateBaseStep extends BaseStep implements Serializable
         else if (evaluation.equals(FALSE)) {
             evalFalse.increment();
         }
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        logger.debug(this.name + "::restore()");
     }
 }

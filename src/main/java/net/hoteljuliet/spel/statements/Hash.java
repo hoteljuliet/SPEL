@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -13,11 +14,11 @@ import java.security.MessageDigest;
 import java.util.Optional;
 
 @Step(tag = "hash")
-public class Hash extends StatementBaseStep implements Serializable {
-    private String source;
-    private String dest;
+public class Hash extends StepStatement implements Serializable {
+    private final String source;
+    private final String dest;
 
-    private String algo;
+    private final String algo;
     private transient MessageDigest messageDigest;
     private transient Base64 base64;
     @JsonCreator
@@ -33,6 +34,13 @@ public class Hash extends StatementBaseStep implements Serializable {
     }
 
     @Override
+    public void reinitialize() {
+        super.reinitialize();
+        base64 = new Base64();
+        messageDigest = DigestUtils.getDigest(algo);
+    }
+
+    @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
         if (context.hasField(source)) {
@@ -45,12 +53,5 @@ public class Hash extends StatementBaseStep implements Serializable {
             missingField.increment();
         }
         return NEITHER;
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        this.messageDigest = DigestUtils.getDigest(algo);
-        this.base64 = new Base64();
     }
 }

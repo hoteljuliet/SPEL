@@ -41,13 +41,7 @@ public class Pipeline implements Serializable {
     }
 
     public String snapshot() {
-
-        // TODO synchronize execute and snapshot
-
-        for (BaseStep s : baseSteps) {
-            s.snapshot();
-        }
-
+        // TODO synchronize execute and snapshot???
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = null;
 
@@ -73,9 +67,7 @@ public class Pipeline implements Serializable {
             byte[] bytes = Base64.decodeBase64(snapshot);
             byteArrayInputStream = new ByteArrayInputStream(bytes);
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
-            Pipeline pipeline = (Pipeline) objectInputStream.readObject();
-            pipeline.restore();
-            return pipeline;
+            return (Pipeline) objectInputStream.readObject();
         }
         catch(Exception ex) {
             logger.error("exception in Pipeline snapshot", ex);
@@ -86,28 +78,22 @@ public class Pipeline implements Serializable {
         }
     }
 
-    public void restore() {
-        for (BaseStep s : baseSteps) {
-            s.restore();
-        }
-    }
-
     public List<Map<String, Object>> config;
-    private List<BaseStep> baseSteps;
+    private List<StepBase> stepBases;
     public Boolean stopOnFailure;
     public Boolean logStackTrace;
     public Boolean logPerformance;
 
     public void parse() {
         Parser parser = new Parser(defaultPredicatePackages, defaultStatementPackages);
-        baseSteps = parser.parse(config);
+        stepBases = parser.parse(config);
     }
 
     public void parse(String[] predicatePackages, String[] statementPackages) {
         String[] allPredicatePackages = ArrayUtils.addAll(defaultPredicatePackages, predicatePackages);
         String[] allStatementPackages = ArrayUtils.addAll(defaultStatementPackages, statementPackages);
         Parser parser = new Parser(allPredicatePackages, allStatementPackages);
-        baseSteps = parser.parse(config);
+        stepBases = parser.parse(config);
     }
 
     public void execute() {
@@ -122,16 +108,16 @@ public class Pipeline implements Serializable {
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        for (BaseStep baseStep : baseSteps) {
+        for (StepBase stepBase : stepBases) {
             if (BooleanUtils.isTrue(logPerformance)) {
-                logger.debug("Context before " + baseStep.getName() + ": " + context);
+                logger.debug("Context before " + stepBase.getName() + ": " + context);
             }
             try {
-                baseStep.execute(context);
+                stepBase.execute(context);
             }
             catch(Exception ex) {
                 if (BooleanUtils.isTrue(logStackTrace)) {
-                    logger.debug("Exception in step: " + baseStep.getName(), ex);
+                    logger.debug("Exception in step: " + stepBase.getName(), ex);
                 }
                 if (stopOnFailure) {
                     break;
@@ -149,15 +135,15 @@ public class Pipeline implements Serializable {
             Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
             logger.debug("Pipeline total : " + pipelineTotalMillis + " millis");
 
-            for (BaseStep baseStep : context.getExecutedBaseSteps()) {
-                Double pct = Double.valueOf(baseStep.runTimeNanos.getMean() / stopWatch.getNanoTime()) * 100;
-                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", baseStep.getName(), baseStep.runTimeNanos.getMean(), pct);
+            for (StepBase stepBase : context.getExecutedBaseSteps()) {
+                Double pct = Double.valueOf(stepBase.runTimeNanos.getMean() / stopWatch.getNanoTime()) * 100;
+                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", stepBase.getName(), stepBase.runTimeNanos.getMean(), pct);
                 logger.debug(message);
             }
         }
     }
 
-    public List<BaseStep> getBaseSteps() {
-        return baseSteps;
+    public List<StepBase> getBaseSteps() {
+        return stepBases;
     }
 }

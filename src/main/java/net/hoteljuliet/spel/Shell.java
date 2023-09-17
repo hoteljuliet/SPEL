@@ -40,10 +40,10 @@ public class Shell {
                     }
                     else {
                         Map<String, Object> node = objectMapper.readValue(userInput, Map.class);
-                        BaseStep baseStep = parser.parse(node);
-                        baseStep.execute(context);
+                        StepBase stepBase = parser.parse(node);
+                        stepBase.execute(context);
                         System.out.println("-> " + context);
-                        System.out.println("-> Took " + baseStep.lastRunNanos + " nanos");
+                        System.out.println("-> Took " + stepBase.lastRunNanos + " nanos");
                     }
                 }
                 catch(Exception ex) {

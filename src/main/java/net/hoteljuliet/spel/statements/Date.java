@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Step(tag = "date")
-public class Date extends StatementBaseStep implements Serializable {
+public class Date extends StepStatement implements Serializable {
     private String source;
     private String dest;
 
@@ -36,6 +37,13 @@ public class Date extends StatementBaseStep implements Serializable {
     }
 
     @Override
+    public void reinitialize() {
+        super.reinitialize();
+        fromFormatter = DateTimeFormatter.ofPattern(from);
+        toFormatter = DateTimeFormatter.ofPattern(to);
+    }
+
+    @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
         if (context.hasField(source)) {
@@ -48,12 +56,5 @@ public class Date extends StatementBaseStep implements Serializable {
             missingField.increment();
         }
         return NEITHER;
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        fromFormatter = DateTimeFormatter.ofPattern(from);
-        toFormatter = DateTimeFormatter.ofPattern(to);
     }
 }

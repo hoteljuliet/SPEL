@@ -1,5 +1,6 @@
 package net.hoteljuliet.spel;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -9,13 +10,14 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
-public abstract class BaseStep implements Serializable {
+public abstract class StepBase implements Serializable {
 
     public static final Optional<Boolean> TRUE = Optional.of(true);
     public static final Optional<Boolean> FALSE = Optional.of(false);
     public static final Optional<Boolean> NEITHER = Optional.empty();
 
     protected transient StopWatch stopWatch;
+
     protected String name;
     protected SummaryStatistics runTimeNanos;
     protected AtomicLong lastRunNanos;
@@ -25,7 +27,9 @@ public abstract class BaseStep implements Serializable {
     protected LongAdder softFailure = new LongAdder();
     protected LimitedCountingMap exceptionsCounter = new LimitedCountingMap();
 
-    public BaseStep() {
+    protected transient Boolean initialized;
+
+    public StepBase() {
         stopWatch = new StopWatch();
         runTimeNanos = new SummaryStatistics();
         lastRunNanos = new AtomicLong();
@@ -34,6 +38,11 @@ public abstract class BaseStep implements Serializable {
         exceptionThrown = new LongAdder();
         softFailure = new LongAdder();
         exceptionsCounter = new LimitedCountingMap();
+        initialized = true;
+    }
+
+    public void reinitialize() {
+        stopWatch = new StopWatch();
     }
 
     /**
@@ -53,30 +62,16 @@ public abstract class BaseStep implements Serializable {
     protected abstract Optional<Boolean> onException(Throwable t, Context context);
 
     /**
-     * Called when creating a snapshot. any transient fields should be written to other attributes that ARE serializable.
-     * For example, a data structure turned into a B64 String.
-     *
-     */
-    public void snapshot() {
-        ;
-    }
-
-    /**
-     * Called when restoring from a snapshot. any transient fields should be re-initialized using other attributes that ARE serializable.
-     * I.e., after serialization it will be as if the constructor was called, but ignoring all transient fields. This method will complete the
-     * object's construction.
-     * For example, turn a B64 String back into a data structure.
-     *
-     */
-    public void restore() {
-        stopWatch = new StopWatch();
-    }
-
-    /**
      * Called before a Step executes, mostly for metric updates
      * @param context
      */
-    public void before(Context context) {
+    public final void before(Context context) {
+
+        if (null == initialized || false == initialized) {
+             reinitialize();
+             initialized = true;
+        }
+
         if (!context.getExecutedBaseSteps().contains(this)) {
             context.getExecutedBaseSteps().add(this);
         }
@@ -94,7 +89,6 @@ public abstract class BaseStep implements Serializable {
         stopWatch.stop();
         runTimeNanos.addValue((double)stopWatch.getNanoTime());
         lastRunNanos.set(stopWatch.getNanoTime());
-
     }
 
     /**

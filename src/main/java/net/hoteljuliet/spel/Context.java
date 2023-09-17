@@ -1,8 +1,6 @@
 package net.hoteljuliet.spel;
 
 import com.github.mustachejava.Mustache;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.util.*;
@@ -15,10 +13,10 @@ import static com.google.common.base.Preconditions.checkState;
 public class Context implements Map<String, Object> {
 
     private Map<String, Object> backing;
-    private List<BaseStep> executedBaseSteps;
+    private List<StepBase> executedStepBases;
 
     public Context() {
-        executedBaseSteps = new ArrayList<>();
+        executedStepBases = new ArrayList<>();
         this.backing = new HashMap<>();
     }
 
@@ -337,7 +335,7 @@ public class Context implements Map<String, Object> {
         return writer.toString();
     }
 
-    public List<BaseStep> getExecutedBaseSteps() {
-        return executedBaseSteps;
+    public List<StepBase> getExecutedBaseSteps() {
+        return executedStepBases;
     }
 }

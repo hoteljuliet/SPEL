@@ -17,7 +17,7 @@ public class Parser {
         factory = new Factory(predicatePackages, statementPackages);
     }
 
-    public List<BaseStep> parse(List<Map<String, Object>> config) {
+    public List<StepBase> parse(List<Map<String, Object>> config) {
         if (config == null) {
             throw new RuntimeException("empty config");
         }
@@ -31,7 +31,7 @@ public class Parser {
         return config.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public BaseStep parse(Map<String, Object> node) {
+    public StepBase parse(Map<String, Object> node) {
         String firstKey = firstKey(node);
 
         if (firstKey.contains("if-")) {
@@ -49,7 +49,7 @@ public class Parser {
         }
     }
 
-    public BaseStep parsePredicate(Optional<String> name, Map<String, Object> node) {
+    public StepBase parsePredicate(Optional<String> name, Map<String, Object> node) {
 
         Object firstValue = firstValue(node);
         String type = firstKey(node);
@@ -63,7 +63,7 @@ public class Parser {
 
         If ifPredicate = new If();
 
-        BaseStep predicate = null;
+        StepBase predicate = null;
         // this is an "and" or "or" type predicate (one with multiple sub-predicates)
         if (firstValue instanceof List) {
             predicate = factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
@@ -75,12 +75,12 @@ public class Parser {
         ifPredicate.predicate = predicate;
 
         for (Map<String, Object> map : onTrue) {
-            BaseStep s = parse(map);
+            StepBase s = parse(map);
             ifPredicate.onTrue.add(s);
         }
 
         for (Map<String, Object> map : onFalse) {
-            BaseStep s = parse(map);
+            StepBase s = parse(map);
             ifPredicate.onFalse.add(s);
         }
 
@@ -94,7 +94,7 @@ public class Parser {
         return ifPredicate;
     }
 
-    public BaseStep parseStatement(Map<String, Object> node) {
+    public StepBase parseStatement(Map<String, Object> node) {
         String type = firstKey(node);
 
         if (type.startsWith("foreach")) {

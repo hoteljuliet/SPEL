@@ -4,6 +4,7 @@ package net.hoteljuliet.spel;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import net.hoteljuliet.spel.statements.Flatten;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,9 +24,14 @@ public class PipelineTest {
         Context context = new Context();
         pipeline.execute(context);
 
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.reset();
+        stopWatch.start();
         String snapShotB64 = pipeline.snapshot();
-
         Pipeline restored = Pipeline.restore(snapShotB64);
+        stopWatch.stop();
+
+        System.out.println("round trip time: " + stopWatch.getTime() + "ms");
 
         restored.execute(context);
     }

@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Step(tag = "key-value")
-public class KeyValue extends StatementBaseStep implements Serializable {
+public class KeyValue extends StepStatement implements Serializable {
 
     private String source;
     private String delimiter;

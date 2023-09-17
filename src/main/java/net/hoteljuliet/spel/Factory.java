@@ -8,11 +8,9 @@ import net.hoteljuliet.spel.predicates.Not;
 import net.hoteljuliet.spel.predicates.Or;
 import net.hoteljuliet.spel.predicates.Xor;
 import net.hoteljuliet.spel.statements.ForEach;
-import org.apache.commons.text.CaseUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.reflections.Reflections;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +49,7 @@ public class Factory {
         }
     }
 
-    public BaseStep buildStatement(String type, Map<String, Object> config) {
+    public StepBase buildStatement(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
             buildUniqueNameFromType(type, config);
@@ -62,7 +60,7 @@ public class Factory {
         }
     }
 
-    public BaseStep buildPredicate(String type, Map<String, Object> config) {
+    public StepBase buildPredicate(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
             buildUniqueNameFromType(type, config);
@@ -73,10 +71,10 @@ public class Factory {
         }
     }
 
-    public BaseStep buildBaseStep(String type, Map<String, Object> config, Map<String, Class> typesMap) throws Exception {
+    public StepBase buildBaseStep(String type, Map<String, Object> config, Map<String, Class> typesMap) throws Exception {
         if (typesMap.containsKey(type)) {
             Class clazz = typesMap.get(type);
-            return (BaseStep) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
+            return (StepBase) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
         }
         else {
             throw new RuntimeException("no type found for: " + type);
@@ -84,15 +82,15 @@ public class Factory {
     }
 
 
-    public BaseStep buildComplexStatement(String type, String source, List<Map<String, Object>> config) {
+    public StepBase buildComplexStatement(String type, String source, List<Map<String, Object>> config) {
 
-        BaseStep retVal;
+        StepBase retVal;
         switch (type) {
             case "foreach": {
                 ForEach forEach = new ForEach(source);
                 for (Map<String, Object> node : config) {
                     String subStatementType = Parser.firstKey(node);
-                    BaseStep s = buildStatement(subStatementType, (Map<String, Object>) node.get(subStatementType));
+                    StepBase s = buildStatement(subStatementType, (Map<String, Object>) node.get(subStatementType));
                     forEach.subStatements.add(s);
                 }
                 retVal = forEach;
@@ -106,10 +104,10 @@ public class Factory {
         return retVal;
     }
 
-    public BaseStep buildComplexPredicate(String type, List<Map<String, Object>> config) {
+    public StepBase buildComplexPredicate(String type, List<Map<String, Object>> config) {
 
         // TODO: give complex predicates the option for a friendly, unique name
-        BaseStep retVal;
+        StepBase retVal;
 
         switch (type) {
             case "xor" : {
@@ -121,7 +119,7 @@ public class Factory {
                 else {
                     for (Map<String, Object> node : config) {
                         String subPredicateType = Parser.firstKey(node);
-                        BaseStep s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                        StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                         xor.subPredicate.add(s);
                     }
                     retVal = xor;
@@ -132,7 +130,7 @@ public class Factory {
                 Not not = new Not();
                 for (Map<String, Object> node : config) {
                     String subPredicateType = Parser.firstKey(node);
-                    BaseStep s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                     not.subPredicate.add(s);
                 }
                 retVal = not;
@@ -142,7 +140,7 @@ public class Factory {
                 And and = new And();
                 for (Map<String, Object> node : config) {
                     String subPredicateType = Parser.firstKey(node);
-                    BaseStep s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                     and.subPredicate.add(s);
                 }
                 retVal = and;
@@ -152,7 +150,7 @@ public class Factory {
                 Or or = new Or();
                 for (Map<String, Object> node : config) {
                     String subPredicateType = Parser.firstKey(node);
-                    BaseStep s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
                     or.subPredicate.add(s);
                 }
                 retVal = or;

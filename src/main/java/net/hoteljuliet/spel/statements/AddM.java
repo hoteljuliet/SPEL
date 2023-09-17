@@ -3,16 +3,13 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.mustachejava.Mustache;
-import net.hoteljuliet.spel.BaseStep;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.SpelUtils;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.*;
 
 import java.io.Serializable;
 import java.util.Optional;
 
 @Step(tag = "add-m")
-public class AddM extends StatementBaseStep implements Serializable {
+public class AddM extends StepStatement implements Serializable {
     private final String dest;
     private final String exp;
     private transient Mustache mustache;
@@ -27,15 +24,15 @@ public class AddM extends StatementBaseStep implements Serializable {
     }
 
     @Override
-    public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object value = context.render(mustache);
-        context.addField(dest, value);
-        return BaseStep.NEITHER;
+    public void reinitialize() {
+        super.reinitialize();
+        this.mustache = SpelUtils.compile(exp);
     }
 
     @Override
-    public void restore() {
-        super.restore();
-        this.mustache = SpelUtils.compile(exp);
+    public Optional<Boolean> doExecute(Context context) throws Exception {
+        Object value = context.render(mustache);
+        context.addField(dest, value);
+        return StepBase.NEITHER;
     }
 }

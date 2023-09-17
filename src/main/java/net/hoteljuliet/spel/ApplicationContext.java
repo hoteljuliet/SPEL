@@ -55,7 +55,7 @@ public class ApplicationContext {
                 for (String expression : value.exp()) {
                     Map<String, Object> node = objectMapper.readValue(expression, Map.class);
                     Parser parser = new Parser(predicatePackages, statementPackages);
-                    BaseStep s = parser.parse(node);
+                    StepBase s = parser.parse(node);
                     s.execute(context);
                 }
                 Object fieldValue = context.getField(field.getDeclaringClass().getSimpleName() + "." + field.getName());

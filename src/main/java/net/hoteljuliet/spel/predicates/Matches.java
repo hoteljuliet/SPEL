@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.predicates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepPredicate;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,9 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Step(tag = "matches")
-public class Matches extends PredicateBaseStep implements Serializable {
+public class Matches extends StepPredicate implements Serializable {
 
-    private String source;
+    private final String source;
     private String regex;
     private Pattern pattern;
 

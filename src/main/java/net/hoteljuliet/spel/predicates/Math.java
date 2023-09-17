@@ -3,10 +3,7 @@ package net.hoteljuliet.spel.predicates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.MathExpression;
-import net.hoteljuliet.spel.SpelUtils;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.*;
 import net.objecthunter.exp4j.Expression;
 
 import java.io.Serializable;
@@ -14,7 +11,7 @@ import java.util.*;
 
 // TODO: keep for now, but consider removing and just using crunch instead (crunch is faster)
 @Step(tag = "math")
-public class Math extends PredicateBaseStep implements Serializable {
+public class Math extends StepPredicate implements Serializable {
 
     private String expression;
     private ThreadLocal<Expression> mathExpression;

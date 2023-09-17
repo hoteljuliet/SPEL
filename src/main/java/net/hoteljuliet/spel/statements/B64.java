@@ -2,10 +2,8 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.Action;
-import net.hoteljuliet.spel.BaseStep;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.Step;
+import com.google.common.base.Preconditions;
+import net.hoteljuliet.spel.*;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.Serializable;
@@ -13,10 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Step(tag = "b64")
-public class B64 extends StatementBaseStep implements Serializable {
-    private String source;
-    private String dest;
-    private Action action;
+public class B64 extends StepStatement implements Serializable {
+    private final String source;
+    private final String dest;
+    private final Action action;
     private transient Base64 base64;
 
     @JsonCreator
@@ -27,6 +25,13 @@ public class B64 extends StatementBaseStep implements Serializable {
         this.source = source;
         this.dest = dest;
         this.action = action;
+        this.base64 = new Base64();
+        Preconditions.checkArgument(action.equals(Action.ENCODE) || action.equals(Action.DECODE), "invalid action %s", action);
+    }
+
+    @Override
+    public void reinitialize() {
+        super.reinitialize();
         this.base64 = new Base64();
     }
 
@@ -41,16 +46,9 @@ public class B64 extends StatementBaseStep implements Serializable {
                 String decodedValue = new String(base64.decode(value));
                 context.addField(dest, decodedValue);
             }
-        }
-        else {
+        } else {
             missingField.increment();
         }
-        return BaseStep.NEITHER;
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        this.base64 = new Base64();
+        return StepBase.NEITHER;
     }
 }

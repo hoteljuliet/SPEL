@@ -4,6 +4,7 @@ import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 import org.apache.commons.codec.binary.Base64;
 
@@ -11,13 +12,12 @@ import java.io.Serializable;
 import java.util.Optional;
 
 @Step(tag = "cardinality")
-public class Cardinality extends StatementBaseStep implements Serializable {
+public class Cardinality extends StepStatement implements Serializable {
 
     private final String source;
     private final String dest;
     private final Integer precision;
-    private transient HyperLogLogPlus hyperLogLogPlus;
-    private String b64;
+    private final HyperLogLogPlus hyperLogLogPlus;
 
     @JsonCreator
     public Cardinality(@JsonProperty(value = "source", required = true) String source,
@@ -41,26 +41,5 @@ public class Cardinality extends StatementBaseStep implements Serializable {
             missingField.increment();
         }
         return NEITHER;
-    }
-
-    @Override
-    public void snapshot() {
-        try {
-            b64 = Base64.encodeBase64String(hyperLogLogPlus.getBytes());
-        }
-        catch(Exception ex) {
-            ;
-        }
-    }
-
-    @Override
-    public void restore() {
-        try {
-            byte[] bytes = Base64.decodeBase64(b64);
-            hyperLogLogPlus = HyperLogLogPlus.Builder.build(bytes);
-        }
-        catch(Exception ex) {
-            ;
-        }
     }
 }

@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 import org.apache.commons.codec.binary.Base64;
 
@@ -15,13 +16,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @Step(tag = "keyed-hash")
-public class KeyedHash extends StatementBaseStep implements Serializable {
-    private String source;
-    private String dest;
-    private Integer iterations;
-    private String salt;
-    private String password;
-
+public class KeyedHash extends StepStatement implements Serializable {
+    private final String source;
+    private final String dest;
+    private final Integer iterations;
+    private final String salt;
+    private final String password;
     private transient Mac mac;
     private transient Base64 base64;
 
@@ -37,9 +37,27 @@ public class KeyedHash extends StatementBaseStep implements Serializable {
         this.iterations = iterations;
         this.salt = salt;
         this.password = password;
+        this.base64 = new Base64();
 
         try {
-            this.base64 = new Base64();
+
+            PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
+            mac = javax.crypto.Mac.getInstance("HmacSHA256");
+            mac.init(secretKey);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void reinitialize() {
+        super.reinitialize();
+        // TODO: refactor duplicate code
+        this.base64 = new Base64();
+        try {
             PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
             SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
@@ -64,22 +82,6 @@ public class KeyedHash extends StatementBaseStep implements Serializable {
             missingField.increment();
         }
         return NEITHER;
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        try {
-            this.base64 = new Base64();
-            PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
-            mac = javax.crypto.Mac.getInstance("HmacSHA256");
-            mac.init(secretKey);
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }
 

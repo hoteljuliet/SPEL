@@ -3,14 +3,18 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.BaseStep;
+import net.hoteljuliet.spel.StepBase;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Fetch a Map String, Object or List Object from a URL, and add it to the context at the given destination.
+ */
 @Step(tag = "add-http")
-public class AddHttp extends StatementBaseStep implements Serializable {
+public class AddHttp extends StepStatement implements Serializable {
     private final String url;
     private final String headers;
     private final String body;
@@ -37,6 +41,6 @@ public class AddHttp extends StatementBaseStep implements Serializable {
         else {
             missingField.increment();
         }
-        return BaseStep.NEITHER;
+        return StepBase.NEITHER;
     }
 }

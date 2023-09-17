@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Step(tag = "json-list")
-public class JsonList extends StatementBaseStep implements Serializable {
+public class JsonList extends StepStatement implements Serializable {
 
     private String source;
     private String dest;

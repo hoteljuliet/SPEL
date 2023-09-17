@@ -1,11 +1,12 @@
 package net.hoteljuliet.spel.predicates;
 
+import net.hoteljuliet.spel.StepPredicateComplex;
 import net.hoteljuliet.spel.Context;
 
 import java.io.Serializable;
 import java.util.Optional;
 
-public class Xor extends ComplexPredicateBaseStep implements Serializable {
+public class Xor extends StepPredicateComplex implements Serializable {
 
     public Xor() {
         super();

@@ -2,8 +2,9 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.BaseStep;
+import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Step(tag = "regression")
-public class Regression extends StatementBaseStep implements Serializable {
+public class Regression extends StepStatement implements Serializable {
     private final String x;
     private final String y;
     private final String predict;
@@ -52,6 +53,6 @@ public class Regression extends StatementBaseStep implements Serializable {
         else {
             missingField.increment();
         }
-        return BaseStep.NEITHER;
+        return StepBase.NEITHER;
     }
 }

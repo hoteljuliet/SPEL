@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.FieldType;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.Optional;
  * Convert a field's type
  */
 @Step(tag = "cast")
-public class Cast extends StatementBaseStep implements Serializable {
+public class Cast extends StepStatement implements Serializable {
 
     private final String source;
     private final FieldType fieldType;

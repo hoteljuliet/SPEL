@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Step(tag = "json-map")
-public class JsonMap extends StatementBaseStep implements Serializable {
+public class JsonMap extends StepStatement implements Serializable {
 
     private String source;
     private String dest;

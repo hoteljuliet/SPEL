@@ -13,10 +13,14 @@ This project was started after years of great experience working with (Logzio Sa
 6. As much as possible, a pipeline should look like a bash script in yaml format
 7. Keep the names of steps and parameters short
 8. Keep the naming of parameters consistent and simple: source(s), dest(s), to, from, dict, list, action (which is an enumeration of common actions)
-9. Make more, smaller steps vs bigger ones with lots of options. ~50 lines for a baseStep is normal/average.
+9. Make more, smaller steps vs bigger ones with lots of options. ~50 lines for a stepBase is normal/average.
 10. Use jackson annotations for all parsing rules, optional fields, etc
-11. It's fine/great to do stateful things in Statements/Predicates, so long as they
+11. Steps must be completely serializable (otherwise they can't be stored in a Value State)
+12. All Step class attributes must be either final or transient, if transient they must be re-initialized 
+13. minimize logging (use metrics instead). Only log at error and debug levels, never info.
+14. It's fine/great to do stateful things in Statements/Predicates, so long as they
   - don't require too much RAM
-  - output their state (i.e., to something like Flink's ValueState - aka stream state) *OR*
-  - they can be snapshot + restored (i.e., to/from something like a Flink ListState - aka operator state)
+  - are completely serializable (when stored in something like a Flink Value State)
+  - they can be snapshot + restored (i.e., to/from something like a Flink ListState)
+
  

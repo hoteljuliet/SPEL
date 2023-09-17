@@ -3,6 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
@@ -12,11 +13,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Step(tag = "now")
-public class Now extends StatementBaseStep implements Serializable {
-    private String dest;
-    private String to;
+public class Now extends StepStatement implements Serializable {
+    private final String dest;
+    private final String to;
 
-    private String zone;
+    private final String zone;
     private transient DateTimeFormatter toFormatter;
 
     @JsonCreator
@@ -27,6 +28,17 @@ public class Now extends StatementBaseStep implements Serializable {
         this.dest = dest;
         this.to = to;
         this.zone = zone;
+        if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
+            toFormatter = null;
+        }
+        else {
+            toFormatter = DateTimeFormatter.ofPattern(to);
+        }
+    }
+
+    @Override
+    public void reinitialize() {
+        super.reinitialize();
         if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
             toFormatter = null;
         }
@@ -51,16 +63,5 @@ public class Now extends StatementBaseStep implements Serializable {
             context.addField(dest, reformatted);
         }
         return NEITHER;
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-        if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
-            toFormatter = null;
-        }
-        else {
-            toFormatter = DateTimeFormatter.ofPattern(to);
-        }
     }
 }
