@@ -20,9 +20,9 @@ public class Context implements Map<String, Object> {
 
     public Context(Map<String, Object> event) {
         this();
-        backing.put("_input", event);
-        backing.put("_state", new HashMap<String, Object>());
-        backing.put("_volatile_state", new HashMap<String, Object>());
+        backing.put(State.INPUT, event);
+        backing.put(State.STATE, new HashMap<String, Object>());
+        backing.put(State.VOLATILE, new HashMap<String, Object>());
     }
 
     @Override

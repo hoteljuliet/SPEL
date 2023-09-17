@@ -1,5 +1,6 @@
 package net.hoteljuliet.spel.statements;
 
+import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
@@ -16,19 +17,26 @@ import java.util.Optional;
 public class Stats extends StepStatement implements Serializable {
     private final String source;
     private final String dest;
-    private final SummaryStatistics summaryStatistics;
+    private final Boolean volatileState;
+    private transient SummaryStatistics summaryStatistics;
 
     @JsonCreator
     public Stats(@JsonProperty(value = "source", required = true) String source,
-                 @JsonProperty(value = "dest", required = true) String dest) {
+                 @JsonProperty(value = "dest", required = true) String dest,
+                 @JsonProperty(value = "volatile", required = false, defaultValue = "false") Boolean volatileState) {
         super();
         this.source = source;
         this.dest = dest;
-        summaryStatistics = new SummaryStatistics();
+        this.volatileState = volatileState;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (requiresExternal(context, "summaryStatistics", volatileState)) {
+            summaryStatistics = externalize(context, "summaryStatistics", new SummaryStatistics(), volatileState);
+        }
+
         if (context.hasField(source)) {
             Double value = context.getField(source);
             summaryStatistics.addValue(value);

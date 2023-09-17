@@ -35,8 +35,7 @@ public abstract class StepBase implements Serializable {
     protected abstract Optional<Boolean> onException(Throwable t, Context context);
 
     protected <T> T externalize(Context context, String subKey, Object value, Boolean volatileState) {
-        String prefix = volatileState ? "_volatile_state." : "_state.";
-        String key = prefix + name.toLowerCase() + "." + subKey;
+        String key = State.getStateKey(name, subKey, volatileState);
         if (!context.hasField(key)) {
             context.addField(key, value);
         }
@@ -44,8 +43,7 @@ public abstract class StepBase implements Serializable {
     }
 
     protected Boolean requiresExternal(Context context, String subKey, Boolean volatileState) {
-        String prefix = volatileState ? "_volatile_state." : "_state.";
-        String key = prefix + name.toLowerCase() + "." + subKey;
+        String key = State.getStateKey(name, subKey, volatileState);
         return context.hasField(key);
     }
 

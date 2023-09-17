@@ -111,7 +111,7 @@ public class Pipeline implements Serializable {
         stopWatch.start();
         for (StepBase stepBase : stepBases) {
             if (BooleanUtils.isTrue(logPerformance)) {
-                logger.debug("Context before " + stepBase.getName() + ": " + context.toStringExcluding("_state.stepMetrics"));
+                logger.debug("Context before " + stepBase.getName() + ": " + context.toStringExcluding(State.STEP_METRICS));
             }
             try {
                 stepBase.execute(context);
@@ -136,7 +136,7 @@ public class Pipeline implements Serializable {
             Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
             logger.debug("Pipeline total : " + pipelineTotalMillis + " millis");
 
-            Map<String, StepMetrics> metrics = context.getField("_state.stepMetrics");
+            Map<String, StepMetrics> metrics = context.getField(State.STEP_METRICS);
 
             for (Map.Entry<String, StepMetrics> entry : metrics.entrySet()) {
                 String name = entry.getKey();

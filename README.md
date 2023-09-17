@@ -18,9 +18,12 @@ This project was started after years of great experience working with (Logzio Sa
 11. Steps must be completely serializable (otherwise they can't be stored in a Value State)
 12. All Step class attributes must be either final or transient, if transient they must be re-initialized 
 13. minimize logging (use metrics instead). Only log at error and debug levels, never info.
-14. It's fine/great to do stateful things in Statements/Predicates, so long as they
-  - don't require too much RAM
-  - are completely serializable (when stored in something like a Flink Value State)
-  - they can be snapshot + restored (i.e., to/from something like a Flink ListState)
-
- 
+14. When dealing with Step's state:
+  - most Steps don't have state, although they might create state (by outputting something to _state). Ex: add-m can add a field under _state.
+  - examples of state used by Steps: HyperLogLog, SummaryStatistics, TDigest
+  - Steps can't have State that is non-Serializable 
+  - if a Step has non-Serializable fields (that are not state) just check for null and re-initialize in doExecute()
+  - if a Step has Serializable fields (that are state) use the "externalize" methods
+  - Steps will piggyback on Flink's state mechanisms, (i.e.,their data will be stored/fetched to/from something like a Flink ListState or ValueState)
+    - if a keyed operator, then MapState else ListState
+  - "volatile" state can be cleared by an operator when _clear is true. For example in a windowed function doing de-duplication - we'd want to clear the Bloom Filter on windowClose() so we would store that in volatile state.
