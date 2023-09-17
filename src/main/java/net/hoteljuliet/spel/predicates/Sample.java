@@ -19,10 +19,10 @@ public class Sample extends StepPredicate implements Serializable {
     public Sample(@JsonProperty(value = "percentage", required = true) Integer percentage) {
         super();
         this.percentage = percentage;
-        random = new Random();
+        this.random = new Random();
     }
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        return (random.nextInt(100) < percentage) ? StepBase.TRUE : StepBase.FALSE;
+        return (random.nextInt(100) < percentage) ? TRUE : FALSE;
     }
 }

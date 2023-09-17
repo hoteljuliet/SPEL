@@ -18,7 +18,7 @@ public class Now extends StepStatement implements Serializable {
     private final String to;
 
     private final String zone;
-    private transient DateTimeFormatter toFormatter;
+    private transient Optional<DateTimeFormatter> toFormatter;
 
     @JsonCreator
     public Now(@JsonProperty(value = "dest", required = true) String dest,
@@ -28,27 +28,20 @@ public class Now extends StepStatement implements Serializable {
         this.dest = dest;
         this.to = to;
         this.zone = zone;
-        if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
-            toFormatter = null;
-        }
-        else {
-            toFormatter = DateTimeFormatter.ofPattern(to);
-        }
-    }
-
-    @Override
-    public void reinitialize() {
-        super.reinitialize();
-        if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
-            toFormatter = null;
-        }
-        else {
-            toFormatter = DateTimeFormatter.ofPattern(to);
-        }
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == toFormatter) {
+            if (to.equalsIgnoreCase("unix_ms") || to.equalsIgnoreCase("unix_s")) {
+                toFormatter = Optional.empty();
+            }
+            else {
+                toFormatter = Optional.of(DateTimeFormatter.ofPattern(to));
+            }
+        }
+
         ZonedDateTime original = ZonedDateTime.now(ZoneId.of(zone));
         if (to.equalsIgnoreCase("unix_ms")) {
             String reformatted = String.valueOf(original.toInstant().toEpochMilli());
@@ -59,7 +52,7 @@ public class Now extends StepStatement implements Serializable {
             context.addField(dest, reformatted);
         }
         else {
-            String reformatted = original.format(toFormatter);
+            String reformatted = original.format(toFormatter.get());
             context.addField(dest, reformatted);
         }
         return NEITHER;

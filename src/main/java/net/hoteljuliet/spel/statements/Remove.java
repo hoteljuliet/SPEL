@@ -28,7 +28,7 @@ public class Remove extends StepStatement implements Serializable {
                 context.removeField(path);
             }
             else {
-                missingField.increment();
+                missingField();
             }
         }
         return NEITHER;

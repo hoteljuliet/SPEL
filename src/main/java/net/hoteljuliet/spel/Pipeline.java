@@ -40,6 +40,7 @@ public class Pipeline implements Serializable {
         return objectMapper.readValue(Pipeline.class.getResourceAsStream(path), Pipeline.class);
     }
 
+    // TODO: remove snapshot and restore, all data in externalized into Flink state, so no need for it here
     public String snapshot() {
         // TODO synchronize execute and snapshot???
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -84,33 +85,33 @@ public class Pipeline implements Serializable {
     public Boolean logStackTrace;
     public Boolean logPerformance;
 
-    public void parse() {
+    public Integer parse() {
         Parser parser = new Parser(defaultPredicatePackages, defaultStatementPackages);
         stepBases = parser.parse(config);
+        return parser.getFactory().getInstanceCounter().intValue();
     }
 
-    public void parse(String[] predicatePackages, String[] statementPackages) {
+    public Integer parse(String[] predicatePackages, String[] statementPackages) {
         String[] allPredicatePackages = ArrayUtils.addAll(defaultPredicatePackages, predicatePackages);
         String[] allStatementPackages = ArrayUtils.addAll(defaultStatementPackages, statementPackages);
         Parser parser = new Parser(allPredicatePackages, allStatementPackages);
         stepBases = parser.parse(config);
+        return parser.getFactory().getInstanceCounter().intValue();
     }
 
     public void execute() {
         execute(new Context());
     }
 
-    // TODO: consider making this walk the entire graph, not just the top level
     public void execute(Context context) {
 
-        // TODO: implement or use a watchdog - see Apache and Sawmill -
-        // TODO: Watchdog watchdog;
+        // TODO: implement or find/use a watchdog??? - see Apache and Sawmill -
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         for (StepBase stepBase : stepBases) {
             if (BooleanUtils.isTrue(logPerformance)) {
-                logger.debug("Context before " + stepBase.getName() + ": " + context);
+                logger.debug("Context before " + stepBase.getName() + ": " + context.toStringExcluding("_state.stepMetrics"));
             }
             try {
                 stepBase.execute(context);
@@ -135,9 +136,13 @@ public class Pipeline implements Serializable {
             Long pipelineTotalMillis = stopWatch.getNanoTime() / 1000000;
             logger.debug("Pipeline total : " + pipelineTotalMillis + " millis");
 
-            for (StepBase stepBase : context.getExecutedBaseSteps()) {
-                Double pct = Double.valueOf(stepBase.runTimeNanos.getMean() / stopWatch.getNanoTime()) * 100;
-                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", stepBase.getName(), stepBase.runTimeNanos.getMean(), pct);
+            Map<String, StepMetrics> metrics = context.getField("_state.stepMetrics");
+
+            for (Map.Entry<String, StepMetrics> entry : metrics.entrySet()) {
+                String name = entry.getKey();
+                StepMetrics metric = entry.getValue();
+                Double pct = Double.valueOf(metric.getRunTimeNanos().getMean() / stopWatch.getNanoTime()) * 100;
+                String message = String.format("name=%s, avgNanos=%.2f, pct=%.2f", name, metric.getRunTimeNanos().getMean(), pct);
                 logger.debug(message);
             }
         }

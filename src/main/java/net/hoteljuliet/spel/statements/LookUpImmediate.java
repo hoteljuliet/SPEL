@@ -46,7 +46,7 @@ public class LookUpImmediate extends StepStatement implements Serializable {
                 }
             }
             else {
-                missingField.increment();
+                missingField();
             }
         }
         return NEITHER;

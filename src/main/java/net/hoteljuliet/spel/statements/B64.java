@@ -30,13 +30,10 @@ public class B64 extends StepStatement implements Serializable {
     }
 
     @Override
-    public void reinitialize() {
-        super.reinitialize();
-        this.base64 = new Base64();
-    }
-
-    @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == base64) base64 = new Base64();
+
         if (context.hasField(source)) {
             String value = context.getField(source);
             if (Action.ENCODE == action) {
@@ -47,7 +44,7 @@ public class B64 extends StepStatement implements Serializable {
                 context.addField(dest, decodedValue);
             }
         } else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }

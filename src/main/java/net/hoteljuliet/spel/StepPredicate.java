@@ -1,23 +1,9 @@
 package net.hoteljuliet.spel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.concurrent.atomic.LongAdder;
 
 public abstract class StepPredicate extends StepBase implements Serializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(StepPredicate.class);
-    protected LongAdder evalTrue;
-    protected LongAdder evalFalse;
-
-    public StepPredicate() {
-        super();
-        evalTrue = new LongAdder();
-        evalFalse = new LongAdder();
-    }
 
     /**
      * Note that exceptions in Predicates evaluate to false
@@ -27,7 +13,7 @@ public abstract class StepPredicate extends StepBase implements Serializable {
      */
     @Override
     protected Optional<Boolean> onException(Throwable t, Context context) {
-        softFailure.increment();
+        softFailure();
         return FALSE;
     }
 
@@ -40,10 +26,10 @@ public abstract class StepPredicate extends StepBase implements Serializable {
     public void after(Optional<Boolean> evaluation, Context context) {
         super.after(evaluation, context);
         if (evaluation.equals(TRUE)) {
-            evalTrue.increment();
+            evalTrue();
         }
         else if (evaluation.equals(FALSE)) {
-            evalFalse.increment();
+            evalFalse();
         }
     }
 }

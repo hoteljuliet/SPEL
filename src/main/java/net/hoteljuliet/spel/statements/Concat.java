@@ -33,7 +33,7 @@ public class Concat extends StepStatement implements Serializable {
                 stringBuilder.append(value);
             }
             else {
-                missingField.increment();
+                missingField();
             }
         }
         context.addField(dest, stringBuilder.toString());

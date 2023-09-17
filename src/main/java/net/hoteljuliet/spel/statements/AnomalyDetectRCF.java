@@ -36,7 +36,7 @@ public class AnomalyDetectRCF extends StepStatement implements Serializable {
             // see https://github.com/aws/random-cut-forest-by-aws/blob/main/Java/examples/src/main/java/com/amazon/randomcutforest/examples/parkservices/SequentialAnomalyExample.java
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }

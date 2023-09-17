@@ -38,7 +38,7 @@ public class In extends StepPredicate implements Serializable {
                 retVal = FALSE;
             }
         } else {
-            missingField.increment();
+            missingField();
             retVal = FALSE;
         }
         return retVal;

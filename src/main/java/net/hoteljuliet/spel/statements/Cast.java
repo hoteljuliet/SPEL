@@ -36,11 +36,11 @@ public class Cast extends StepStatement implements Serializable {
                 context.replaceFieldValue(source, afterCast);
             }
             else {
-                softFailure.increment();
+                softFailure();
             }
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

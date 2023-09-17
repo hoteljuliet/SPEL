@@ -37,7 +37,7 @@ public class Split extends StepStatement implements Serializable {
             context.replaceFieldValue(dest, output);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }

@@ -31,7 +31,7 @@ public class Rename extends StepStatement implements Serializable {
                 context.addField(rename.getValue(), value);
             }
             else {
-                missingField.increment();
+                missingField();
             }
         }
 

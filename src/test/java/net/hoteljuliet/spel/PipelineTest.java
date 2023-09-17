@@ -77,10 +77,15 @@ public class PipelineTest {
 
     @Test
     public void test3() throws IOException {
-        Pipeline pipeline = Pipeline.fromResource("/test3.yaml");
-        pipeline.parse();
-        Context context = new Context();
-        pipeline.execute(context);
+
+        for (int i = 0; i < 8; i++) {
+            Pipeline pipeline = Pipeline.fromResource("/test3.yaml");
+            Integer numStepsParsed = pipeline.parse();
+            Context context = new Context();
+            pipeline.execute(context);
+            Map<String, StepMetrics> metrics = context.getField("_state.stepMetrics");
+            assertThat(metrics.size()).isLessThanOrEqualTo(numStepsParsed);
+        }
     }
 
     @Test

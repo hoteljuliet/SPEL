@@ -27,18 +27,10 @@ public class RandomNumber extends StepStatement implements Serializable {
     }
 
     @Override
-    public void reinitialize() {
-        super.reinitialize();
-        try {
-            secureRandom = new SecureRandom();
-        }
-        catch(Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == secureRandom) secureRandom = new SecureRandom();
+
         switch(fieldType) {
             case INT: {
                 context.addField(dest, secureRandom.nextInt());

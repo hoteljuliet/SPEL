@@ -115,4 +115,8 @@ public class Parser {
     public static Object firstValue(Map<String, Object> node) {
         return node.entrySet().iterator().next().getValue();
     }
+
+    public Factory getFactory() {
+        return factory;
+    }
 }

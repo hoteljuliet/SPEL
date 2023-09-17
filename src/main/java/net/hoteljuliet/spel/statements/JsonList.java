@@ -37,7 +37,7 @@ public class JsonList extends StepStatement implements Serializable {
             context.addField(dest, mappedValue);
         }
         else {
-            missingField.increment();
+            missingField();
         }
 
         return NEITHER;

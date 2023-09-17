@@ -32,13 +32,13 @@ public class Math extends StepPredicate implements Serializable {
         Map<String, Double> variablesMap = new HashMap<>();
         for (String variable : variables) {
             if (!context.hasField(variable)) {
-                missingField.increment();
+                missingField();
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    softFailure.increment();
+                    softFailure();
                 }
                 else {
                     variablesMap.put(variable, value);

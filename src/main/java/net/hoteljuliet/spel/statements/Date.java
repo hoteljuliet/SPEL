@@ -15,7 +15,6 @@ import java.util.Optional;
 public class Date extends StepStatement implements Serializable {
     private String source;
     private String dest;
-
     private String from;
     private String to;
 
@@ -32,19 +31,13 @@ public class Date extends StepStatement implements Serializable {
         this.dest = dest;
         this.from = from;
         this.to = to;
-        fromFormatter = DateTimeFormatter.ofPattern(from);
-        toFormatter = DateTimeFormatter.ofPattern(to);
-    }
-
-    @Override
-    public void reinitialize() {
-        super.reinitialize();
-        fromFormatter = DateTimeFormatter.ofPattern(from);
-        toFormatter = DateTimeFormatter.ofPattern(to);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == fromFormatter) fromFormatter = DateTimeFormatter.ofPattern(from);
+        if (null == toFormatter) toFormatter = DateTimeFormatter.ofPattern(to);
 
         if (context.hasField(source)) {
             String value = context.getField(source);
@@ -53,7 +46,7 @@ public class Date extends StepStatement implements Serializable {
             context.addField(dest, reformatted);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

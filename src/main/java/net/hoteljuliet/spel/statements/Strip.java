@@ -28,7 +28,7 @@ public class Strip extends StepStatement implements Serializable {
             context.replaceFieldValue(source, stripped);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }

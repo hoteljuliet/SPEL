@@ -24,13 +24,11 @@ public class AddM extends StepStatement implements Serializable {
     }
 
     @Override
-    public void reinitialize() {
-        super.reinitialize();
-        this.mustache = SpelUtils.compile(exp);
-    }
-
-    @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+        if (null == mustache) {
+            mustache = SpelUtils.compile(exp);
+        }
+
         Object value = context.render(mustache);
         context.addField(dest, value);
         return StepBase.NEITHER;

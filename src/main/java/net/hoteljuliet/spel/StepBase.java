@@ -1,14 +1,9 @@
 package net.hoteljuliet.spel;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.LongAdder;
 
 public abstract class StepBase implements Serializable {
 
@@ -16,33 +11,11 @@ public abstract class StepBase implements Serializable {
     public static final Optional<Boolean> FALSE = Optional.of(false);
     public static final Optional<Boolean> NEITHER = Optional.empty();
 
-    protected transient StopWatch stopWatch;
-
     protected String name;
-    protected SummaryStatistics runTimeNanos;
-    protected AtomicLong lastRunNanos;
-    protected LongAdder success = new LongAdder();
-    protected LongAdder missingField = new LongAdder();
-    protected LongAdder exceptionThrown = new LongAdder();
-    protected LongAdder softFailure = new LongAdder();
-    protected LimitedCountingMap exceptionsCounter = new LimitedCountingMap();
-
-    protected transient Boolean initialized;
+    protected transient StepMetrics stepMetrics;
 
     public StepBase() {
-        stopWatch = new StopWatch();
-        runTimeNanos = new SummaryStatistics();
-        lastRunNanos = new AtomicLong();
-        success = new LongAdder();
-        missingField = new LongAdder();
-        exceptionThrown = new LongAdder();
-        softFailure = new LongAdder();
-        exceptionsCounter = new LimitedCountingMap();
-        initialized = true;
-    }
-
-    public void reinitialize() {
-        stopWatch = new StopWatch();
+        ;
     }
 
     /**
@@ -61,23 +34,28 @@ public abstract class StepBase implements Serializable {
      */
     protected abstract Optional<Boolean> onException(Throwable t, Context context);
 
+    protected Object externalized(Context context, String subKey, Object value) {
+        String key = "_state." + name.toLowerCase() + "." + subKey;
+        if (!context.hasField(key)) {
+            context.addField(key, value);
+        }
+        return context.getField(key);
+    }
+
     /**
      * Called before a Step executes, mostly for metric updates
      * @param context
      */
     public final void before(Context context) {
 
-        if (null == initialized || false == initialized) {
-             reinitialize();
-             initialized = true;
+        String metricsKey = "_state.stepMetrics." + name.toLowerCase();
+        if (null == stepMetrics) {
+            if (!context.hasField(metricsKey)) {
+                context.addField(metricsKey, new StepMetrics());
+            }
         }
-
-        if (!context.getExecutedBaseSteps().contains(this)) {
-            context.getExecutedBaseSteps().add(this);
-        }
-
-        stopWatch.reset();
-        stopWatch.start();
+        stepMetrics = context.getField(metricsKey);
+        stepMetrics.getStopWatch().start();
     }
 
     /**
@@ -86,9 +64,9 @@ public abstract class StepBase implements Serializable {
      * @param context
      */
     public void after(Optional<Boolean> evaluation, Context context) {
-        stopWatch.stop();
-        runTimeNanos.addValue((double)stopWatch.getNanoTime());
-        lastRunNanos.set(stopWatch.getNanoTime());
+        stepMetrics.getStopWatch().stop();
+        stepMetrics.getRunTimeNanos().addValue((double)stepMetrics.getStopWatch().getNanoTime());
+        stepMetrics.getLastRunNanos().set(stepMetrics.getStopWatch().getNanoTime());
     }
 
     /**
@@ -103,18 +81,42 @@ public abstract class StepBase implements Serializable {
         try {
             before(context);
             retVal = doExecute(context);
-            this.success.increment();
+            stepMetrics.getSuccess().increment();
         }
         catch(Throwable t) {
-            exceptionThrown.increment();
+            stepMetrics.getExceptionThrown().increment();
             String rootCase = ExceptionUtils.getRootCauseMessage(t);
-            exceptionsCounter.put(rootCase);
+            stepMetrics.getExceptionsCounter().put(rootCase);
             retVal = onException(t, context);
         }
         finally {
             after(retVal, context);
         }
         return retVal;
+    }
+
+    public StepMetrics getStepMetrics() {
+        return stepMetrics;
+    }
+
+    public void evalTrue() {
+        stepMetrics.getEvalTrue().increment();
+    }
+
+    public void evalFalse() {
+        stepMetrics.getEvalFalse().increment();
+    }
+
+    public void softFailure() {
+        stepMetrics.getSoftFailure().increment();
+    }
+
+    public void missingField() {
+        stepMetrics.getMissingField().increment();
+    }
+
+    public void exceptionThrown() {
+        stepMetrics.getExceptionThrown().increment();
     }
 
     public String getName() {

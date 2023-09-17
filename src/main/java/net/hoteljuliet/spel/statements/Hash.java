@@ -34,14 +34,10 @@ public class Hash extends StepStatement implements Serializable {
     }
 
     @Override
-    public void reinitialize() {
-        super.reinitialize();
-        base64 = new Base64();
-        messageDigest = DigestUtils.getDigest(algo);
-    }
-
-    @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == base64) base64 = new Base64();
+        if (null == messageDigest) messageDigest = DigestUtils.getDigest(algo);
 
         if (context.hasField(source)) {
             String value = context.getField(source);
@@ -50,7 +46,7 @@ public class Hash extends StepStatement implements Serializable {
             context.addField(dest, b64);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

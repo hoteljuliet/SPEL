@@ -28,30 +28,26 @@ public class Crunch extends StepStatement implements Serializable {
         this.dest = dest;
         this.expression = expression;
         this.variables = variables;
-        compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
-    }
-
-    @Override
-    public void reinitialize() {
-        super.reinitialize();
-        this.compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == compiledExpression) compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
+
         double[] vars = new double[variables.size()];
 
         for (int i = 0; i < vars.length; i++) {
             String variable = variables.get(i);
 
             if (!context.hasField(variable)) {
-                missingField.increment();
+                missingField();
             }
             else {
                 Object fieldValue = context.getField(variable);
                 Double value = Doubles.tryParse(String.valueOf(fieldValue));
                 if (value == null) {
-                    softFailure.increment();
+                    softFailure();
                 }
                 else {
                     vars[i] = value;

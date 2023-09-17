@@ -34,7 +34,7 @@ public class AsList extends StepStatement implements Serializable {
                 list.add(value);
             }
             else {
-                missingField.increment();
+                missingField();
             }
         }
         context.addField(dest, list);

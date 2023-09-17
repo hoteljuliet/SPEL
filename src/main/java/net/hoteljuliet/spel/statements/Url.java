@@ -27,7 +27,7 @@ public class Url extends StepStatement implements Serializable {
             //     See: https://www.baeldung.com/java-url-encoding-decoding, https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/net/URLCodec.html
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }

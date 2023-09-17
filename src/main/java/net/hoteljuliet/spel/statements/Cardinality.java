@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
-import org.apache.commons.codec.binary.Base64;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -17,7 +16,8 @@ public class Cardinality extends StepStatement implements Serializable {
     private final String source;
     private final String dest;
     private final Integer precision;
-    private final HyperLogLogPlus hyperLogLogPlus;
+    // TODO: externalize this into the context
+    private transient HyperLogLogPlus hyperLogLogPlus;
 
     @JsonCreator
     public Cardinality(@JsonProperty(value = "source", required = true) String source,
@@ -27,18 +27,19 @@ public class Cardinality extends StepStatement implements Serializable {
         this.source = source;
         this.precision = precision;
         this.dest = dest;
-        hyperLogLogPlus = new HyperLogLogPlus(precision);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+        hyperLogLogPlus = (HyperLogLogPlus) externalized(context, "hyperLogLogPlus", new HyperLogLogPlus(precision));
+
         if (context.hasField(source)) {
             Object value = context.getField(source);
             Boolean result = hyperLogLogPlus.offer(value);
             context.addField(dest, hyperLogLogPlus.cardinality());
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

@@ -37,40 +37,24 @@ public class KeyedHash extends StepStatement implements Serializable {
         this.iterations = iterations;
         this.salt = salt;
         this.password = password;
-        this.base64 = new Base64();
-
-        try {
-
-            PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
-            mac = javax.crypto.Mac.getInstance("HmacSHA256");
-            mac.init(secretKey);
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    @Override
-    public void reinitialize() {
-        super.reinitialize();
-        // TODO: refactor duplicate code
-        this.base64 = new Base64();
-        try {
-            PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
-            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-            SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
-            mac = javax.crypto.Mac.getInstance("HmacSHA256");
-            mac.init(secretKey);
-        }
-        catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+
+        if (null == base64) base64 = new Base64();
+        if (null == mac) {
+            try {
+                PBEKeySpec pbeKeySpec = new PBEKeySpec(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), iterations, 256);
+                SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+                SecretKey secretKey = secretKeyFactory.generateSecret(pbeKeySpec);
+                mac = javax.crypto.Mac.getInstance("HmacSHA256");
+                mac.init(secretKey);
+            }
+            catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
 
         if (context.hasField(source)) {
             String value = context.getField(source);
@@ -79,7 +63,7 @@ public class KeyedHash extends StepStatement implements Serializable {
             context.addField(dest, b64);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

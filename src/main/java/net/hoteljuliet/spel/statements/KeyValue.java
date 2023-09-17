@@ -44,7 +44,7 @@ public class KeyValue extends StepStatement implements Serializable {
             context.addField(dest, result);
         }
         else {
-            missingField.increment();
+            missingField();
         }
 
         return NEITHER;

@@ -19,6 +19,7 @@ public class Quantile extends StepStatement implements Serializable {
     private final String dest;
     private final Integer compression;
     private final List<Double> quantiles;
+    // TODO: refactor to be externalized in the context + serializable
     private final TDigest tDigest;
     @JsonCreator
     public Quantile(@JsonProperty(value = "source", required = true) String source,
@@ -45,7 +46,7 @@ public class Quantile extends StepStatement implements Serializable {
             }
             context.addField(dest, map);
         } else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

@@ -41,7 +41,7 @@ public class Append extends StepStatement implements Serializable {
             }
         }
         else {
-            softFailure.increment();
+            softFailure();
         }
         return StepBase.NEITHER;
     }

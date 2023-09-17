@@ -47,7 +47,7 @@ public class Delimit extends StepStatement implements Serializable {
                 }
             }
         } else {
-            missingField.increment();
+            missingField();
         }
 
         return NEITHER;

@@ -37,6 +37,6 @@ public class If extends StepPredicate implements Serializable {
                 stepBase.execute(context);
             }
         }
-        return StepBase.NEITHER;
+        return eval;
     }
 }

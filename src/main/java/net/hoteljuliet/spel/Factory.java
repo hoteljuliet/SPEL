@@ -181,7 +181,7 @@ public class Factory {
     }
 
     public String buildUniqueNameFromType(String type) {
-        String retVal = type + "[" + instanceCounter.longValue() + "]";
+        String retVal = type + "_" + instanceCounter.longValue();
         instanceCounter.increment();
         return retVal;
     }
@@ -193,7 +193,11 @@ public class Factory {
         }
         else {
             instanceCounter.increment();
-            config.put("name", type + "[" + instanceCounter.longValue() + "]");
+            config.put("name", type + "_" + instanceCounter.longValue());
         }
+    }
+
+    public LongAdder getInstanceCounter() {
+        return instanceCounter;
     }
 }

@@ -39,7 +39,7 @@ public class AddHttp extends StepStatement implements Serializable {
 
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }

@@ -38,7 +38,7 @@ public class Flatten extends StepStatement {
             context.addField(dest, flattened);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

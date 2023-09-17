@@ -34,7 +34,7 @@ public class Round extends StepStatement implements Serializable {
             context.replaceFieldValue(source, df.format(value));
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

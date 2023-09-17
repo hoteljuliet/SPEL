@@ -13,16 +13,17 @@ import static com.google.common.base.Preconditions.checkState;
 public class Context implements Map<String, Object> {
 
     private Map<String, Object> backing;
-    private List<StepBase> executedStepBases;
 
     public Context() {
-        executedStepBases = new ArrayList<>();
         this.backing = new HashMap<>();
     }
 
-    public Context(Map<String, Object> backing) {
+    public Context(Map<String, Object> event) {
         this();
-        this.backing = backing;
+        backing.put("_input", event);
+        backing.put("_state", new HashMap<String, Object>());
+        //List<StepMetrics> metrics = new ArrayList<>();
+        //backing.put("_state.stepMetrics", metrics);
     }
 
     @Override
@@ -322,9 +323,17 @@ public class Context implements Map<String, Object> {
         backing.putAll(otherMap);
     }
 
+    public String toStringExcluding(String... keys) {
+        Context filtered = new Context(new HashMap<>(backing));
+        for (String key : keys) {
+            filtered.removeField(key);
+        }
+        return filtered.toString();
+    }
+
     @Override
     public String toString() {
-        return "Context: " + backing.toString();
+        return backing.toString();
     }
 
     public String render(Mustache mustache) {
@@ -333,9 +342,5 @@ public class Context implements Map<String, Object> {
         mustache.execute(writer, Arrays.asList(docContext));
         writer.flush();
         return writer.toString();
-    }
-
-    public List<StepBase> getExecutedBaseSteps() {
-        return executedStepBases;
     }
 }

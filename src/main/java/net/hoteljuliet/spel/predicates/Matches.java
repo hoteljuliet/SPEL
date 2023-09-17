@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 public class Matches extends StepPredicate implements Serializable {
 
     private final String source;
-    private String regex;
-    private Pattern pattern;
+    private final String regex;
+    private final Pattern pattern;
 
     @JsonCreator
     public Matches(@JsonProperty(value = "source", required = true) String source,
@@ -24,7 +24,7 @@ public class Matches extends StepPredicate implements Serializable {
         super();
         this.source = source;
         this.regex = regex;
-        pattern = Pattern.compile(regex);
+        this.pattern = Pattern.compile(regex);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Matches extends StepPredicate implements Serializable {
                 retVal = FALSE;
             }
         } else {
-            softFailure.increment();
+            missingField();
             retVal = FALSE;
         }
 

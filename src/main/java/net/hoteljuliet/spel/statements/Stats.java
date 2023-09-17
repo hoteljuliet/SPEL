@@ -42,7 +42,7 @@ public class Stats extends StepStatement implements Serializable {
             context.addField(dest, map);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return NEITHER;
     }

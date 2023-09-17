@@ -47,7 +47,7 @@ public class LookUp extends StepStatement implements Serializable {
                 }
             }
             else {
-                missingField.increment();
+                missingField();
             }
         }
         return NEITHER;

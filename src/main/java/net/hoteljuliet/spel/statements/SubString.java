@@ -37,7 +37,7 @@ public class SubString extends StepStatement implements Serializable {
             context.replaceFieldValue(dest, substring);
         }
         else {
-            missingField.increment();
+            missingField();
         }
         return StepBase.NEITHER;
     }
