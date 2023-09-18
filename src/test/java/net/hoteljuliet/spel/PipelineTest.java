@@ -16,6 +16,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 public class PipelineTest {
 
+    /*
     @Test
     public void test_serializable() throws IOException {
         Pipeline pipeline = Pipeline.fromResource("/test3.yaml");
@@ -35,6 +36,7 @@ public class PipelineTest {
 
         restored.execute(context);
     }
+     */
 
     @Ignore
     @Test

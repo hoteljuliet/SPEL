@@ -21,8 +21,25 @@ public class Context implements Map<String, Object> {
     public Context(Map<String, Object> event) {
         this();
         backing.put(State.INPUT, event);
+        backing.put(State.OUTPUT, new HashMap<String, Object>());
         backing.put(State.STATE, new HashMap<String, Object>());
         backing.put(State.VOLATILE, new HashMap<String, Object>());
+    }
+
+    public Context(Map<String, Object> event, Map<String, Object> state) {
+        this();
+        backing.put(State.INPUT, event);
+        backing.put(State.OUTPUT, new HashMap<String, Object>());
+        backing.put(State.STATE, state);
+        backing.put(State.VOLATILE, new HashMap<String, Object>());
+    }
+
+    public Context(Map<String, Object> event, Map<String, Object> state, Map<String, Object> volatileState) {
+        this();
+        backing.put(State.INPUT, event);
+        backing.put(State.OUTPUT, new HashMap<String, Object>());
+        backing.put(State.STATE, state);
+        backing.put(State.VOLATILE, volatileState);
     }
 
     @Override
@@ -341,5 +358,18 @@ public class Context implements Map<String, Object> {
         mustache.execute(writer, Arrays.asList(docContext));
         writer.flush();
         return writer.toString();
+    }
+
+    public static Map<String, Object> mapOf(Object... objects) {
+
+        if (objects.length % 2 != 0) {
+            throw new IllegalArgumentException("objects must be even");
+        }
+
+        Map<String, Object> retVal = new HashMap<>();
+        for (int i = 0; i < objects.length; i+=2) {
+            retVal.put(String.valueOf(objects[i]), objects[i+1]);
+        }
+        return retVal;
     }
 }

@@ -41,6 +41,7 @@ public class Pipeline implements Serializable {
     }
 
     // TODO: remove snapshot and restore, all data in externalized into Flink state, so no need for it here
+    /*
     public String snapshot() {
         // TODO synchronize execute and snapshot???
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -78,6 +79,7 @@ public class Pipeline implements Serializable {
             IOUtils.closeQuietly(byteArrayInputStream, objectInputStream);
         }
     }
+    */
 
     public List<Map<String, Object>> config;
     private List<StepBase> stepBases;

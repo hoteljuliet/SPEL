@@ -26,4 +26,4 @@ This project was started after years of great experience working with (Logzio Sa
   - if a Step has Serializable fields (that are state) use the "externalize" methods
   - Steps will piggyback on Flink's state mechanisms, (i.e.,their data will be stored/fetched to/from something like a Flink ListState or ValueState)
     - if a keyed operator, then MapState else ListState
-  - "volatile" state can be cleared by an operator when _clear is true. For example in a windowed function doing de-duplication - we'd want to clear the Bloom Filter on windowClose() so we would store that in volatile state.
+  - "volatile" state will be cleared by an operator when _clear is true. For example: in a windowed function doing de-duplication - we'd want to clear the Bloom Filter on windowClose(), so we would store the filter in volatile state.
