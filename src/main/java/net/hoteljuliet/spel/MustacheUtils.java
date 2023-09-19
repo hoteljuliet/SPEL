@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SpelUtils {
+public class MustacheUtils {
 
     private final static Pattern mustachePattern = Pattern.compile("\\{\\{(.+?)\\}\\}");
 

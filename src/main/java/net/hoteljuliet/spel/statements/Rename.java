@@ -23,18 +23,11 @@ public class Rename extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
         for (Map.Entry<String, String> rename : dict.entrySet()) {
-            if (context.hasField(rename.getKey())) {
-                Object value = context.getField(rename.getKey());
-                context.removeField(rename.getKey());
-                context.addField(rename.getValue(), value);
-            }
-            else {
-                missingField();
-            }
+            Object value = context.getField(rename.getKey());
+            context.removeField(rename.getKey());
+            context.addField(rename.getValue(), value);
         }
-
-        return NEITHER;
+        return EMPTY;
     }
 }

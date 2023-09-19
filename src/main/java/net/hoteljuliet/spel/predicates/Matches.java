@@ -30,22 +30,14 @@ public class Matches extends StepPredicate implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Optional<Boolean> retVal;
-
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            Matcher matcher = pattern.matcher(value);
-
-            if (matcher.matches()) {
-                retVal = TRUE;
-            }
-            else {
-                retVal = FALSE;
-            }
-        } else {
-            missingField();
+        String value = context.getField(source);
+        Matcher matcher = pattern.matcher(value);
+        if (matcher.matches()) {
+            retVal = TRUE;
+        }
+        else {
             retVal = FALSE;
         }
-
         return retVal;
     }
 }

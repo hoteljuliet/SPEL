@@ -6,6 +6,7 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.FieldType;
 import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
+import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
 import java.security.SecureRandom;
@@ -48,8 +49,10 @@ public class RandomNumber extends StepStatement implements Serializable {
                 context.addField(dest, secureRandom.nextDouble());
                 break;
             }
+            case STRING: {
+                context.addField(dest, String.valueOf(secureRandom.nextInt()));
+            }
         }
-        return NEITHER;
+        return EMPTY;
     }
-
 }

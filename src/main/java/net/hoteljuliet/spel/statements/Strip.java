@@ -22,15 +22,10 @@ public class Strip extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            String stripped = value.replaceAll("\\s+","");
-            context.replaceFieldValue(source, stripped);
-        }
-        else {
-            missingField();
-        }
-        return StepBase.NEITHER;
+        String value = context.getField(source);
+        String stripped = value.replaceAll("\\s+","");
+        context.replaceFieldValue(source, stripped);
+        return StepBase.EMPTY;
     }
 }
 

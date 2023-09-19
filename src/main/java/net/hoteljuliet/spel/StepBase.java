@@ -1,21 +1,34 @@
 package net.hoteljuliet.spel;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.concurrent.atomic.LongAdder;
 
 public abstract class StepBase implements Serializable {
 
     public static final Optional<Boolean> TRUE = Optional.of(true);
     public static final Optional<Boolean> FALSE = Optional.of(false);
-    public static final Optional<Boolean> NEITHER = Optional.empty();
+    public static final Optional<Boolean> EMPTY = Optional.empty();
 
     protected String name;
-    protected transient StepMetrics stepMetrics;
+    public final StopWatch stopWatch;
+    public final SummaryStatistics runTimeNanos;
+    public final LongAdder success;
+    public final LongAdder failure;
+    public final LimitedCountingMap exceptionsCounter;
 
     public StepBase() {
-        ;
+        stopWatch = new StopWatch();
+        runTimeNanos = new SummaryStatistics();
+        success = new LongAdder();
+        failure = new LongAdder();
+        exceptionsCounter = new LimitedCountingMap();
+    }
+
+    public void clear() {
     }
 
     /**
@@ -34,33 +47,12 @@ public abstract class StepBase implements Serializable {
      */
     protected abstract Optional<Boolean> onException(Throwable t, Context context);
 
-    protected <T> T externalize(Context context, String subKey, Object value, Boolean volatileState) {
-        String key = State.getStateKey(name, subKey, volatileState);
-        if (!context.hasField(key)) {
-            context.addField(key, value);
-        }
-        return context.getField(key);
-    }
-
-    protected Boolean requiresExternal(Context context, String subKey, Boolean volatileState) {
-        String key = State.getStateKey(name, subKey, volatileState);
-        return context.hasField(key);
-    }
-
     /**
      * Called before a Step executes, mostly for metric updates
      * @param context
      */
     public final void before(Context context) {
-
-        String metricsKey = "_state.stepMetrics." + name.toLowerCase();
-        if (null == stepMetrics) {
-            if (!context.hasField(metricsKey)) {
-                context.addField(metricsKey, new StepMetrics());
-            }
-        }
-        stepMetrics = context.getField(metricsKey);
-        stepMetrics.getStopWatch().start();
+        stopWatch.start();
     }
 
     /**
@@ -69,9 +61,8 @@ public abstract class StepBase implements Serializable {
      * @param context
      */
     public void after(Optional<Boolean> evaluation, Context context) {
-        stepMetrics.getStopWatch().stop();
-        stepMetrics.getRunTimeNanos().addValue((double)stepMetrics.getStopWatch().getNanoTime());
-        stepMetrics.getLastRunNanos().set(stepMetrics.getStopWatch().getNanoTime());
+        stopWatch.stop();
+        runTimeNanos.addValue((double)stopWatch.getNanoTime());
     }
 
     /**
@@ -82,16 +73,15 @@ public abstract class StepBase implements Serializable {
      * @throws Exception
      */
     public final Optional<Boolean> execute(Context context) throws Exception {
-        Optional<Boolean> retVal = NEITHER;
+        Optional<Boolean> retVal = EMPTY;
         try {
             before(context);
             retVal = doExecute(context);
-            stepMetrics.getSuccess().increment();
+            success.increment();
         }
         catch(Throwable t) {
-            stepMetrics.getExceptionThrown().increment();
             String rootCase = ExceptionUtils.getRootCauseMessage(t);
-            stepMetrics.getExceptionsCounter().put(rootCase);
+            exceptionsCounter.put(rootCase);
             retVal = onException(t, context);
         }
         finally {
@@ -100,34 +90,12 @@ public abstract class StepBase implements Serializable {
         return retVal;
     }
 
-    public StepMetrics getStepMetrics() {
-        return stepMetrics;
+    public void failure() {
+        failure.increment();
     }
-
-    public void evalTrue() {
-        stepMetrics.getEvalTrue().increment();
-    }
-
-    public void evalFalse() {
-        stepMetrics.getEvalFalse().increment();
-    }
-
-    public void softFailure() {
-        stepMetrics.getSoftFailure().increment();
-    }
-
-    public void missingField() {
-        stepMetrics.getMissingField().increment();
-    }
-
-    public void exceptionThrown() {
-        stepMetrics.getExceptionThrown().increment();
-    }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }

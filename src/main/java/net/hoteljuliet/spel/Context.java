@@ -18,28 +18,9 @@ public class Context implements Map<String, Object> {
         this.backing = new HashMap<>();
     }
 
-    public Context(Map<String, Object> event) {
-        this();
-        backing.put(State.INPUT, event);
-        backing.put(State.OUTPUT, new HashMap<String, Object>());
-        backing.put(State.STATE, new HashMap<String, Object>());
-        backing.put(State.VOLATILE, new HashMap<String, Object>());
-    }
+    public Context(Map<String, Object> in) {
+        backing = in;
 
-    public Context(Map<String, Object> event, Map<String, Object> state) {
-        this();
-        backing.put(State.INPUT, event);
-        backing.put(State.OUTPUT, new HashMap<String, Object>());
-        backing.put(State.STATE, state);
-        backing.put(State.VOLATILE, new HashMap<String, Object>());
-    }
-
-    public Context(Map<String, Object> event, Map<String, Object> state, Map<String, Object> volatileState) {
-        this();
-        backing.put(State.INPUT, event);
-        backing.put(State.OUTPUT, new HashMap<String, Object>());
-        backing.put(State.STATE, state);
-        backing.put(State.VOLATILE, volatileState);
     }
 
     @Override
@@ -337,14 +318,6 @@ public class Context implements Map<String, Object> {
     public void replace(Map<String,Object> otherMap){
         backing.clear();
         backing.putAll(otherMap);
-    }
-
-    public String toStringExcluding(String... keys) {
-        Context filtered = new Context(new HashMap<>(backing));
-        for (String key : keys) {
-            filtered.removeField(key);
-        }
-        return filtered.toString();
     }
 
     @Override

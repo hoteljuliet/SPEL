@@ -1,6 +1,5 @@
 package net.hoteljuliet.spel.statements;
 
-import com.clearspring.analytics.stream.cardinality.HyperLogLogPlus;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
@@ -17,41 +16,34 @@ import java.util.Optional;
 public class Stats extends StepStatement implements Serializable {
     private final String source;
     private final String dest;
-    private final Boolean volatileState;
-    private transient SummaryStatistics summaryStatistics;
+    private final SummaryStatistics summaryStatistics;
 
     @JsonCreator
     public Stats(@JsonProperty(value = "source", required = true) String source,
-                 @JsonProperty(value = "dest", required = true) String dest,
-                 @JsonProperty(value = "volatile", required = false, defaultValue = "false") Boolean volatileState) {
+                 @JsonProperty(value = "dest", required = true) String dest) {
         super();
         this.source = source;
         this.dest = dest;
-        this.volatileState = volatileState;
+        this.summaryStatistics = new SummaryStatistics();
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+        Double value = context.getField(source);
+        summaryStatistics.addValue(value);
+        Map<String, Double> map = new HashMap<>();
+        map.put("mean", summaryStatistics.getMean());
+        map.put("min", summaryStatistics.getMin());
+        map.put("max", summaryStatistics.getMax());
+        map.put("variance", summaryStatistics.getVariance());
+        map.put("sigma", summaryStatistics.getStandardDeviation());
+        map.put("sum", summaryStatistics.getSum());
+        context.addField(dest, map);
+        return EMPTY;
+    }
 
-        if (requiresExternal(context, "summaryStatistics", volatileState)) {
-            summaryStatistics = externalize(context, "summaryStatistics", new SummaryStatistics(), volatileState);
-        }
-
-        if (context.hasField(source)) {
-            Double value = context.getField(source);
-            summaryStatistics.addValue(value);
-            Map<String, Double> map = new HashMap<>();
-            map.put("mean", summaryStatistics.getMean());
-            map.put("min", summaryStatistics.getMin());
-            map.put("max", summaryStatistics.getMax());
-            map.put("variance", summaryStatistics.getVariance());
-            map.put("sigma", summaryStatistics.getStandardDeviation());
-            map.put("sum", summaryStatistics.getSum());
-            context.addField(dest, map);
-        }
-        else {
-            missingField();
-        }
-        return NEITHER;
+    @Override
+    public void clear() {
+        summaryStatistics.clear();
     }
 }

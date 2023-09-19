@@ -2,8 +2,17 @@ package net.hoteljuliet.spel;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.concurrent.atomic.LongAdder;
 
 public abstract class StepPredicate extends StepBase implements Serializable {
+
+    private final LongAdder evalTrue;
+    private final LongAdder evalFalse;
+
+    public StepPredicate() {
+        evalTrue = new LongAdder();
+        evalFalse = new LongAdder();
+    }
 
     /**
      * Note that exceptions in Predicates evaluate to false
@@ -13,7 +22,6 @@ public abstract class StepPredicate extends StepBase implements Serializable {
      */
     @Override
     protected Optional<Boolean> onException(Throwable t, Context context) {
-        softFailure();
         return FALSE;
     }
 
@@ -32,4 +40,13 @@ public abstract class StepPredicate extends StepBase implements Serializable {
             evalFalse();
         }
     }
+
+    public void evalTrue() {
+        evalTrue.increment();
+    }
+
+    public void evalFalse() {
+        evalFalse.increment();
+    }
+
 }

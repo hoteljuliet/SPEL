@@ -31,6 +31,6 @@ public class ForEach extends StepStatementComplex {
             processedList.add(result);
         }
         context.replaceFieldValue(source, processedList);
-        return NEITHER;
+        return EMPTY;
     }
 }

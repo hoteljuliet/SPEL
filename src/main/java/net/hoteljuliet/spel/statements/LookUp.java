@@ -36,20 +36,14 @@ public class LookUp extends StepStatement implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Map<String, Object> lookupDict = context.getField(dict);
         for (int i = 0; i < sources.size() && i < dests.size(); i++) {
-            if (context.hasField(sources.get(i))) {
-                Object value = context.getField(sources.get(i));
-
-                if (lookupDict.containsKey(value)) {
-                    Object lookup = lookupDict.get(value);
-                    context.addField(dests.get(i), lookup);
-                } else {
-                    context.replaceFieldValue(dests.get(i), defaultValue);
-                }
-            }
-            else {
-                missingField();
+            Object value = context.getField(sources.get(i));
+            if (lookupDict.containsKey(value)) {
+                Object lookup = lookupDict.get(value);
+                context.addField(dests.get(i), lookup);
+            } else {
+                context.replaceFieldValue(dests.get(i), defaultValue);
             }
         }
-        return NEITHER;
+        return EMPTY;
     }
 }

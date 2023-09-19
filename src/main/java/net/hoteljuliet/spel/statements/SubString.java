@@ -31,14 +31,9 @@ public class SubString extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            String substring = value.substring(from, to);
-            context.replaceFieldValue(dest, substring);
-        }
-        else {
-            missingField();
-        }
-        return StepBase.NEITHER;
+        String value = context.getField(source);
+        String substring = value.substring(from, to);
+        context.replaceFieldValue(dest, substring);
+        return StepBase.EMPTY;
     }
 }

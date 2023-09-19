@@ -30,16 +30,9 @@ public class JsonList extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            Object mappedValue = objectMapper.readValue(value, List.class);
-            context.addField(dest, mappedValue);
-        }
-        else {
-            missingField();
-        }
-
-        return NEITHER;
+        String value = context.getField(source);
+        Object mappedValue = objectMapper.readValue(value, List.class);
+        context.addField(dest, mappedValue);
+        return EMPTY;
     }
 }

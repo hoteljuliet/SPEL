@@ -30,17 +30,11 @@ public class Flatten extends StepStatement {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
-        if (context.containsKey(source)) {
-            Map<String, Object> original = context.getField(source);
-            Map<String, Object> flattened = new HashMap<>();
-            flatten(root, original, flattened);
-            context.addField(dest, flattened);
-        }
-        else {
-            missingField();
-        }
-        return NEITHER;
+        Map<String, Object> original = context.getField(source);
+        Map<String, Object> flattened = new HashMap<>();
+        flatten(root, original, flattened);
+        context.addField(dest, flattened);
+        return EMPTY;
     }
 
     public void flatten(String key, Map<String, Object> in, Map<String, Object> out) {

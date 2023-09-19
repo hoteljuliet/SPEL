@@ -26,18 +26,12 @@ public class AsList extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
         List<Object> list = new ArrayList<>();
         for (String source : sources) {
-            if (context.hasField(source)) {
-                Object value = context.getField(source);
-                list.add(value);
-            }
-            else {
-                missingField();
-            }
+            Object value = context.getField(source);
+            list.add(value);
         }
         context.addField(dest, list);
-        return NEITHER;
+        return EMPTY;
     }
 }

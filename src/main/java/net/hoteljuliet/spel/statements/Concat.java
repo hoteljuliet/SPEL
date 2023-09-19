@@ -25,19 +25,13 @@ public class Concat extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
         StringBuilder stringBuilder = new StringBuilder();
         for (String source : sources) {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
-                stringBuilder.append(value);
-            }
-            else {
-                missingField();
-            }
+            String value = context.getField(source);
+            stringBuilder.append(value);
         }
         context.addField(dest, stringBuilder.toString());
-        return NEITHER;
+        return EMPTY;
     }
 }
 

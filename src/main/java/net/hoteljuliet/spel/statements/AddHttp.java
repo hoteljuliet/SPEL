@@ -34,13 +34,6 @@ public class AddHttp extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasFields(url, headers, body)) {
-
-
-        }
-        else {
-            missingField();
-        }
-        return StepBase.NEITHER;
+        return EMPTY;
     }
 }

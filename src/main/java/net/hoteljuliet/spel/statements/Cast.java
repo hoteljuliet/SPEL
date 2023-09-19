@@ -28,20 +28,9 @@ public class Cast extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            Object original = context.getField(source);
-            Object afterCast = fieldType.convertFrom(original);
-
-            if (afterCast != null) {
-                context.replaceFieldValue(source, afterCast);
-            }
-            else {
-                softFailure();
-            }
-        }
-        else {
-            missingField();
-        }
-        return NEITHER;
+        Object original = context.getField(source);
+        Object afterCast = fieldType.convertFrom(original);
+        context.replaceFieldValue(source, afterCast);
+        return EMPTY;
     }
 }

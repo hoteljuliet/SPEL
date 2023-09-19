@@ -55,6 +55,6 @@ public class Now extends StepStatement implements Serializable {
             String reformatted = original.format(toFormatter.get());
             context.addField(dest, reformatted);
         }
-        return NEITHER;
+        return EMPTY;
     }
 }

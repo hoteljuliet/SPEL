@@ -7,16 +7,16 @@ import net.hoteljuliet.spel.*;
 import java.io.Serializable;
 import java.util.Optional;
 
-@Step(tag = "add-m")
-public class AddM extends StepStatement implements Serializable {
+@Step(tag = "add")
+public class Add extends StepStatement implements Serializable {
     private final String dest;
     private final FieldType type;
     private final TemplateLiteral templateLiteral;
 
     @JsonCreator
-    public AddM(@JsonProperty(value = "value", required = true) TemplateLiteral templateLiteral,
-                @JsonProperty(value = "dest", required = true) String dest,
-                @JsonProperty(value = "type", required = false, defaultValue = "string") FieldType type) {
+    public Add(@JsonProperty(value = "value", required = true) TemplateLiteral templateLiteral,
+               @JsonProperty(value = "dest", required = true) String dest,
+               @JsonProperty(value = "type", required = false, defaultValue = "string") FieldType type) {
         super();
         this.templateLiteral = templateLiteral;
         this.dest = dest;
@@ -27,6 +27,6 @@ public class AddM extends StepStatement implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Object value = templateLiteral.get(context);
         context.addField(dest, type.convertFrom(value));
-        return StepBase.NEITHER;
+        return StepBase.EMPTY;
     }
 }

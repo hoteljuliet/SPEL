@@ -30,15 +30,10 @@ public class Split extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            String[] split = value.split(delimiter);
-            List<String> output = Arrays.asList(split);
-            context.replaceFieldValue(dest, output);
-        }
-        else {
-            missingField();
-        }
-        return StepBase.NEITHER;
+        String value = context.getField(source);
+        String[] split = value.split(delimiter);
+        List<String> output = Arrays.asList(split);
+        context.replaceFieldValue(dest, output);
+        return StepBase.EMPTY;
     }
 }

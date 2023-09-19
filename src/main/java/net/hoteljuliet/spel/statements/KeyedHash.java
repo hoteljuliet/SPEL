@@ -55,17 +55,11 @@ public class KeyedHash extends StepStatement implements Serializable {
                 throw new RuntimeException(ex);
             }
         }
-
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            byte[] tag = mac.doFinal(value.getBytes(StandardCharsets.UTF_8));
-            String b64 = base64.encodeAsString(tag);
-            context.addField(dest, b64);
-        }
-        else {
-            missingField();
-        }
-        return NEITHER;
+        String value = context.getField(source);
+        byte[] tag = mac.doFinal(value.getBytes(StandardCharsets.UTF_8));
+        String b64 = base64.encodeAsString(tag);
+        context.addField(dest, b64);
+        return EMPTY;
     }
 }
 

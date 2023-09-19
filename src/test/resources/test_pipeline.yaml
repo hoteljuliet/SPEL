@@ -1,54 +1,51 @@
 stopOnFailure: true
-logStackTrace: true
-logPerformance: true
-
 config:
 
-  - add-i: {dest: "listOfMaps", value: [{name: dennis, age: 25}, {name: dennis, age: 25}, {name: dennis, age: 15}] }
+  - add: {dest: "listOfMaps", value: [{name: dennis, age: 25}, {name: dennis, age: 25}, {name: dennis, age: 15}] }
   - foreach-listOfMaps:
       - remove: {sources: ["i.age"]}
   - if:
     sample: {percentage: 5}
     then:
-      - add-i: {dest: "fivePct", value: true}
+      - add: {dest: "fivePct", value: true}
 
-  - add-i: {dest: translate1, value: '404'}
+  - add: {dest: translate1, value: '404'}
   - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"}}
 
   - cardinality: {source: translate1, precision: 5, dest: card}
 
-  - add-i: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
+  - add: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
   - key-value: {source: kvString1, delimiter: ',', separator: '=',  dest: kvMap1}
 
-  - add-i: {dest: kvString2, value: 'this:that; you:me; potatoe:potatoh; tomatoe:tomahtoh'}
+  - add: {dest: kvString2, value: 'this:that; you:me; potatoe:potatoh; tomatoe:tomahtoh'}
   - key-value: {source: kvString2, delimiter: ';', separator: ':',  dest: kvMap2}
 
   - now: {dest: "now1", to: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
   - now: {dest: "now2", to: "unix_ms", zone: Z}
   - now: {dest: "now3", to: "unix_s", zone: Z}
-  - add-i: {dest: jsonMapString, value: '{ "this": "that" }'}
+  - add: {dest: jsonMapString, value: '{ "this": "that" }'}
   - json-map: {source: jsonMapString, dest: jsonMapped}
-  - add-i: {dest: jsonListString, value: '[ "this", "that" ]'}
+  - add: {dest: jsonListString, value: '[ "this", "that" ]'}
   - json-list: {source: jsonListString, dest: jsonListed}
   - foreach-jsonListed:
       - hash : {source: "i", dest: "i", algo: "SHA-256"}
   - as-list: {sources: [now1, now2, now3], dest: list1}
   - append: {source: jsonMapString, dest: list1}
-  - add-i: {dest: "a.a", value: 1.0}
-  - add-i: {dest: "z.z", value: 1.0}
+  - add: {dest: "a.a", value: 1.0}
+  - add: {dest: "z.z", value: 1.0}
   # - math: {dest: "mathResult_exp4j", exp: "{{a.a}} + {{z.z}}"}
   - crunch: {dest: "mathResult_crunch", exp: "$1 + $2", variables: ["a.a", "z.z"]}
-  - add-i: {dest: "user", value: "${USER}"}
-  - add-m: {dest: "copy", exp: "{{a.a}}"}
-  - add-i: {dest: "a.b", value: 2.0}
-  - add-i: {dest: "x", value: "y"}
-  - add-i: {dest: "x.y", value: "1"}
+  - add: {dest: "user", value: "${USER}"}
+  - add: {dest: "copy", value: "{{a.a}}"}
+  - add: {dest: "a.b", value: 2.0}
+  - add: {dest: "x", value: "y"}
+  - add: {dest: "x.y", value: "1"}
   - lookup-i: {sources: ["x.y"], dests: ["x.y.lookup"], default: "unknown", dict: {"1": "some_metadata"} }
-  - add-i: {dest: "x.z", value: "this is a string"}
-  - add-i: {dest: "x.csv", value: "this, is, a, csv, string"}
-  - add-i: {dest: "p.pipe", value: "this|is|a|piped|string"}
+  - add: {dest: "x.z", value: "this is a string"}
+  - add: {dest: "x.csv", value: "this, is, a, csv, string"}
+  - add: {dest: "p.pipe", value: "this|is|a|piped|string"}
   - cast: {source: "x.y", to: "int"}
-  - add-i: {dest: "notANumber", value: "notANumber"}
+  - add: {dest: "notANumber", value: "notANumber"}
   - cast: {source: "notANumber", to: "int"}
   - b64: {source: "x.z", dest: "encoded", action: encode}
   - b64: {source: "encoded", dest: "decoded", action: decode}
@@ -70,19 +67,19 @@ config:
   - if-matches?:
     matches: {source: "user", regex: ".*dennis*"}
     then:
-      - add-i: {dest: "matches1", value: "user does not match .*dennis*"}
+      - add: {dest: "matches1", value: "user does not match .*dennis*"}
 
   - if-notMatches?:
     not:
       - matches: {source: "user", regex: ".*truck*"}
     then:
-      - add-i: {dest: "matches1", value: "user does not match .*truck*"}
+      - add: {dest: "matches1", value: "user does not match .*truck*"}
 
-  - add-i: {dest: someString, value: y}
+  - add: {dest: someString, value: y}
   - if:
     in: {source: someString, list: [a, b, c, y]}
     then:
-      - add-i: {dest: "matches1", value: "someString in: [a, b, c, y]"}
+      - add: {dest: "matches1", value: "someString in: [a, b, c, y]"}
 
   - if-firstLevel?:
     in: {source: someString, list: [a, b, c, y]}
@@ -90,14 +87,14 @@ config:
       - if-secondLevel?:
         in: {source: someString, list: [a, b, c, y]}
         then:
-          - add-i: {dest: "nextedIf", value: "worked"}
+          - add: {dest: "nextedIf", value: "worked"}
 
   - rename: {dict: {"a.a" : "a1.a1", "z.z" : "z1.z1"}}
-  - add-i: {dest: someDouble, value: 12345.123456789}
+  - add: {dest: someDouble, value: 12345.123456789}
   - round: {source: someDouble, format: "######.###" }
-  - add-i: {dest: whitespace, value: "lots o spaces         here"}
+  - add: {dest: whitespace, value: "lots o spaces         here"}
   - strip: {source: whitespace}
-  - add-i: {dest: s1, value: "string1"}
-  - add-i: {dest: s2, value: "string2"}
-  - add-i: {dest: s3, value: "string3"}
+  - add: {dest: s1, value: "string1"}
+  - add: {dest: s2, value: "string2"}
+  - add: {dest: s3, value: "string3"}
   - concat: {sources: [s1, s2, s3], dest: concatenation}

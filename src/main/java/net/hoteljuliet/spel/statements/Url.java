@@ -22,13 +22,8 @@ public class Url extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            // TODO: implement
-            //     See: https://www.baeldung.com/java-url-encoding-decoding, https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/net/URLCodec.html
-        }
-        else {
-            missingField();
-        }
-        return StepBase.NEITHER;
+        // TODO: implement
+        //     See: https://www.baeldung.com/java-url-encoding-decoding, https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/net/URLCodec.html
+        return EMPTY;
     }
 }

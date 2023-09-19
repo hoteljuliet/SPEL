@@ -39,20 +39,9 @@ public class Crunch extends StepPredicate implements Serializable {
 
         for (int i = 0; i < vars.length; i++) {
             String variable = variables.get(i);
-
-            if (!context.hasField(variable)) {
-                missingField();
-            }
-            else {
-                Object fieldValue = context.getField(variable);
-                Double value = Doubles.tryParse(String.valueOf(fieldValue));
-                if (value == null) {
-                    softFailure();
-                }
-                else {
-                    vars[i] = value;
-                }
-            }
+            Object fieldValue = context.getField(variable);
+            Double value = Doubles.tryParse(String.valueOf(fieldValue));
+            vars[i] = value;
         }
 
         double result = compiledExpression.evaluate(vars);

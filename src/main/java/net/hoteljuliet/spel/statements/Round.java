@@ -27,15 +27,10 @@ public class Round extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            Double value = context.getField(source);
-            DecimalFormat df = new DecimalFormat(format);
-            df.setRoundingMode(RoundingMode.DOWN);
-            context.replaceFieldValue(source, df.format(value));
-        }
-        else {
-            missingField();
-        }
-        return NEITHER;
+        Double value = context.getField(source);
+        DecimalFormat df = new DecimalFormat(format);
+        df.setRoundingMode(RoundingMode.DOWN);
+        context.replaceFieldValue(source, df.format(value));
+        return EMPTY;
     }
 }

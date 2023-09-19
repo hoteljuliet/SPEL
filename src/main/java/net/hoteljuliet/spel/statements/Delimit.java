@@ -34,22 +34,16 @@ public class Delimit extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+        String value = context.getField(source);
+        // TODO: rip this out and do it without a library, just pure java
+        CSVParser parser = CSVParser.parse(value, CSVFormat.DEFAULT.withDelimiter(delimiter).withQuote(quote).withTrim());
+        List<CSVRecord> records = parser.getRecords();
 
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            // TODO: rip this out and di it without a library, just pure java (its slow)
-            CSVParser parser = CSVParser.parse(value, CSVFormat.DEFAULT.withDelimiter(delimiter).withQuote(quote).withTrim());
-            List<CSVRecord> records = parser.getRecords();
-
-            for (CSVRecord record : records) {
-                for (int i = 0; i < record.size() && i < dests.size(); i++) {
-                    context.addField(dests.get(i), record.get(i));
-                }
+        for (CSVRecord record : records) {
+            for (int i = 0; i < record.size() && i < dests.size(); i++) {
+                context.addField(dests.get(i), record.get(i));
             }
-        } else {
-            missingField();
         }
-
-        return NEITHER;
+        return EMPTY;
     }
 }

@@ -34,18 +34,14 @@ public class B64 extends StepStatement implements Serializable {
 
         if (null == base64) base64 = new Base64();
 
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            if (Action.ENCODE == action) {
-                String encodedString = base64.encodeAsString(value.getBytes(StandardCharsets.UTF_8));
-                context.addField(dest, encodedString);
-            } else {
-                String decodedValue = new String(base64.decode(value));
-                context.addField(dest, decodedValue);
-            }
+        String value = context.getField(source);
+        if (Action.ENCODE == action) {
+            String encodedString = base64.encodeAsString(value.getBytes(StandardCharsets.UTF_8));
+            context.addField(dest, encodedString);
         } else {
-            missingField();
+            String decodedValue = new String(base64.decode(value));
+            context.addField(dest, decodedValue);
         }
-        return StepBase.NEITHER;
+        return StepBase.EMPTY;
     }
 }

@@ -27,22 +27,17 @@ public class Append extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            Object value = context.getField(source);
-            if (context.hasField(dest)) {
-                List<Object> target = context.getField(dest);
-                target.add(value);
-                context.replaceFieldValue(dest, target);
-            }
-            else if (context.hasField(source)) {
-                List<Object> target = new ArrayList<>();
-                target.add(value);
-                context.addField(dest, target);
-            }
+        Object value = context.getField(source);
+        if (context.hasField(dest)) {
+            List<Object> target = context.getField(dest);
+            target.add(value);
+            context.replaceFieldValue(dest, target);
         }
-        else {
-            softFailure();
+        else if (context.hasField(source)) {
+            List<Object> target = new ArrayList<>();
+            target.add(value);
+            context.addField(dest, target);
         }
-        return StepBase.NEITHER;
+        return StepBase.EMPTY;
     }
 }

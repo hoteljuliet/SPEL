@@ -34,21 +34,15 @@ public class LookUpImmediate extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
         for (int i = 0; i < sources.size() && i < dests.size(); i++) {
-            if (context.hasField(sources.get(i))) {
-                Object value = context.getField(sources.get(i));
-                if (dict.containsKey(value)) {
-                    Object lookup = dict.get(value);
-                    context.addField(dests.get(i), lookup);
-                } else {
-                    context.replaceFieldValue(dests.get(i), defaultValue);
-                }
-            }
-            else {
-                missingField();
+            Object value = context.getField(sources.get(i));
+            if (dict.containsKey(value)) {
+                Object lookup = dict.get(value);
+                context.addField(dests.get(i), lookup);
+            } else {
+                context.replaceFieldValue(dests.get(i), defaultValue);
             }
         }
-        return NEITHER;
+        return EMPTY;
     }
 }

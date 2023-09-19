@@ -27,18 +27,11 @@ public class In extends StepPredicate implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Optional<Boolean> retVal;
-
-        if (context.hasField(source)) {
-            Object value = context.getField(source);
-
-            if (list.contains(value)) {
-                retVal = TRUE;
-            }
-            else {
-                retVal = FALSE;
-            }
-        } else {
-            missingField();
+        Object value = context.getField(source);
+        if (list.contains(value)) {
+            retVal = TRUE;
+        }
+        else {
             retVal = FALSE;
         }
         return retVal;

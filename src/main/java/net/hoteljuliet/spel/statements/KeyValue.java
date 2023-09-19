@@ -33,20 +33,14 @@ public class KeyValue extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            Map<String, String> result = new HashMap<>();
-            String value = context.getField(source);
-            String[] kvPairs = value.split(delimiter);
-            for (String pair : kvPairs) {
-                String[] parts = pair.split(separator);
-                result.put(parts[0].trim(), parts[1].trim());
-            }
-            context.addField(dest, result);
+        Map<String, String> result = new HashMap<>();
+        String value = context.getField(source);
+        String[] kvPairs = value.split(delimiter);
+        for (String pair : kvPairs) {
+            String[] parts = pair.split(separator);
+            result.put(parts[0].trim(), parts[1].trim());
         }
-        else {
-            missingField();
-        }
-
-        return NEITHER;
+        context.addField(dest, result);
+        return EMPTY;
     }
 }

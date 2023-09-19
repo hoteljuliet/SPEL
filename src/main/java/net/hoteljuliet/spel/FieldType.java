@@ -9,7 +9,7 @@ public enum FieldType {
     INT {
         @Override
         public Object convertFrom(Object value) {
-            return Longs.tryParse(String.valueOf(value));
+            return Longs.tryParse(String.valueOf(value)).intValue();
         }
         @Override
         public Boolean isInstance(Object value) {
@@ -30,7 +30,7 @@ public enum FieldType {
     FLOAT {
         @Override
         public Object convertFrom(Object value) {
-            return Doubles.tryParse(String.valueOf(value));
+            return Doubles.tryParse(String.valueOf(value)).floatValue();
         }
 
         @Override
@@ -62,13 +62,7 @@ public enum FieldType {
     BOOLEAN {
         @Override
         public Object convertFrom(Object value) {
-            if (String.valueOf(value).matches("^(t|true|yes|y|1)$")) {
-                return true;
-            } else if (String.valueOf(value).matches("^(f|false|no|n|0)$")) {
-                return false;
-            } else {
-                return null;
-            }
+            return String.valueOf(value).equalsIgnoreCase("true");
         }
 
         @Override

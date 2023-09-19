@@ -43,7 +43,7 @@ public class Shell {
                         StepBase stepBase = parser.parse(node);
                         stepBase.execute(context);
                         System.out.println("-> " + context);
-                        System.out.println("-> Took " + stepBase.getStepMetrics().getLastRunNanos() + " nanos");
+                        System.out.println("-> Avg Time:" + stepBase.runTimeNanos.getMean() + " nanos");
                     }
                 }
                 catch(Exception ex) {

@@ -13,11 +13,10 @@ import java.util.Optional;
 public class Drop extends StepStatement implements Serializable {
     @JsonCreator
     public Drop() {
-        ;
     }
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         context.addField("_collect", false);
-        return StepBase.NEITHER;
+        return StepBase.EMPTY;
     }
 }

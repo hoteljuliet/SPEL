@@ -22,8 +22,8 @@ public class B64Test {
     @Parameterized.Parameters()
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { Context.mapOf("string", "happy days"), "_input.string", "_output.string", Action.ENCODE, "aGFwcHkgZGF5cw=="},
-                { Context.mapOf("string", "Z29sZGVuIGdpcmxz"), "_input.string", "_output.string", Action.DECODE, "golden girls"}
+                { Context.mapOf("string", "happy days"), "string", "_output.string", Action.ENCODE, "aGFwcHkgZGF5cw=="},
+                { Context.mapOf("string", "Z29sZGVuIGdpcmxz"), "string", "_output.string", Action.DECODE, "golden girls"}
         });
     }
 

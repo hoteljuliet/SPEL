@@ -28,19 +28,13 @@ public class Translate extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
-        if (context.hasField(source)) {
-            String value = context.getField(source);
-            String translation = dict.get(value);
-            if (translation != null) {
-                context.replaceFieldValue(source, translation);
-            } else {
-                context.replaceFieldValue(source, defaultValue);
-            }
+        String value = context.getField(source);
+        String translation = dict.get(value);
+        if (translation != null) {
+            context.replaceFieldValue(source, translation);
+        } else {
+            context.replaceFieldValue(source, defaultValue);
         }
-        else {
-            missingField();
-        }
-        return NEITHER;
+        return EMPTY;
     }
 }
