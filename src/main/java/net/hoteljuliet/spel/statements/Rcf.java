@@ -38,6 +38,6 @@ public class AnomalyDetectRCF extends StepStatement implements Serializable {
         else {
             missingField();
         }
-        return StepBase.NEITHER;
+        return StepBase.EMPTY;
     }
 }

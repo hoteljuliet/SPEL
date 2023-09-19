@@ -2,7 +2,6 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.mustachejava.Mustache;
 import net.hoteljuliet.spel.*;
 
 import java.io.Serializable;
@@ -11,26 +10,23 @@ import java.util.Optional;
 @Step(tag = "add-m")
 public class AddM extends StepStatement implements Serializable {
     private final String dest;
-    private final String exp;
-    private transient Mustache mustache;
+    private final FieldType type;
+    private final TemplateLiteral templateLiteral;
 
     @JsonCreator
-    public AddM(@JsonProperty(value = "dest", required = true) String dest,
-                @JsonProperty(value = "exp", required = true) String exp) {
+    public AddM(@JsonProperty(value = "value", required = true) TemplateLiteral templateLiteral,
+                @JsonProperty(value = "dest", required = true) String dest,
+                @JsonProperty(value = "type", required = false, defaultValue = "string") FieldType type) {
         super();
+        this.templateLiteral = templateLiteral;
         this.dest = dest;
-        this.exp = exp;
-        this.mustache = SpelUtils.compile(exp);
+        this.type = type;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (null == mustache) {
-            mustache = SpelUtils.compile(exp);
-        }
-
-        Object value = context.render(mustache);
-        context.addField(dest, value);
+        Object value = templateLiteral.get(context);
+        context.addField(dest, type.convertFrom(value));
         return StepBase.NEITHER;
     }
 }
