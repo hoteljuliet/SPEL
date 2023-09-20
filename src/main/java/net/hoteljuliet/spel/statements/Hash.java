@@ -15,18 +15,18 @@ import java.util.Optional;
 
 @Step(tag = "hash")
 public class Hash extends StepStatement implements Serializable {
-    private final String source;
+    private final String value;
     private final String dest;
     private final String algo;
     private transient MessageDigest messageDigest;
     private transient Base64 base64;
 
     @JsonCreator
-    public Hash(@JsonProperty(value = "source", required = true) String source,
+    public Hash(@JsonProperty(value = "value", required = true) String value,
                 @JsonProperty(value = "dest", required = true) String dest,
                 @JsonProperty(value = "algo", required = true) String algo) {
         super();
-        this.source = source;
+        this.value = value;
         this.dest = dest;
         this.algo = algo;
         this.messageDigest = DigestUtils.getDigest(algo);
@@ -39,8 +39,8 @@ public class Hash extends StepStatement implements Serializable {
         if (null == base64) base64 = new Base64();
         if (null == messageDigest) messageDigest = DigestUtils.getDigest(algo);
 
-        String value = context.getField(source);
-        byte[] hashed = messageDigest.digest(value.getBytes(StandardCharsets.UTF_8));
+        String v = context.getField(value);
+        byte[] hashed = messageDigest.digest(v.getBytes(StandardCharsets.UTF_8));
         String b64 = base64.encodeAsString(hashed);
         context.addField(dest, b64);
         return EMPTY;

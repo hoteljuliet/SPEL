@@ -29,6 +29,7 @@ public abstract class StepBase implements Serializable {
     }
 
     public void clear() {
+        ;
     }
 
     /**
@@ -40,18 +41,11 @@ public abstract class StepBase implements Serializable {
     public abstract Optional<Boolean> doExecute(Context context) throws Exception;
 
     /**
-     * Gives derived classes a chance to implement custom exception handling behavior
-     * @param t
-     * @param context
-     * @return
-     */
-    protected abstract Optional<Boolean> onException(Throwable t, Context context);
-
-    /**
      * Called before a Step executes, mostly for metric updates
      * @param context
      */
     public final void before(Context context) {
+        stopWatch.reset();
         stopWatch.start();
     }
 
@@ -82,7 +76,7 @@ public abstract class StepBase implements Serializable {
         catch(Throwable t) {
             String rootCase = ExceptionUtils.getRootCauseMessage(t);
             exceptionsCounter.put(rootCase);
-            retVal = onException(t, context);
+            throw new RuntimeException(t);
         }
         finally {
             after(retVal, context);

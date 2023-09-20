@@ -15,17 +15,6 @@ public abstract class StepPredicate extends StepBase implements Serializable {
     }
 
     /**
-     * Note that exceptions in Predicates evaluate to false
-     * @param t
-     * @param context
-     * @return
-     */
-    @Override
-    protected Optional<Boolean> onException(Throwable t, Context context) {
-        return FALSE;
-    }
-
-    /**
      * Increment the true/false counters for this predicate
      * @param evaluation
      * @param context

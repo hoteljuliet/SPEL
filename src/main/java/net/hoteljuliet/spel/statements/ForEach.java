@@ -10,27 +10,27 @@ import java.util.Optional;
 
 public class ForEach extends StepStatementComplex {
 
-    private String source;
+    private String list;
 
     public ForEach(String source) {
         super();
-        this.source = source;
+        this.list = source;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        List<Object> list = context.getField(source);
+        List<Object> l = context.getField(list);
         List<Object> processedList = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < l.size(); i++) {
             Context forEachContext = new Context();
-            forEachContext.put("i", list.get(i));
+            forEachContext.put("i", l.get(i));
             for (StepBase s : subStatements) {
                 s.execute(forEachContext);
             }
             Object result = forEachContext.get("i");
             processedList.add(result);
         }
-        context.replaceFieldValue(source, processedList);
+        context.replaceFieldValue(list, processedList);
         return EMPTY;
     }
 }

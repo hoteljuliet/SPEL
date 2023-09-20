@@ -12,21 +12,16 @@ import java.util.Optional;
 
 @Step(tag = "has-field")
 public class HasField extends StepPredicate implements Serializable {
-    private String source;
+    private String path;
 
     @JsonCreator
-    public HasField(@JsonProperty(value = "source", required = true) String source) {
+    public HasField(@JsonProperty(value = "path", required = true) String path) {
         super();
-        this.source = source;
+        this.path = path;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            return StepBase.TRUE;
-        }
-        else {
-            return StepBase.FALSE;
-        }
+        return context.hasField(path) ? TRUE : FALSE;
     }
 }

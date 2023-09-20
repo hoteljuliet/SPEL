@@ -2,10 +2,7 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepBase;
-import net.hoteljuliet.spel.StepStatement;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.*;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -15,16 +12,16 @@ import java.util.Optional;
  */
 @Step(tag = "add-http")
 public class AddHttp extends StepStatement implements Serializable {
-    private final String url;
-    private final String headers;
-    private final String body;
-    private final String dest;
+    private final TemplateLiteral url;
+    private final TemplateLiteral headers;
+    private final TemplateLiteral body;
+    private final TemplateLiteral dest;
 
     @JsonCreator
-    public AddHttp(@JsonProperty(value = "url", required = true) String url,
-                   @JsonProperty(value = "headers", required = true) String headers,
-                   @JsonProperty(value = "body", required = true) String body,
-                   @JsonProperty(value = "dest", required = true) String dest) {
+    public AddHttp(@JsonProperty(value = "url", required = true) TemplateLiteral url,
+                   @JsonProperty(value = "headers", required = true) TemplateLiteral headers,
+                   @JsonProperty(value = "body", required = true) TemplateLiteral body,
+                   @JsonProperty(value = "dest", required = true) TemplateLiteral dest) {
         super();
         this.url = url;
         this.headers = headers;

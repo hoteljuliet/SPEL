@@ -12,6 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: me.xdrop:fuzzywuzzy:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: com.tdunning:t-digest:3.3" level="project" />
     <orderEntry type="library" name="Maven: software.amazon.randomcutforest:randomcutforest-core:3.8.0" level="project" />
     <orderEntry type="library" name="Maven: software.amazon.randomcutforest:randomcutforest-serialization:3.8.0" level="project" />

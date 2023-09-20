@@ -1,16 +1,25 @@
 package net.hoteljuliet.spel;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.github.mustachejava.Mustache;
-
 import java.io.Serializable;
-import java.util.Optional;
 
+/**
+ * Typically, Steps are just dealing with the paths to values. I.e., base64(x.y.z). We would not
+ * expect someone to base64 encode a constant value - they could just add that as a literal.
+ *
+ * In other cases, a value could be a constant/literal value or "the value of a field in the context".
+ * This is useful in many situations to make the Steps more flexible - For Example: "In":
+ * Using 2 TemplateLiterals, that one Step can do either:
+ * 1) "x" (literal object) is in {{mylist}} (from context)
+ * 2) {{myValue}} (from context) is in [a, b, c, d] (literal list)
+ * 3) {{myValue}} (from context) is in {{mylist}} (from context)
+ *
+ * ^ this lets the user specify a path to a value or a literal value in any order they choose.
+ */
 public class TemplateLiteral implements Serializable {
 
     private Object object;
     private Boolean isTemplate;
-    private transient Mustache template;
 
     @JsonCreator
     public TemplateLiteral(Object object) {
@@ -24,15 +33,18 @@ public class TemplateLiteral implements Serializable {
         }
     }
 
-    public Object get(Context context) {
+    public <T> T get(Context context) {
+
         if (isTemplate) {
-            if (null == template) {
-                template = MustacheUtils.compile(String.valueOf(object));
-            }
-            return context.render(template);
+            String path = trimMustache(object);
+            return context.getField(path);
         }
         else {
-            return object;
+            return (T) object;
         }
+    }
+
+    private String trimMustache(Object expression) {
+        return String.valueOf(expression).replaceAll("(\\{\\{|\\}\\})", "");
     }
 }

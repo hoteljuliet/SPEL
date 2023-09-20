@@ -8,26 +8,27 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 @Step(tag = "has-value")
 public class HasValue extends StepPredicate implements Serializable {
-    private final String source;
-    private final Object value;
+    private final String path;
+    private final List<Object> values;
 
     @JsonCreator
-    public HasValue(@JsonProperty(value = "source", required = true) String source,
-                    @JsonProperty(value = "value", required = true) Object value) {
+    public HasValue(@JsonProperty(value = "path", required = true) String path,
+                    @JsonProperty(value = "values", required = true) List<Object> values) {
         super();
-        this.source = source;
-        this.value = value;
+        this.path = path;
+        this.values = values;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(source)) {
-            Object fieldValue = context.get(source);
-            return fieldValue.equals(value) ? StepBase.TRUE : StepBase.FALSE;
+        if (context.hasField(path)) {
+            Object fieldValue = context.get(path);
+            return values.contains(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
         }
         else {
             return StepBase.FALSE;

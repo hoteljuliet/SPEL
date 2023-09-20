@@ -40,17 +40,23 @@ public class PipelineTest {
     }
 
     @Test
-    public void testExamplePipeline() throws IOException {
-        PipelineMetrics pipelineMetrics = new PipelineMetrics();
+    public void testExamplePipeline() {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
         Integer numStepsParsed = pipeline.parse();
-        for (int i = 0; i < 32; i++) {
+
+        assertThat(numStepsParsed).isEqualTo(80);
+        for (int i = 0; i <= 32; i++) {
             Context context = new Context();
-            pipeline.execute(context, pipelineMetrics);
+            pipeline.execute(context);
         }
-        System.out.println("Average Millis: " + pipelineMetrics.getAverageMillis());
-        System.out.println("Min Millis: " + pipelineMetrics.getMinMillis());
-        System.out.println("Max Millis: " + pipelineMetrics.getMaxMillis());
-        System.out.println("Total Millis: " + pipelineMetrics.getTotalMillis());
+
+        System.out.println("Average Millis: " + pipeline.getRunTimeNanos().getMean() / 1000000);
+        System.out.println("Min Millis: " + pipeline.getRunTimeNanos().getMin() / 1000000);
+        System.out.println("Max Millis: " + pipeline.getRunTimeNanos().getMax() / 1000000);
+        System.out.println("Total Millis: " + pipeline.getRunTimeNanos().getSum() / 1000000);
+
+        System.out.println("Stack Traces: " + pipeline.getStackTraces().getMap());
+        assertThat(pipeline.getStackTraces().getMap()).isEmpty();
+        assertThat(pipeline.getTotalFailures().intValue()).isEqualTo(0);
     }
 }

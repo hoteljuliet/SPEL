@@ -13,21 +13,21 @@ import java.util.Optional;
 @Step(tag = "concat")
 public class Concat extends StepStatement implements Serializable {
 
-    private final List<String> sources;
+    private final List<String> values;
     private final String dest;
     @JsonCreator
-    public Concat(@JsonProperty(value = "sources", required = true) List<String> sources,
+    public Concat(@JsonProperty(value = "values", required = true) List<String> values,
                   @JsonProperty(value = "dest", required = true) String dest) {
         super();
-        this.sources = sources;
+        this.values = values;
         this.dest = dest;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         StringBuilder stringBuilder = new StringBuilder();
-        for (String source : sources) {
-            String value = context.getField(source);
+        for (String value : values) {
+            String v = context.getField(value);
             stringBuilder.append(value);
         }
         context.addField(dest, stringBuilder.toString());

@@ -12,28 +12,28 @@ import java.util.Optional;
 
 @Step(tag = "translate")
 public class Translate extends StepStatement implements Serializable {
-    private String source;
+    private String value;
     private String defaultValue;
     private Map<String, String> dict;
 
     @JsonCreator
-    public Translate(@JsonProperty(value = "source", required = true) String source,
+    public Translate(@JsonProperty(value = "value", required = true) String value,
                      @JsonProperty(value = "default", required = true) String defaultValue,
                      @JsonProperty(value = "dict", required = true) Map<String, String> dict) {
         super();
-        this.source = source;
+        this.value = value;
         this.defaultValue = defaultValue;
         this.dict = dict;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(source);
-        String translation = dict.get(value);
+        String v = context.getField(value);
+        String translation = dict.get(v);
         if (translation != null) {
-            context.replaceFieldValue(source, translation);
+            context.replaceFieldValue(value, translation);
         } else {
-            context.replaceFieldValue(source, defaultValue);
+            context.replaceFieldValue(value, defaultValue);
         }
         return EMPTY;
     }

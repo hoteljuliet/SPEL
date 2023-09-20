@@ -2,10 +2,7 @@ package net.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.StepBase;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepStatement;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,29 +11,29 @@ import java.util.Optional;
 
 @Step(tag = "append")
 public class Append extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final TemplateLiteral value;
+    private final String list;
 
     @JsonCreator
-    public Append(@JsonProperty(value = "source", required = true) String source,
-                  @JsonProperty(value = "dest", required = true) String dest) {
+    public Append(@JsonProperty(value = "value", required = true) TemplateLiteral value,
+                  @JsonProperty(value = "list", required = true) String list) {
         super();
-        this.source = source;
-        this.dest = dest;
+        this.value = value;
+        this.list = list;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object value = context.getField(source);
-        if (context.hasField(dest)) {
-            List<Object> target = context.getField(dest);
-            target.add(value);
-            context.replaceFieldValue(dest, target);
+        Object v = value.get(context);
+        if (context.hasField(list)) {
+            List<Object> l = context.getField(list);
+            l.add(value);
+            context.replaceFieldValue(list, l);
         }
-        else if (context.hasField(source)) {
-            List<Object> target = new ArrayList<>();
-            target.add(value);
-            context.addField(dest, target);
+        else {
+            List<Object> l = new ArrayList<>();
+            l.add(value);
+            context.addField(list, l);
         }
         return StepBase.EMPTY;
     }

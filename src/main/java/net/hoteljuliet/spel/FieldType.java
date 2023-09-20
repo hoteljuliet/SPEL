@@ -5,6 +5,9 @@ import com.google.common.base.MoreObjects;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Longs;
 
+import java.util.List;
+import java.util.Map;
+
 public enum FieldType {
     INT {
         @Override
@@ -69,7 +72,44 @@ public enum FieldType {
         public Boolean isInstance(Object value) {
             return value instanceof Boolean;
         }
-    };
+    },
+    LIST {
+        @Override
+        public Object convertFrom(Object value) {
+            return (List) value;
+        }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof List;
+        }
+
+    },
+    MAP {
+        @Override
+        public Object convertFrom(Object value) {
+            return (Map) value;
+        }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value instanceof Map;
+        }
+
+    },
+    NULL {
+        @Override
+        public Object convertFrom(Object value) {
+            return null;
+        }
+
+        @Override
+        public Boolean isInstance(Object value) {
+            return value == null;
+        }
+    }
+    ;
+
 
     @Override
     public String toString() {

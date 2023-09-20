@@ -16,21 +16,21 @@ import java.util.Optional;
 @Step(tag = "cast")
 public class Cast extends StepStatement implements Serializable {
 
-    private final String source;
+    private final String value;
     private final FieldType fieldType;
 
     @JsonCreator
-    public Cast(@JsonProperty(value = "source", required = true) String source,
+    public Cast(@JsonProperty(value = "value", required = true) String value,
                 @JsonProperty(value = "to", required = true) FieldType fieldType) {
-        this.source = source;
+        this.value = value;
         this.fieldType = fieldType;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object original = context.getField(source);
+        Object original = context.getField(value);
         Object afterCast = fieldType.convertFrom(original);
-        context.replaceFieldValue(source, afterCast);
+        context.replaceFieldValue(value, afterCast);
         return EMPTY;
     }
 }

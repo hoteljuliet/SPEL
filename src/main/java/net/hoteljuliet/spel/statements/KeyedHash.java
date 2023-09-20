@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Step(tag = "keyed-hash")
 public class KeyedHash extends StepStatement implements Serializable {
-    private final String source;
+    private final String value;
     private final String dest;
     private final Integer iterations;
     private final String salt;
@@ -26,13 +26,13 @@ public class KeyedHash extends StepStatement implements Serializable {
     private transient Base64 base64;
 
     @JsonCreator
-    public KeyedHash(@JsonProperty(value = "source", required = true) String source,
+    public KeyedHash(@JsonProperty(value = "value", required = true) String value,
                      @JsonProperty(value = "dest", required = true) String dest,
                      @JsonProperty(value = "iter", required = true) Integer iterations,
                      @JsonProperty(value = "salt", required = true) String salt,
                      @JsonProperty(value = "pass", required = true) String password) {
         super();
-        this.source = source;
+        this.value = value;
         this.dest = dest;
         this.iterations = iterations;
         this.salt = salt;
@@ -55,8 +55,8 @@ public class KeyedHash extends StepStatement implements Serializable {
                 throw new RuntimeException(ex);
             }
         }
-        String value = context.getField(source);
-        byte[] tag = mac.doFinal(value.getBytes(StandardCharsets.UTF_8));
+        String v = context.getField(value);
+        byte[] tag = mac.doFinal(v.getBytes(StandardCharsets.UTF_8));
         String b64 = base64.encodeAsString(tag);
         context.addField(dest, b64);
         return EMPTY;

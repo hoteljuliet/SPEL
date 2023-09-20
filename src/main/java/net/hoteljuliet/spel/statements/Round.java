@@ -14,23 +14,23 @@ import java.util.Optional;
 @Step(tag = "round")
 public class Round extends StepStatement implements Serializable {
 
-    private String source;
+    private String value;
     private String format;
 
     @JsonCreator
-    public Round(@JsonProperty(value = "source", required = true) String source,
+    public Round(@JsonProperty(value = "value", required = true) String value,
                  @JsonProperty(value = "format", required = true) String format) {
         super();
-        this.source = source;
+        this.value = value;
         this.format = format;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Double value = context.getField(source);
+        Double v = context.getField(value);
         DecimalFormat df = new DecimalFormat(format);
         df.setRoundingMode(RoundingMode.DOWN);
-        context.replaceFieldValue(source, df.format(value));
+        context.replaceFieldValue(value, df.format(v));
         return EMPTY;
     }
 }

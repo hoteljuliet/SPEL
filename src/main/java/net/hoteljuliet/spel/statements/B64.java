@@ -12,17 +12,17 @@ import java.util.Optional;
 
 @Step(tag = "b64")
 public class B64 extends StepStatement implements Serializable {
-    private final String source;
+    private final String value;
     private final String dest;
     private final Action action;
     private transient Base64 base64;
 
     @JsonCreator
-    public B64(@JsonProperty(value = "source", required = true) String source,
+    public B64(@JsonProperty(value = "value", required = true) String value,
                @JsonProperty(value = "dest", required = true) String dest,
                @JsonProperty(value = "action", required = true) Action action) {
         super();
-        this.source = source;
+        this.value = value;
         this.dest = dest;
         this.action = action;
         this.base64 = new Base64();
@@ -34,12 +34,12 @@ public class B64 extends StepStatement implements Serializable {
 
         if (null == base64) base64 = new Base64();
 
-        String value = context.getField(source);
+        String target = context.getField(value);
         if (Action.ENCODE == action) {
-            String encodedString = base64.encodeAsString(value.getBytes(StandardCharsets.UTF_8));
+            String encodedString = base64.encodeAsString(target.getBytes(StandardCharsets.UTF_8));
             context.addField(dest, encodedString);
         } else {
-            String decodedValue = new String(base64.decode(value));
+            String decodedValue = new String(base64.decode(target));
             context.addField(dest, decodedValue);
         }
         return StepBase.EMPTY;

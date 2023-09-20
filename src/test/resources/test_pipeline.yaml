@@ -1,18 +1,36 @@
 stopOnFailure: true
 config:
 
+  - add: {dest: "aLong", value: 5l}
+  - cast: {value: "aLong", to: "double"}
+  #- cast: {source: "notANumber", to: "int"}
+
+
   - add: {dest: "listOfMaps", value: [{name: dennis, age: 25}, {name: dennis, age: 25}, {name: dennis, age: 15}] }
   - foreach-listOfMaps:
       - remove: {sources: ["i.age"]}
   - if:
-    sample: {percentage: 5}
+    sample: {pct: 5}
     then:
       - add: {dest: "fivePct", value: true}
 
-  - add: {dest: translate1, value: '404'}
-  - translate: {source: translate1, default: "unknown", dict: { "404": "NOT FOUND"}}
+  - add: {dest: "fuzzy1", value: "a string to match"}
 
-  - cardinality: {source: translate1, precision: 5, dest: card}
+  - if:
+    fuzzy-ratio: {first: "{{fuzzy1}}", second: "a string to march", ratio: 90}
+    then:
+      - add: {dest: "fuzzy1Good", value: true}
+
+  - if:
+    fuzzy-ratio: {first: "a string to match", second: "a string to march", ratio: 90}
+    then:
+      - add: {dest: "fuzzy1Good", value: true}
+
+
+  - add: {dest: translate1, value: '404'}
+  - translate: {value: translate1, default: "unknown", dict: { "404": "NOT FOUND"}}
+
+  - cardinality: {value: translate1, precision: 5, dest: card}
 
   - add: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
   - key-value: {source: kvString1, delimiter: ',', separator: '=',  dest: kvMap1}
@@ -28,9 +46,9 @@ config:
   - add: {dest: jsonListString, value: '[ "this", "that" ]'}
   - json-list: {source: jsonListString, dest: jsonListed}
   - foreach-jsonListed:
-      - hash : {source: "i", dest: "i", algo: "SHA-256"}
-  - as-list: {sources: [now1, now2, now3], dest: list1}
-  - append: {source: jsonMapString, dest: list1}
+      - hash : {value: "i", dest: "i", algo: "SHA-256"}
+  - as-list: {values: [now1, now2, now3], list: list1}
+  - append: {value: jsonMapString, list: list1}
   - add: {dest: "a.a", value: 1.0}
   - add: {dest: "z.z", value: 1.0}
   # - math: {dest: "mathResult_exp4j", exp: "{{a.a}} + {{z.z}}"}
@@ -44,13 +62,11 @@ config:
   - add: {dest: "x.z", value: "this is a string"}
   - add: {dest: "x.csv", value: "this, is, a, csv, string"}
   - add: {dest: "p.pipe", value: "this|is|a|piped|string"}
-  - cast: {source: "x.y", to: "int"}
   - add: {dest: "notANumber", value: "notANumber"}
-  - cast: {source: "notANumber", to: "int"}
-  - b64: {source: "x.z", dest: "encoded", action: encode}
-  - b64: {source: "encoded", dest: "decoded", action: decode}
-  - hash: {source: "decoded", dest: "hashed", algo: "SHA-256"}
-  - keyed-hash: {source: "decoded", dest: "hashed", iter: 10000, salt: "somesalt", pass: "${USER}"}
+  - b64: {value: "x.z", dest: "encoded", action: encode}
+  - b64: {value: "encoded", dest: "decoded", action: decode}
+  - hash: {value: "decoded", dest: "hashed", algo: "SHA-256"}
+  - keyed-hash: {value: "decoded", dest: "hashed", iter: 10000, salt: "somesalt", pass: "${USER}"}
   - delimit: {source: x.csv, delimiter: ',', quote: '"', dests: [a.first, a.second, a.third, a.fourth, a.fifth] }
   - delimit: {source: p.pipe, delimiter: '|', quote: '"', dests: [b.first, b.second, b.third, b.fourth, b.fifth] }
   #- if-isGraterExp4j?:
@@ -65,36 +81,36 @@ config:
 
 
   - if-matches?:
-    matches: {source: "user", regex: ".*dennis*"}
+    matches: {value: "user", regex: ".*dennis*"}
     then:
       - add: {dest: "matches1", value: "user does not match .*dennis*"}
 
   - if-notMatches?:
     not:
-      - matches: {source: "user", regex: ".*truck*"}
+      - matches: {value: "user", regex: ".*truck*"}
     then:
       - add: {dest: "matches1", value: "user does not match .*truck*"}
 
   - add: {dest: someString, value: y}
   - if:
-    in: {source: someString, list: [a, b, c, y]}
+    in: {value: someString, list: [a, b, c, y]}
     then:
       - add: {dest: "matches1", value: "someString in: [a, b, c, y]"}
 
   - if-firstLevel?:
-    in: {source: someString, list: [a, b, c, y]}
+    in: {value: someString, list: [a, b, c, y]}
     then:
       - if-secondLevel?:
-        in: {source: someString, list: [a, b, c, y]}
+        in: {value: someString, list: [a, b, c, y]}
         then:
           - add: {dest: "nextedIf", value: "worked"}
 
   - rename: {dict: {"a.a" : "a1.a1", "z.z" : "z1.z1"}}
   - add: {dest: someDouble, value: 12345.123456789}
-  - round: {source: someDouble, format: "######.###" }
+  - round: {value: someDouble, format: "######.###" }
   - add: {dest: whitespace, value: "lots o spaces         here"}
-  - strip: {source: whitespace}
+  - strip: {value: whitespace}
   - add: {dest: s1, value: "string1"}
   - add: {dest: s2, value: "string2"}
   - add: {dest: s3, value: "string3"}
-  - concat: {sources: [s1, s2, s3], dest: concatenation}
+  - concat: {values: [s1, s2, s3], dest: concatenation}

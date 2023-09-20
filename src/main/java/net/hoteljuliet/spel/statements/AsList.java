@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.TemplateLiteral;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,24 +15,25 @@ import java.util.Optional;
 @Step(tag = "as-list")
 public class AsList extends StepStatement implements Serializable {
 
-    private List<String> sources;
-    private String dest;
+    private List<TemplateLiteral> values;
+    private String list;
+
     @JsonCreator
-    public AsList(@JsonProperty(value = "sources", required = true) List<String> sources,
-                  @JsonProperty(value = "dest", required = true) String dest) {
+    public AsList(@JsonProperty(value = "values", required = true) List<TemplateLiteral> values,
+                  @JsonProperty(value = "list", required = true) String list) {
         super();
-        this.sources = sources;
-        this.dest = dest;
+        this.values = values;
+        this.list = list;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        List<Object> list = new ArrayList<>();
-        for (String source : sources) {
-            Object value = context.getField(source);
-            list.add(value);
+        List<Object> l = new ArrayList<>();
+        for (TemplateLiteral t : values) {
+            Object value = t.get(context);
+            l.add(value);
         }
-        context.addField(dest, list);
+        context.addField(list, l);
         return EMPTY;
     }
 }

@@ -16,7 +16,7 @@ public class Sample extends StepPredicate implements Serializable {
     private final Random random;
 
     @JsonCreator
-    public Sample(@JsonProperty(value = "percentage", required = true) Integer percentage) {
+    public Sample(@JsonProperty(value = "pct", required = true) Integer percentage) {
         super();
         this.percentage = percentage;
         this.random = new Random();

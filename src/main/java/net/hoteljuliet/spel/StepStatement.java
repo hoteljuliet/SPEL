@@ -9,9 +9,4 @@ public abstract class StepStatement extends StepBase implements Serializable {
         super();
     }
 
-    @Override
-    protected Optional<Boolean> onException(Throwable t, Context context) {
-        return EMPTY;
-    }
-
 }

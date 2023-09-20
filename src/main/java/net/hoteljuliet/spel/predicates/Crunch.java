@@ -12,12 +12,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import static redempt.crunch.Crunch.compileExpression;
+
 @Step(tag = "crunch")
 public class Crunch extends StepPredicate implements Serializable {
 
     private final String expression;
     private final List<String> variables;
-
     private transient CompiledExpression compiledExpression;
 
     @JsonCreator
@@ -31,19 +32,15 @@ public class Crunch extends StepPredicate implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
-        if (null == compiledExpression) {
-            compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
-        }
+        if (null == compiledExpression) compiledExpression = compileExpression(expression);
 
         double[] vars = new double[variables.size()];
-
         for (int i = 0; i < vars.length; i++) {
             String variable = variables.get(i);
             Object fieldValue = context.getField(variable);
             Double value = Doubles.tryParse(String.valueOf(fieldValue));
             vars[i] = value;
         }
-
         double result = compiledExpression.evaluate(vars);
         return (result == 1.0) ? TRUE : FALSE;
     }
