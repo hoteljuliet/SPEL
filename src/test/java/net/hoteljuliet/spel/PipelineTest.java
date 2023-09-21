@@ -44,7 +44,7 @@ public class PipelineTest {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
         Integer numStepsParsed = pipeline.parse();
 
-        assertThat(numStepsParsed).isEqualTo(80);
+        assertThat(numStepsParsed).isEqualTo(83);
         for (int i = 0; i <= 32; i++) {
             Context context = new Context();
             pipeline.execute(context);
@@ -58,5 +58,17 @@ public class PipelineTest {
         System.out.println("Stack Traces: " + pipeline.getStackTraces().getMap());
         assertThat(pipeline.getStackTraces().getMap()).isEmpty();
         assertThat(pipeline.getTotalFailures().intValue()).isEqualTo(0);
+    }
+
+    @Test
+    public void mermaid() {
+        Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
+        Integer numStepsParsed = pipeline.parse();
+
+        Context context = new Context();
+        pipeline.execute(context);
+
+        String mermaid = pipeline.toMermaid();
+        System.out.println(mermaid);
     }
 }

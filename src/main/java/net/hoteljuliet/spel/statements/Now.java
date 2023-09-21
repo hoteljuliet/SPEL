@@ -16,7 +16,6 @@ import java.util.Optional;
 public class Now extends StepStatement implements Serializable {
     private final String dest;
     private final String to;
-
     private final String zone;
     private transient Optional<DateTimeFormatter> toFormatter;
 

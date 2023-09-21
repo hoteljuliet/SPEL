@@ -11,11 +11,6 @@ import java.util.Optional;
 
 public class If extends StepPredicate implements Serializable {
 
-    public List<StepBase> onTrue;
-    public List<StepBase> onFalse;
-
-    public StepBase predicate;
-
     public If() {
         super();
         onTrue = new ArrayList<>();

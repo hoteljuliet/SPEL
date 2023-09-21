@@ -16,11 +16,13 @@ config:
 
   - add: {dest: "fuzzy1", value: "a string to match"}
 
-  - if:
+  - if-fuzzyRatio:
     fuzzy-ratio: {first: "{{fuzzy1}}", second: "a string to march", ratio: 90}
     then:
-      - add: {dest: "fuzzy1Good", value: true}
-
+      - add: {name: good, dest: "fuzzy1Good", value: true}
+    else:
+      - add: {name: bad1, dest: "fuzzy1Good1", value: false}
+      - add: {name: bad2, dest: "fuzzy1Good2", value: false}
   - if:
     fuzzy-ratio: {first: "a string to match", second: "a string to march", ratio: 90}
     then:
@@ -100,6 +102,7 @@ config:
   - if-firstLevel?:
     in: {value: someString, list: [a, b, c, y]}
     then:
+      - add: {dest: "thisIsForTesting", value: "some kind of test value"}
       - if-secondLevel?:
         in: {value: someString, list: [a, b, c, y]}
         then:

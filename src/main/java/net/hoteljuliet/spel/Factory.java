@@ -11,21 +11,20 @@ import net.hoteljuliet.spel.statements.ForEach;
 import org.apache.commons.text.StringSubstitutor;
 import org.reflections.Reflections;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.ParseException;
+import java.util.*;
 import java.util.concurrent.atomic.LongAdder;
 
 public class Factory {
     private final LongAdder instanceCounter;
-
     private final ObjectMapper objectMapper;
+    private final Map<String, Class> predicateTypesMap;
+    private final Map<String, Class> statementTypesMap;
+    private final Set<String> userProvidedNames;
 
-    private Map<String, Class> predicateTypesMap;
-    private Map<String, Class> statementTypesMap;
 
     public Factory(String[] predicatePackages, String[] statementPackages) {
+        userProvidedNames = new HashSet<>();
         instanceCounter = new LongAdder();
         predicateTypesMap = new HashMap<>();
         statementTypesMap = new HashMap<>();
@@ -179,8 +178,14 @@ public class Factory {
     }
 
     public String buildUniqueNameFromName(String name) {
-        instanceCounter.increment();
-        return name;
+        if (userProvidedNames.contains(name)) {
+            throw new IllegalArgumentException("duplicate name: " + name);
+        }
+        else {
+            userProvidedNames.add(name);
+            instanceCounter.increment();
+            return name;
+        }
     }
 
     public String buildUniqueNameFromType(String type) {

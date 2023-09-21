@@ -16,18 +16,25 @@ public abstract class StepBase implements Serializable {
     protected String name;
     public final StopWatch stopWatch;
     public final SummaryStatistics runTimeNanos;
+    public final LongAdder invocations;
     public final LongAdder success;
-    public final LongAdder failure;
+    public final LongAdder exception;
+    public final LongAdder softFailure;
     public final LimitedCountingMap exceptionsCounter;
 
     public StepBase() {
         stopWatch = new StopWatch();
         runTimeNanos = new SummaryStatistics();
+        invocations = new LongAdder();
         success = new LongAdder();
-        failure = new LongAdder();
+        exception = new LongAdder();
+        softFailure = new LongAdder();
         exceptionsCounter = new LimitedCountingMap();
     }
 
+    /**
+     *
+     */
     public void clear() {
         ;
     }
@@ -70,6 +77,7 @@ public abstract class StepBase implements Serializable {
         Optional<Boolean> retVal = EMPTY;
         try {
             before(context);
+            invocations.increment();
             retVal = doExecute(context);
             success.increment();
         }
@@ -84,12 +92,27 @@ public abstract class StepBase implements Serializable {
         return retVal;
     }
 
-    public void failure() {
-        failure.increment();
+    /**
+     *
+     */
+    public void softFailure() {
+        softFailure.increment();
     }
+
+    public abstract void toMermaid(Optional<StepBase> parent, Optional<Boolean> predicatePath, StringBuilder stringBuilder);
+
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
+
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }

@@ -12,15 +12,18 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
 
+    public PipelineResult pipelineResult;
+
     private Map<String, Object> backing;
 
     public Context() {
+        pipelineResult = new PipelineResult();
         this.backing = new HashMap<>();
     }
 
     public Context(Map<String, Object> in) {
+        this();
         backing = in;
-
     }
 
     @Override

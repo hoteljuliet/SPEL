@@ -14,6 +14,7 @@ import java.util.Optional;
 /**
  * Lookup data against a Dictoinary that exists in the context
  */
+// TODO: consolidate with TemplateLiteral
 @Step(tag = "lookup")
 public class LookUp extends StepStatement implements Serializable {
     private final List<String> sources;

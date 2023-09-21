@@ -4,19 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.LongAdder;
 
 public class Pipeline implements Serializable {
@@ -96,19 +93,60 @@ public class Pipeline implements Serializable {
         return parser.getFactory().getInstanceCounter().intValue();
     }
 
+    /**
+     *
+     * @return
+     */
+    public String toMermaid() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("start" + "> start]").append("\n");
+
+        StepBase pointer = null;
+        for (int i = 0; i < stepBases.size(); i++) {
+            if (i == 0) {
+                stepBases.get(i).toMermaid(Optional.empty(), Optional.empty(), stringBuilder);
+            }
+            else {
+                stepBases.get(i).toMermaid(Optional.of(pointer), Optional.empty(), stringBuilder);
+            }
+            pointer = stepBases.get(i);
+        }
+        stringBuilder.append("start-->" + stepBases.get(0).name).append("\n");
+
+        /**
+        for (StepBase stepBase : stepBases) {
+            stringBuilder.append("pipeline-->" + stepBase.name).append("\n");
+            stepBase.toMermaid(Optional.empty(), Optional.empty(), stringBuilder);
+        }
+         */
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     *
+     * @return
+     */
     public void execute() {
         execute(new Context());
     }
 
+    /**
+     *
+     * @param context
+     * @return
+     */
     public void execute(Context context) {
         // TODO: implement or find/use a watchdog??? - see Apache and Sawmill for implementations
         stopWatch.reset();
         stopWatch.start();
+        context.pipelineResult.success = true;
         for (StepBase stepBase : stepBases) {
             try {
                 stepBase.execute(context);
             }
             catch(Exception ex) {
+                context.pipelineResult.success = true;
                 totalFailures.increment();
                 List<String> stackTrace = ExceptionUtils.getRootCauseStackTraceList(ex);
                 String trace = StringUtils.join(stackTrace, ',');
@@ -119,11 +157,13 @@ public class Pipeline implements Serializable {
                 }
             }
             finally {
-
+                ;
             }
         }
         stopWatch.stop();
         runTimeNanos.addValue(stopWatch.getNanoTime());
+        context.pipelineResult.averageMillis = Math.round(runTimeNanos.getMean() / 1000000);
+        context.pipelineResult.totalMillis = Math.round(runTimeNanos.getSum() / 1000000);
     }
 
     public List<StepBase> getBaseSteps() {
