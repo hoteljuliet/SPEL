@@ -10,10 +10,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.LongAdder;
 
 public class Pipeline implements Serializable {
@@ -112,14 +109,6 @@ public class Pipeline implements Serializable {
             pointer = stepBases.get(i);
         }
         stringBuilder.append("start-->" + stepBases.get(0).name).append("\n");
-
-        /**
-        for (StepBase stepBase : stepBases) {
-            stringBuilder.append("pipeline-->" + stepBase.name).append("\n");
-            stepBase.toMermaid(Optional.empty(), Optional.empty(), stringBuilder);
-        }
-         */
-
         return stringBuilder.toString();
     }
 
@@ -128,7 +117,7 @@ public class Pipeline implements Serializable {
      * @return
      */
     public void execute() {
-        execute(new Context());
+        execute(new Context(this));
     }
 
     /**
@@ -137,7 +126,6 @@ public class Pipeline implements Serializable {
      * @return
      */
     public void execute(Context context) {
-        // TODO: implement or find/use a watchdog??? - see Apache and Sawmill for implementations
         stopWatch.reset();
         stopWatch.start();
         context.pipelineResult.success = true;
@@ -164,6 +152,51 @@ public class Pipeline implements Serializable {
         runTimeNanos.addValue(stopWatch.getNanoTime());
         context.pipelineResult.averageMillis = Math.round(runTimeNanos.getMean() / 1000000);
         context.pipelineResult.totalMillis = Math.round(runTimeNanos.getSum() / 1000000);
+    }
+
+    /**
+     *
+     * @param stepName
+     */
+    public Optional<StepBase> find(String stepName) {
+        List<StepBase> stack = new ArrayList<>();
+        find(stepName, stepBases, stack);
+        return stack.isEmpty() ? Optional.empty() : Optional.of(stack.get(0));
+    }
+
+    /**
+     *
+     * @param stepName
+     * @param stack
+     */
+    private void find(String stepName, List<StepBase> search, List<StepBase> stack) {
+        for (StepBase stepBase : search) {
+            if (stack.size() > 0) {
+                break;
+            }
+            find(stepName, stepBase, stack);
+            if (stepBase instanceof StepPredicate) {
+                StepPredicate stepPredicate = (StepPredicate)stepBase;
+                find(stepName, stepPredicate.onTrue, stack);
+                find(stepName, stepPredicate.onFalse, stack);
+            }
+            else if (stepBase instanceof StepPredicateComplex) {
+                StepPredicateComplex stepPredicateComplex = (StepPredicateComplex)stepBase;
+                find(stepName, stepPredicateComplex.subPredicate, stack);
+                find(stepName, stepPredicateComplex.onTrue, stack);
+                find(stepName, stepPredicateComplex.onFalse, stack);
+            }
+            else if (stepBase instanceof StepStatementComplex) {
+                StepStatementComplex stepStatementComplex = (StepStatementComplex)stepBase;
+                find(stepName, stepStatementComplex.subStatements, stack);
+            }
+        }
+    }
+
+    private void find(String stepName, StepBase step, List<StepBase> stack) {
+        if (stepName.equalsIgnoreCase(step.name)) {
+            stack.add(step);
+        }
     }
 
     public List<StepBase> getBaseSteps() {

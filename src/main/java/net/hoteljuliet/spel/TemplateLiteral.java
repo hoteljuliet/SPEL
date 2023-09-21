@@ -29,14 +29,14 @@ public class TemplateLiteral implements Serializable {
         if (object instanceof String) {
             String string = String.valueOf(object);
             // if this is a template
-            isTemplate = (string.contains("{{") && string.contains("}}"));
+            isTemplate = MustacheUtils.isTemplate(string);
         }
     }
 
     public <T> T get(Context context) {
 
         if (isTemplate) {
-            String path = trimMustache(object);
+            String path = MustacheUtils.trimMustache(object);
             return context.getField(path);
         }
         else {
@@ -44,7 +44,8 @@ public class TemplateLiteral implements Serializable {
         }
     }
 
-    private String trimMustache(Object expression) {
-        return String.valueOf(expression).replaceAll("(\\{\\{|\\}\\})", "");
+    @Override
+    public String toString() {
+        return String.valueOf(this.object);
     }
 }

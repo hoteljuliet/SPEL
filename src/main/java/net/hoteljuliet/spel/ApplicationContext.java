@@ -51,7 +51,7 @@ public class ApplicationContext {
                 Value value = field.getAnnotation(Value.class);
                 field.setAccessible(true);
 
-                Context context = new Context(applicationContext);
+                Context context = new Context(new Pipeline(), applicationContext);
                 for (String expression : value.exp()) {
                     Map<String, Object> node = objectMapper.readValue(expression, Map.class);
                     Parser parser = new Parser(predicatePackages, statementPackages);

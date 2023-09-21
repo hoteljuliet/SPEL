@@ -14,6 +14,7 @@ public abstract class StepBase implements Serializable {
     public static final Optional<Boolean> EMPTY = Optional.empty();
 
     protected String name;
+
     public final StopWatch stopWatch;
     public final SummaryStatistics runTimeNanos;
     public final LongAdder invocations;
@@ -99,6 +100,12 @@ public abstract class StepBase implements Serializable {
         softFailure.increment();
     }
 
+    /**
+     *
+     * @param parent
+     * @param predicatePath
+     * @param stringBuilder
+     */
     public abstract void toMermaid(Optional<StepBase> parent, Optional<Boolean> predicatePath, StringBuilder stringBuilder);
 
     /**

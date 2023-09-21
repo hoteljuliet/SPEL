@@ -2,6 +2,7 @@ package net.hoteljuliet.spel.statements;
 
 import net.hoteljuliet.spel.Action;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Pipeline;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,7 +38,7 @@ public class B64Test {
 
     @Test
     public void test() throws Exception {
-        Context context = new Context(contextValues);
+        Context context = new Context(new Pipeline(), contextValues);
         B64 b64 = new B64(source, dest, action);
         b64.doExecute(context);
         assertThat(context.hasField(dest)).isTrue();

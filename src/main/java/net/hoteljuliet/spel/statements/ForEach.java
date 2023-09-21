@@ -22,7 +22,7 @@ public class ForEach extends StepStatementComplex {
         List<Object> l = context.getField(list);
         List<Object> processedList = new ArrayList<>();
         for (int i = 0; i < l.size(); i++) {
-            Context forEachContext = new Context();
+            Context forEachContext = new Context(context.pipeline);
             forEachContext.put("i", l.get(i));
             for (StepBase s : subStatements) {
                 s.execute(forEachContext);

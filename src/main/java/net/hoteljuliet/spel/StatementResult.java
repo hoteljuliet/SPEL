@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatementResult {
-    private final Long success;
-    private final Long exception;
-    private final Long softFailure;
-    private final Long averageNanos;
-    private final Long minNanos;
-    private final Long maxNanos;
-    private final List<String> mostCommonExceptions;
+    public final Long success;
+    public final Long exception;
+    public final Long softFailure;
+    public final Long averageNanos;
+    public final Long minNanos;
+    public final Long maxNanos;
+    public final List<String> mostCommonExceptions;
 
     public StatementResult(StepBase stepBase) {
         success = stepBase.success.longValue();

@@ -3,9 +3,7 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepStatement;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.*;
 import redempt.crunch.CompiledExpression;
 
 import java.io.Serializable;
@@ -22,12 +20,17 @@ public class Crunch extends StepStatement implements Serializable {
 
     @JsonCreator
     public Crunch(@JsonProperty(value = "dest", required = true) String dest,
-                  @JsonProperty(value = "exp", required = true) String expression,
-                  @JsonProperty(value = "variables", required = true) List<String> variables) {
+                  @JsonProperty(value = "exp", required = true) TemplateLiteral exp) {
         super();
         this.dest = dest;
-        this.expression = expression;
-        this.variables = variables;
+        this.variables = MustacheUtils.findVariables(exp.toString());
+        String temp = exp.toString();
+        for (int i = 0; i < variables.size(); i++) {
+            String regex = "\\{\\{(" + variables.get(i) + ")\\}\\}";
+            String replacement = "\\$" + String.valueOf(i +1);
+            temp = temp.replaceAll(regex, replacement);
+        }
+        this.expression = temp;
     }
 
     @Override

@@ -3,14 +3,16 @@ package net.hoteljuliet.spel.predicates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepPredicate;
-import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.*;
 import redempt.crunch.CompiledExpression;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static redempt.crunch.Crunch.compileExpression;
 
@@ -22,11 +24,16 @@ public class Crunch extends StepPredicate implements Serializable {
     private transient CompiledExpression compiledExpression;
 
     @JsonCreator
-    public Crunch(@JsonProperty(value = "exp", required = true) String expression,
-                  @JsonProperty(value = "variables", required = true) List<String> variables) {
+    public Crunch(@JsonProperty(value = "exp", required = true) TemplateLiteral exp) {
         super();
-        this.expression = expression;
-        this.variables = variables;
+        this.variables = MustacheUtils.findVariables(exp.toString());
+        String temp = exp.toString();
+        for (int i = 0; i < variables.size(); i++) {
+            String regex = "\\{\\{(" + variables.get(i) + ")\\}\\}";
+            String replacement = "\\$" + String.valueOf(i +1);
+            temp = temp.replaceAll(regex, replacement);
+        }
+        this.expression = temp;
     }
 
     @Override

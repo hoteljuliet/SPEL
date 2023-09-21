@@ -16,7 +16,7 @@ public class Shell {
 
     public static void main(String[] args) {
         Scanner reader = null;
-        Context context = new Context();
+        Context context = new Context(new Pipeline());
         Parser parser = new Parser();
         try {
             do {

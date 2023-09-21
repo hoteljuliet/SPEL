@@ -16,4 +16,15 @@ public class PipelineResult {
         predicateResults = new HashMap<>();
         statementResults = new HashMap<>();
     }
+
+    public Long getTotalSoftFailures() {
+        Long retVal = 0l;
+        for (PredicateResult p : predicateResults.values()) {
+            retVal += p.softFailure;
+        }
+        for (StatementResult s : statementResults.values()) {
+            retVal += s.softFailure;
+        }
+        return retVal;
+    }
 }

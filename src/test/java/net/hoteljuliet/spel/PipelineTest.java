@@ -3,6 +3,7 @@ package net.hoteljuliet.spel;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 public class PipelineTest {
@@ -12,7 +13,7 @@ public class PipelineTest {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
         pipeline.parse();
 
-        Context context = new Context();
+        Context context = new Context(pipeline);
         pipeline.execute(context);
 
         StopWatch stopWatch = new StopWatch();
@@ -44,10 +45,11 @@ public class PipelineTest {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
         Integer numStepsParsed = pipeline.parse();
 
-        assertThat(numStepsParsed).isEqualTo(83);
+        assertThat(numStepsParsed).isEqualTo(84);
         for (int i = 0; i <= 32; i++) {
-            Context context = new Context();
+            Context context = new Context(pipeline);
             pipeline.execute(context);
+            assertThat(context.pipelineResult.getTotalSoftFailures()).isEqualTo(0);
         }
 
         System.out.println("Average Millis: " + pipeline.getRunTimeNanos().getMean() / 1000000);
@@ -61,11 +63,24 @@ public class PipelineTest {
     }
 
     @Test
-    public void mermaid() {
+    public void testFind() {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
         Integer numStepsParsed = pipeline.parse();
 
-        Context context = new Context();
+        Context context = new Context(pipeline);
+        pipeline.execute(context);
+
+        Optional<StepBase> value = pipeline.find("good");
+        assertThat(value.isPresent()).isTrue();
+        assertThat(value.get().name).isEqualTo("good");
+    }
+
+    @Test
+    public void testMermaid() {
+        Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
+        Integer numStepsParsed = pipeline.parse();
+
+        Context context = new Context(pipeline);
         pipeline.execute(context);
 
         String mermaid = pipeline.toMermaid();

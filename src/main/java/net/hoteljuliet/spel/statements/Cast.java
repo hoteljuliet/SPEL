@@ -30,7 +30,12 @@ public class Cast extends StepStatement implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Object original = context.getField(value);
         Object afterCast = fieldType.convertFrom(original);
-        context.replaceFieldValue(value, afterCast);
+        if (null == afterCast) {
+            softFailure();
+        }
+        else {
+            context.replaceFieldValue(value, afterCast);
+        }
         return EMPTY;
     }
 }

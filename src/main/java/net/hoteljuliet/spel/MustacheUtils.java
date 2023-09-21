@@ -24,11 +24,17 @@ public class MustacheUtils {
     public static List<String> findVariables(String expression) {
         List<String> variables = new ArrayList<>();
         Matcher matcher = mustachePattern.matcher(expression);
-
         while (matcher.find()) {
             variables.add(matcher.group(1));
         }
         return variables;
     }
 
+    public static Boolean isTemplate(String string) {
+        return (string.contains("{{") && string.contains("}}"));
+    }
+
+    public static String trimMustache(Object expression) {
+        return String.valueOf(expression).replaceAll("\\{\\{|\\}\\}", "");
+    }
 }
