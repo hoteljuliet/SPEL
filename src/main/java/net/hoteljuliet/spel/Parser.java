@@ -10,7 +10,7 @@ public class Parser {
     private Factory factory;
 
     public Parser() {
-        factory = new Factory(Pipeline.defaultPredicatePackages, Pipeline.defaultPredicatePackages);
+        factory = new Factory(Pipeline.defaultPredicatePackages, Pipeline.defaultStatementPackages);
     }
 
     public Parser(String[] predicatePackages, String[] statementPackages) {
