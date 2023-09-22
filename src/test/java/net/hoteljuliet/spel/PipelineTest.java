@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 public class PipelineTest {
 
     @Test

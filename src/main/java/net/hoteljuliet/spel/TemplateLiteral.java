@@ -33,6 +33,12 @@ public class TemplateLiteral implements Serializable {
         }
     }
 
+    /**
+     *
+     * @param context
+     * @param <T>
+     * @return
+     */
     public <T> T get(Context context) {
 
         if (isTemplate) {
