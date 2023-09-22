@@ -12,18 +12,33 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
 
-    public PipelineResult pipelineResult;
-    public Pipeline pipeline;
-    private Map<String, Object> backing;
+    public final PipelineResult pipelineResult;
+    public final Pipeline pipeline;
+    private final Map<String, Object> backing;
 
-    public Context(Pipeline pipeline) {
-        pipelineResult = new PipelineResult();
+    public Context() {
+        this.pipeline = new Pipeline();
         this.backing = new HashMap<>();
+        this.pipelineResult = new PipelineResult();
+
     }
 
-    public Context(Pipeline pipeline, Map<String, Object> in) {
-        this(pipeline);
-        backing = in;
+    public Context(Map<String, Object> backing) {
+        this.pipeline = new Pipeline();
+        this.pipelineResult = new PipelineResult();
+        this.backing = backing;
+    }
+
+    public Context(Pipeline pipeline, Map<String, Object> backing) {
+        this.pipeline = pipeline;
+        this.pipelineResult = new PipelineResult();
+        this.backing = backing;
+    }
+
+    public Context(Pipeline pipeline) {
+        this.pipeline = pipeline;
+        this.pipelineResult = new PipelineResult();
+        this.backing = new HashMap<>();
     }
 
     @Override
