@@ -34,9 +34,9 @@ public abstract class StepBase implements Serializable {
     }
 
     /**
-     *
+     *  TODO: document the need to synchronize doExecute() and clear()
      */
-    public void clear() {
+    public synchronized void clear() {
         ;
     }
 

@@ -20,5 +20,5 @@ This project was started after years of great experience working with (Logzio Sa
     1. All Step class attributes must be either final or transient, if transient they must be re-initialized 
 10. Logging is slow, so minimal/no logging (use metrics instead). Only log at error and debug levels, never info.
 11. Don't put checks for field exists/has type in each Step
-    1. User should do that checking in the pipeline itself with HasField and HasType, etc
+    1. User should do that checking in the pipeline itself with HasFields and HasType, etc
 
