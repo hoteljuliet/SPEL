@@ -6,6 +6,7 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.StepStatement;
+import net.hoteljuliet.spel.mustache.TemplateLiteral;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import java.io.Serializable;
@@ -17,14 +18,14 @@ import java.util.Optional;
 public class Regression extends StepStatement implements Serializable {
     private final String x;
     private final String y;
-    private final String predict;
+    private final TemplateLiteral predict;
     private final String dest;
     private final SimpleRegression regression;
 
     @JsonCreator
     public Regression(@JsonProperty(value = "x", required = true) String x,
                       @JsonProperty(value = "y", required = true) String y,
-                      @JsonProperty(value = "predict", required = true) String predict,
+                      @JsonProperty(value = "predict", required = true) TemplateLiteral predict,
                       @JsonProperty(value = "dest", required = true) String dest) {
         super();
         this.x = x;
@@ -45,7 +46,7 @@ public class Regression extends StepStatement implements Serializable {
             output.put("intercept", regression.getIntercept());
             output.put("slope", regression.getSlope());
             output.put("slopeStdErr", regression.getSlopeStdErr());
-            Double predictX = context.getField(predict);
+            Double predictX = predict.get(context);
             output.put("predictedY", regression.predict(predictX));
             context.addField(dest, output);
         }
