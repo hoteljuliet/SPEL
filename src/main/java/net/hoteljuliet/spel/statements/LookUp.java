@@ -3,8 +3,8 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.StepStatement;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Lookup data against a Dictoinary that exists in the context
+ * Lookup data against a Dictionary that exists in the context
  */
 // TODO: consolidate with TemplateLiteral
 @Step(tag = "lookup")
@@ -42,7 +42,7 @@ public class LookUp extends StepStatement implements Serializable {
                 Object lookup = lookupDict.get(value);
                 context.addField(dests.get(i), lookup);
             } else {
-                context.replaceFieldValue(dests.get(i), defaultValue);
+                context.addField(dests.get(i), defaultValue);
             }
         }
         return EMPTY;

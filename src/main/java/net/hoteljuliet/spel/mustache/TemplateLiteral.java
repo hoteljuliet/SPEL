@@ -1,6 +1,8 @@
-package net.hoteljuliet.spel;
+package net.hoteljuliet.spel.mustache;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import net.hoteljuliet.spel.Context;
+
 import java.io.Serializable;
 
 /**

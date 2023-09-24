@@ -1,8 +1,8 @@
 package net.hoteljuliet.spel.statements;
 
-import net.hoteljuliet.spel.StepStatementComplex;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepBase;
+import net.hoteljuliet.spel.StepStatementComplex;
 
 import java.util.ArrayList;
 import java.util.List;

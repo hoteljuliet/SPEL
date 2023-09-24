@@ -1,4 +1,4 @@
-package net.hoteljuliet.spel;
+package net.hoteljuliet.spel.mustache;
 
 import com.github.mustachejava.MustacheException;
 import com.github.mustachejava.reflect.ReflectionObjectHandler;

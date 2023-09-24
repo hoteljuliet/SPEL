@@ -3,9 +3,9 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.StepStatement;
-import net.hoteljuliet.spel.Step;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class SubString extends StepStatement implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
         String value = context.getField(source);
         String substring = value.substring(from, to);
-        context.replaceFieldValue(dest, substring);
+        context.addField(dest, substring);
         return StepBase.EMPTY;
     }
 }

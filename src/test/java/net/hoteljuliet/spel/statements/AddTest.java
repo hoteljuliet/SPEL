@@ -1,8 +1,7 @@
 package net.hoteljuliet.spel.statements;
 
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.FieldType;
-import net.hoteljuliet.spel.TemplateLiteral;
+import net.hoteljuliet.spel.mustache.TemplateLiteral;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

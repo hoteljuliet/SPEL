@@ -39,6 +39,14 @@
   <name>spel</name>
   <url>http://maven.apache.org</url>
   <dependencies>
+    <!--
+    TODO: explore this library for mainframe-specific needs
+    <dependency>
+      <groupId>net.sf.jt400</groupId>
+      <artifactId>jt400</artifactId>
+      <version>11.2</version>
+    </dependency>
+    -->
     <dependency>
       <groupId>me.xdrop</groupId>
       <artifactId>fuzzywuzzy</artifactId>
@@ -115,6 +123,7 @@
       <version>32.1.2-jre</version>
     </dependency>
     <!--
+    TODO: look into this library as a possible replacement (faster?) for spullara mustache
     <dependency>
       <groupId>io.jstach</groupId>
       <artifactId>jstachio</artifactId>

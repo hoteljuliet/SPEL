@@ -6,7 +6,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepPredicate;
-import net.hoteljuliet.spel.TemplateLiteral;
+import net.hoteljuliet.spel.mustache.TemplateLiteral;
 
 import java.io.Serializable;
 import java.util.Optional;

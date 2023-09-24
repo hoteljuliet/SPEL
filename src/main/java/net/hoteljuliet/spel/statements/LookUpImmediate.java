@@ -3,8 +3,8 @@ package net.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
+import net.hoteljuliet.spel.StepStatement;
 
 import java.io.Serializable;
 import java.util.List;
@@ -42,7 +42,7 @@ public class LookUpImmediate extends StepStatement implements Serializable {
                 Object lookup = dict.get(value);
                 context.addField(dests.get(i), lookup);
             } else {
-                context.replaceFieldValue(dests.get(i), defaultValue);
+                context.addField(dests.get(i), defaultValue);
             }
         }
         return EMPTY;

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepStatement;
 import net.hoteljuliet.spel.Step;
-import net.hoteljuliet.spel.TemplateLiteral;
+import net.hoteljuliet.spel.mustache.TemplateLiteral;
 
 import java.io.Serializable;
 import java.util.ArrayList;
