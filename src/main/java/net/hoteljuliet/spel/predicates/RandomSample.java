@@ -10,13 +10,13 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.Random;
 
-@Step(tag = "sample")
-public class Sample extends StepPredicate implements Serializable {
+@Step(tag = "random-sample")
+public class RandomSample extends StepPredicate implements Serializable {
     private final Integer percentage;
     private final Random random;
 
     @JsonCreator
-    public Sample(@JsonProperty(value = "pct", required = true) Integer percentage) {
+    public RandomSample(@JsonProperty(value = "pct", required = true) Integer percentage) {
         super();
         this.percentage = percentage;
         this.random = new Random();

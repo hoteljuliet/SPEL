@@ -7,7 +7,7 @@ config:
   - foreach-listOfMaps:
       - remove: {sources: ["i.age"]}
   - if:
-    sample: {pct: 5}
+    random-sample: {pct: 5}
     then:
       - add: {dest: "fivePct", value: true}
   - add: {dest: "fuzzy1", value: "a string to match"}
