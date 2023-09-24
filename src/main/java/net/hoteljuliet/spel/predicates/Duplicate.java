@@ -1,5 +1,8 @@
 package net.hoteljuliet.spel.predicates;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.hash.BloomFilter;
+import com.google.common.hash.Funnels;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepPredicate;
@@ -12,13 +15,44 @@ import java.util.Optional;
 @Step(tag = "duplicate")
 public class Duplicate extends StepPredicate {
 
+    private final String source;
+    private final Integer insertions;
+    private final Double fpp;
+    private BloomFilter<byte[]> bloomFilter;
+
+    public Duplicate(@JsonProperty(value = "source", required = true) String source,
+                     @JsonProperty(value = "insertions", required = true) Integer insertions,
+                     @JsonProperty(value = "fpp", required = true) Double fpp) {
+        super();
+        this.source = source;
+        this.insertions = insertions;
+        this.fpp = fpp;
+        bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), insertions, fpp);
+    }
+
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        return Optional.empty();
+        synchronized (this) {
+            if (context.hasField(source)) {
+                String value = context.getField(source);
+                if (bloomFilter.mightContain(value.getBytes())) {
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+            } else {
+                softFailure();
+                return FALSE;
+            }
+        }
     }
 
     @Override
     public void clear() {
-
+        synchronized (this) {
+            if (bloomFilter.expectedFpp() > fpp) {
+                bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), insertions, fpp);
+            }
+        }
     }
 }
