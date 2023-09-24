@@ -27,6 +27,7 @@ public class HasType extends StepPredicate implements Serializable {
             return type.isInstance(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
         }
         else {
+            softFailure();
             return StepBase.FALSE;
         }
     }

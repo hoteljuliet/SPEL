@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Step(tag = "strip")
 public class Strip extends StepStatement implements Serializable {
-    private String value;
+    private final String value;
 
     @JsonCreator
     public Strip(@JsonProperty(value = "value", required = true) String value) {
@@ -25,7 +25,7 @@ public class Strip extends StepStatement implements Serializable {
         String v = context.getField(value);
         String stripped = v.replaceAll("\\s+","");
         context.replaceFieldValue(value, stripped);
-        return StepBase.EMPTY;
+        return EMPTY;
     }
 }
 
