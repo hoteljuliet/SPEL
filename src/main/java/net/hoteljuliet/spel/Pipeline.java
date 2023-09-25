@@ -79,7 +79,7 @@ public class Pipeline implements Serializable {
     public Integer parse() {
         Parser parser = new Parser(defaultPredicatePackages, defaultStatementPackages);
         stepBases = parser.parse(config);
-        return parser.getFactory().getInstanceCounter().intValue();
+        return parser.getInstanceCounter().intValue();
     }
 
     public Integer parse(String[] predicatePackages, String[] statementPackages) {
@@ -87,7 +87,7 @@ public class Pipeline implements Serializable {
         String[] allStatementPackages = ArrayUtils.addAll(defaultStatementPackages, statementPackages);
         Parser parser = new Parser(allPredicatePackages, allStatementPackages);
         stepBases = parser.parse(config);
-        return parser.getFactory().getInstanceCounter().intValue();
+        return parser.getInstanceCounter().intValue();
     }
 
     /**

@@ -1,20 +1,40 @@
 package net.hoteljuliet.spel;
 
-import net.hoteljuliet.spel.predicates.If;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import net.hoteljuliet.spel.predicates.*;
+import net.hoteljuliet.spel.statements.ForEach;
+import net.hoteljuliet.spel.statements.Sort;
+import org.apache.commons.text.StringSubstitutor;
+import org.reflections.Reflections;
 
 import java.util.*;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 public class Parser {
 
-    private Factory factory;
+    private final LongAdder instanceCounter;
+    private final ObjectMapper objectMapper;
+    private final Map<String, Class> predicateTypesMap;
+    private final Map<String, Class> statementTypesMap;
+    private final Set<String> userProvidedNames;
 
     public Parser() {
-        factory = new Factory(Pipeline.defaultPredicatePackages, Pipeline.defaultStatementPackages);
+        this(Pipeline.defaultPredicatePackages, Pipeline.defaultStatementPackages);
     }
 
     public Parser(String[] predicatePackages, String[] statementPackages) {
-        factory = new Factory(predicatePackages, statementPackages);
+        userProvidedNames = new HashSet<>();
+        instanceCounter = new LongAdder();
+        predicateTypesMap = new HashMap<>();
+        statementTypesMap = new HashMap<>();
+        populateTypesMap(predicatePackages, predicateTypesMap);
+        populateTypesMap(statementPackages, statementTypesMap);
+        objectMapper = new ObjectMapper(new YAMLFactory())
+                .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
     }
 
     public List<StepBase> parse(List<Map<String, Object>> config) {
@@ -66,11 +86,11 @@ public class Parser {
         StepBase predicate = null;
         // this is an "and" or "or" type predicate (one with multiple sub-predicates)
         if (firstValue instanceof List) {
-            predicate = factory.buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
+            predicate = buildComplexPredicate(type, (List<Map<String, Object>>) node.get(type));
         }
         // this is a simple/single predicate
         else {
-            predicate = factory.buildPredicate(type, (Map<String, Object>) node.get(type));
+            predicate = buildPredicate(type, (Map<String, Object>) node.get(type));
         }
         ifPredicate.predicate = predicate;
 
@@ -85,10 +105,10 @@ public class Parser {
         }
 
         if (name.isPresent()) {
-            ifPredicate.setName(factory.buildUniqueNameFromName(name.get()));
+            ifPredicate.setName(buildUniqueNameFromName(name.get()));
         }
         else {
-            ifPredicate.setName(factory.buildUniqueNameFromType("if"));
+            ifPredicate.setName(buildUniqueNameFromType("if"));
         }
 
         return ifPredicate;
@@ -97,14 +117,14 @@ public class Parser {
     public StepBase parseStatement(Map<String, Object> node) {
         String type = firstKey(node);
 
-        if (type.startsWith("foreach")) {
+        if (type.startsWith("foreach") || type.startsWith("sort")) {
             String[] parts = type.split("-");
             String typeName = parts[0];
             String source = parts[1];
-            return factory.buildComplexStatement(typeName, source, (List<Map<String, Object>>) node.get(type));
+            return buildComplexStatement(typeName, source, (List<Map<String, Object>>) node.get(type));
         }
         else {
-            return factory.buildStatement(type, (Map<String, Object>) node.get(type));
+            return buildStatement(type, (Map<String, Object>) node.get(type));
         }
     }
 
@@ -116,7 +136,179 @@ public class Parser {
         return node.entrySet().iterator().next().getValue();
     }
 
-    public Factory getFactory() {
-        return factory;
+    private void populateTypesMap(String[] packages, Map<String, Class> typesMap) {
+        for (String packageName : packages) {
+            Reflections reflections = new Reflections(packageName);
+            Set<Class<?>> stepTypes = reflections.getTypesAnnotatedWith(Step.class);
+            for (Class clazz : stepTypes) {
+                Step stepAnnotation = (Step) clazz.getAnnotation(Step.class);
+                if (typesMap.containsKey(stepAnnotation.tag())) {
+                    throw new RuntimeException("duplicate step tag: " + stepAnnotation.tag());
+                }
+                else {
+                    typesMap.put(stepAnnotation.tag(), clazz);
+                }
+            }
+        }
     }
+
+    public StepBase buildStatement(String type, Map<String, Object> config) {
+        try {
+            replaceConfigWithEnvVars(config);
+            buildUniqueNameFromType(type, config);
+            return buildBaseStep(type, config, statementTypesMap);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public StepBase buildPredicate(String type, Map<String, Object> config) {
+        try {
+            replaceConfigWithEnvVars(config);
+            buildUniqueNameFromType(type, config);
+            return buildBaseStep(type, config, predicateTypesMap);
+        }
+        catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public StepBase buildBaseStep(String type, Map<String, Object> config, Map<String, Class> typesMap) throws Exception {
+        if (typesMap.containsKey(type)) {
+            Class clazz = typesMap.get(type);
+            return (StepBase) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
+        }
+        else {
+            throw new RuntimeException("no type found for: " + type);
+        }
+    }
+
+    // TODO: parameterize and/or make this a template, it'll just be copy and paste code
+    public StepBase buildComplexStatement(String type, String source, List<Map<String, Object>> config) {
+        StepBase retVal;
+        switch (type) {
+            case "foreach": {
+                ForEach forEach = new ForEach(source);
+                forEach.subStatements = parse(config);
+                retVal = forEach;
+                break;
+            }
+            case "sort": {
+                Sort sort = new Sort(source);
+                sort.subStatements = parse(config);
+                retVal = sort;
+                break;
+            }
+            default : {
+                throw new IllegalArgumentException("unknown step: " + type);
+            }
+        }
+        retVal.setName(buildUniqueNameFromType(type));
+        return retVal;
+    }
+
+    public StepBase buildComplexPredicate(String type, List<Map<String, Object>> config) {
+
+        // TODO: give complex predicates the option for a friendly, unique name
+        StepBase retVal;
+
+        switch (type) {
+            case "xor" : {
+                Xor xor = new Xor();
+
+                if (config.size() > 2) {
+                    throw new IllegalArgumentException("xor max sub-predicate is 2");
+                }
+                else {
+                    for (Map<String, Object> node : config) {
+                        String subPredicateType = Parser.firstKey(node);
+                        StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                        xor.subPredicate.add(s);
+                    }
+                    retVal = xor;
+                    break;
+                }
+            }
+            case "not" : {
+                Not not = new Not();
+                for (Map<String, Object> node : config) {
+                    String subPredicateType = Parser.firstKey(node);
+                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                    not.subPredicate.add(s);
+                }
+                retVal = not;
+                break;
+            }
+            case "and" : {
+                And and = new And();
+                for (Map<String, Object> node : config) {
+                    String subPredicateType = Parser.firstKey(node);
+                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                    and.subPredicate.add(s);
+                }
+                retVal = and;
+                break;
+            }
+            case "or" : {
+                Or or = new Or();
+                for (Map<String, Object> node : config) {
+                    String subPredicateType = Parser.firstKey(node);
+                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
+                    or.subPredicate.add(s);
+                }
+                retVal = or;
+                break;
+            }
+            default : {
+                throw new IllegalArgumentException("unknown step: " + type);
+            }
+        }
+        retVal.setName(buildUniqueNameFromType(type));
+        return retVal;
+    }
+
+    public void replaceConfigWithEnvVars(Map<String, Object> config) {
+        // 1) replace env vars in all configuration
+        Map<String, String> env = System.getenv();
+        for (Map.Entry<String, Object> entry : config.entrySet()) {
+            if (entry.getValue() instanceof String) {
+                String replaced = StringSubstitutor.replace(entry.getValue(), env);
+                config.replace(entry.getKey(), replaced);
+            }
+        }
+    }
+
+    public String buildUniqueNameFromName(String name) {
+        if (userProvidedNames.contains(name)) {
+            throw new IllegalArgumentException("duplicate name: " + name);
+        }
+        else {
+            userProvidedNames.add(name);
+            instanceCounter.increment();
+            return name;
+        }
+    }
+
+    public String buildUniqueNameFromType(String type) {
+        String retVal = type + "_" + instanceCounter.longValue();
+        instanceCounter.increment();
+        return retVal;
+    }
+
+    public void buildUniqueNameFromType(String type, Map<String, Object> config) {
+
+        if (config.containsKey("name")) {
+            instanceCounter.increment();
+        }
+        else {
+            instanceCounter.increment();
+            config.put("name", type + "_" + instanceCounter.longValue());
+        }
+    }
+
+    public LongAdder getInstanceCounter() {
+        return instanceCounter;
+    }
+
 }

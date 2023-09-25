@@ -4,13 +4,14 @@ import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.StepStatementComplex;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ForEach extends StepStatementComplex {
+public class ForEach extends StepStatementComplex implements Serializable {
 
-    private String list;
+    private final String list;
 
     public ForEach(String source) {
         super();
