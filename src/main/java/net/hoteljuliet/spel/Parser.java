@@ -329,8 +329,8 @@ public class Parser {
      * @return
      */
     public String buildUniqueNameFromType(String type) {
-        String retVal = type + "_" + instanceCounter.longValue();
         instanceCounter.increment();
+        String retVal = type + "_" + instanceCounter.longValue();
         return retVal;
     }
 
