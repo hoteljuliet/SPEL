@@ -1,6 +1,7 @@
 package net.hoteljuliet.spel.statements;
 
 import net.hoteljuliet.spel.Context;
+import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.StepStatementComplex;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Step(tag = "foreach")
 public class ForEach extends StepStatementComplex implements Serializable {
 
     private final String list;
