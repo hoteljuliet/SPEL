@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class Parser {
 
     private final LongAdder instanceCounter;
-    private final ObjectMapper objectMapper;
+    public static final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
     private final Map<String, Class> predicateTypesMap;
     private final Map<String, Class> statementTypesMap;
     private final Set<String> userProvidedNames;
@@ -34,9 +34,6 @@ public class Parser {
         statementTypesMap = new HashMap<>();
         populateTypesMap(predicatePackages, predicateTypesMap);
         populateTypesMap(statementPackages, statementTypesMap);
-        objectMapper = new ObjectMapper(new YAMLFactory())
-                .configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false)
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
     }
 
     /**
@@ -258,6 +255,7 @@ public class Parser {
             Object[] parameters = {source};
             Object instance = constructor.newInstance(parameters);
             StepStatementComplex stepStatementComplex = (StepStatementComplex) instance;
+            stepStatementComplex.setName(buildUniqueNameFromType(type+source));
             stepStatementComplex.subStatements = parse(config);
             return stepStatementComplex;
         }
@@ -281,6 +279,7 @@ public class Parser {
             Object[] parameters = {};
             Object instance = constructor.newInstance(parameters);
             StepPredicateComplex stepPredicateComplex = (StepPredicateComplex) instance;
+            stepPredicateComplex.setName(buildUniqueNameFromType(type));
 
             for (Map<String, Object> node : config) {
                 String subType = firstKey(node);

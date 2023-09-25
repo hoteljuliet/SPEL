@@ -64,8 +64,17 @@ public class Pipeline implements Serializable {
         }
     }
 
-    public static Pipeline fromResource(String path) {
+    public static Pipeline fromMap(Map<String, Object> config) {
+        try {
+            String value = objectMapper.writeValueAsString(config);
+            return fromString(value);
+        }
+        catch (JsonProcessingException ex) {
+            return null;
+        }
+    }
 
+    public static Pipeline fromResource(String path) {
         try {
             Pipeline p = objectMapper.readValue(Pipeline.class.getResourceAsStream(path), Pipeline.class);
             p.init();
@@ -96,7 +105,11 @@ public class Pipeline implements Serializable {
      */
     public String toMermaid() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("start" + "> start]").append("\n");
+        stringBuilder.append("start" + "((start))").append("\n");
+        stringBuilder.append("style start fill: #9c1717").append("\n");
+
+        //stringBuilder.append("end" + "(end)").append("\n");
+        //stringBuilder.append("style end fill: #030303").append("\n");
 
         StepBase pointer = null;
         for (int i = 0; i < stepBases.size(); i++) {
