@@ -11,7 +11,10 @@ public abstract class StepStatement extends StepBase implements Serializable {
 
     @Override
     public void toMermaid(Optional<StepBase> parent, Optional<Boolean> predicatePath, StringBuilder stringBuilder) {
-        stringBuilder.append(name).append("\n");
+
+        String text = String.format("%s[%s\\nsoft:%d\\nex:%d\\navg:%.0f]", name, name, softFailure.intValue(), exception.intValue(), runTimeNanos.getMean());
+
+        stringBuilder.append(text).append("\n");
 
         if (invocations.longValue() > 0) {
             Double successRate = (success.doubleValue() - softFailure.doubleValue() / invocations.doubleValue());
