@@ -1,5 +1,6 @@
 package net.hoteljuliet.spel.predicates;
 
+import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepPredicateComplex;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Step(tag = "or")
 public class Or extends StepPredicateComplex implements Serializable {
 
     public Or() {

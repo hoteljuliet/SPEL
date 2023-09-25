@@ -1,5 +1,6 @@
 package net.hoteljuliet.spel.predicates;
 
+import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepPredicateComplex;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
@@ -7,6 +8,7 @@ import net.hoteljuliet.spel.Context;
 import java.io.Serializable;
 import java.util.Optional;
 
+@Step(tag = "not")
 public class Not extends StepPredicateComplex implements Serializable {
 
     public Not() {

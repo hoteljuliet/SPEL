@@ -274,61 +274,23 @@ public class Parser {
      */
     public StepBase buildComplexPredicate(String type, List<Map<String, Object>> config) {
 
-        StepBase retVal;
+        try {
+            Class clazz = predicateTypesMap.get(type);
+            Class[] types = {};
+            Constructor constructor = clazz.getConstructor(types);
+            Object[] parameters = {};
+            Object instance = constructor.newInstance(parameters);
+            StepPredicateComplex stepPredicateComplex = (StepPredicateComplex) instance;
 
-        switch (type) {
-            case "xor" : {
-                Xor xor = new Xor();
-
-                if (config.size() > 2) {
-                    throw new IllegalArgumentException("xor max sub-predicate is 2");
-                }
-                else {
-                    for (Map<String, Object> node : config) {
-                        String subPredicateType = Parser.firstKey(node);
-                        StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                        xor.subPredicate.add(s);
-                    }
-                    retVal = xor;
-                    break;
-                }
+            for (Map<String, Object> node : config) {
+                String subType = firstKey(node);
+                stepPredicateComplex.subPredicate.add(buildPredicate(subType, (Map<String, Object>) node.get(subType)));
             }
-            case "not" : {
-                Not not = new Not();
-                for (Map<String, Object> node : config) {
-                    String subPredicateType = Parser.firstKey(node);
-                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                    not.subPredicate.add(s);
-                }
-                retVal = not;
-                break;
-            }
-            case "and" : {
-                And and = new And();
-                for (Map<String, Object> node : config) {
-                    String subPredicateType = Parser.firstKey(node);
-                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                    and.subPredicate.add(s);
-                }
-                retVal = and;
-                break;
-            }
-            case "or" : {
-                Or or = new Or();
-                for (Map<String, Object> node : config) {
-                    String subPredicateType = Parser.firstKey(node);
-                    StepBase s = buildPredicate(subPredicateType, (Map<String, Object>) node.get(subPredicateType));
-                    or.subPredicate.add(s);
-                }
-                retVal = or;
-                break;
-            }
-            default : {
-                throw new IllegalArgumentException("unknown step: " + type);
-            }
+            return stepPredicateComplex;
         }
-        retVal.setName(buildUniqueNameFromType(type));
-        return retVal;
+        catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**

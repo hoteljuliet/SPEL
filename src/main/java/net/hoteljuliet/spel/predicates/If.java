@@ -1,5 +1,6 @@
 package net.hoteljuliet.spel.predicates;
 
+import net.hoteljuliet.spel.Step;
 import net.hoteljuliet.spel.StepBase;
 import net.hoteljuliet.spel.Context;
 import net.hoteljuliet.spel.StepPredicate;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Step(tag = "if")
 public class If extends StepPredicate implements Serializable {
 
     public If() {
