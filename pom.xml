@@ -59,6 +59,11 @@
   <name>spel</name>
   <url>http://maven.apache.org</url>
   <dependencies>
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
+      <version>3.20.0</version>
+    </dependency>
     <!--
     TODO: explore this library for mainframe-specific needs
     <dependency>
