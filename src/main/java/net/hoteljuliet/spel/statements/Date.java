@@ -35,10 +35,8 @@ public class Date extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-
         if (null == fromFormatter) fromFormatter = DateTimeFormatter.ofPattern(from);
         if (null == toFormatter) toFormatter = DateTimeFormatter.ofPattern(to);
-
         String value = context.getField(source);
         ZonedDateTime original = ZonedDateTime.parse(value, fromFormatter);
         String reformatted = original.format(toFormatter);

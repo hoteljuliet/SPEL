@@ -9,6 +9,9 @@ import net.hoteljuliet.spel.StepStatement;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Remove all whitespace from a string
+ */
 @Step(tag = "strip")
 public class Strip extends StepStatement implements Serializable {
     private final String value;

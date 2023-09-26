@@ -10,6 +10,9 @@ import net.hoteljuliet.spel.StepStatement;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Create a substring from a string
+ */
 @Step(tag = "substring")
 public class SubString extends StepStatement implements Serializable {
     private final String source;

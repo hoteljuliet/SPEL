@@ -10,6 +10,9 @@ import net.hoteljuliet.spel.StepStatement;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Add the cardinality of a field
+ */
 @Step(tag = "cardinality")
 public class Cardinality extends StepStatement implements Serializable {
 

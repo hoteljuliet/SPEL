@@ -96,20 +96,8 @@ public enum FieldType {
             return value instanceof Map;
         }
 
-    },
-    NULL {
-        @Override
-        public Object convertFrom(Object value) {
-            return null;
-        }
-
-        @Override
-        public Boolean isInstance(Object value) {
-            return value == null;
-        }
     }
     ;
-
 
     @Override
     public String toString() {

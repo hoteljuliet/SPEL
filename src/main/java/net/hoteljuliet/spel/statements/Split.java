@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Splits a string on a delimiter. The opposite of concat.
+ */
 @Step(tag = "split")
 public class Split extends StepStatement implements Serializable {
     private final String source;

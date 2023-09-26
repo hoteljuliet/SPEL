@@ -1,6 +1,12 @@
 stopOnFailure: true
 config:
 
+  - add: {dest: "aStringToHex", value: "makeThisHex"}
+  - hex: {value: "aStringToHex", dest: "hexString", action: encode}
+
+  - add: {dest: "aHexString", value: "6d616b6554686973486578"}
+  - hex: {value: "aHexString", dest: "AsciiFromHexString", action: decode}
+
   - add: {dest: "listToSort", value: [{"age" : 5}, {"age" : 9}, {"age" : 4}, {"age" : 12}]}
   - sort-listToSort:
       - if:
@@ -113,4 +119,4 @@ config:
   - add: {dest: s1, value: "string1"}
   - add: {dest: s2, value: "string2"}
   - add: {dest: s3, value: "string3"}
-  - concat: {values: [s1, s2, s3], dest: concatenation}
+  - concat: {values: [s1, s2, s3], dest: concatenation, delimiter: ""}

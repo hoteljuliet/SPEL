@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Maps/translates strings- ex: "404" - "Not Found" or "Bob" -> "Robert" using the provided dict.
+ */
 @Step(tag = "translate")
 public class Translate extends StepStatement implements Serializable {
     private String value;

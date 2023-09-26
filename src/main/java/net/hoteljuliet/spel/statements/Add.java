@@ -8,6 +8,10 @@ import net.hoteljuliet.spel.mustache.TemplateLiteral;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Add a field, either a literal or from a template {{fieldX}} - but just a single value.
+ * See render for full mustache support.
+ */
 @Step(tag = "add")
 public class Add extends StepStatement implements Serializable {
     private final TemplateLiteral templateLiteral;

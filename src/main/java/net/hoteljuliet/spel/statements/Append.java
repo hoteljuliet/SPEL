@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Append a value to a list
+ */
 @Step(tag = "append")
 public class Append extends StepStatement implements Serializable {
     private final TemplateLiteral value;

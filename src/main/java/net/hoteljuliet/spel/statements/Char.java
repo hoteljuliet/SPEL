@@ -11,6 +11,9 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Optional;
 
+/**
+ * Convert a string from one character encoding to another
+ */
 @Step(tag = "char")
 public class Char extends StepStatement implements Serializable {
     private final String source;

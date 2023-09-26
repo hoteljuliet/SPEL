@@ -1,5 +1,7 @@
 package net.hoteljuliet.spel;
 
+import com.amazon.randomcutforest.RandomCutForest;
+import com.amazon.randomcutforest.config.Precision;
 import org.junit.Test;
 
 import java.io.*;

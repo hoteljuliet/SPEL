@@ -11,6 +11,9 @@ import org.redisson.config.Config;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * Add a Map from Redis
+ */
 @Step(tag = "add-redis")
 public class AddRedis extends StepStatement implements Serializable {
 

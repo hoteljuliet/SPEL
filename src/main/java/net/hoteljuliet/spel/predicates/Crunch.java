@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.primitives.Doubles;
 import net.hoteljuliet.spel.*;
-import net.hoteljuliet.spel.mustache.MustacheUtils;
 import net.hoteljuliet.spel.mustache.TemplateLiteral;
 import redempt.crunch.CompiledExpression;
 
@@ -24,7 +23,7 @@ public class Crunch extends StepPredicate implements Serializable {
     @JsonCreator
     public Crunch(@JsonProperty(value = "exp", required = true) TemplateLiteral exp) {
         super();
-        this.variables = MustacheUtils.findVariables(exp.toString());
+        this.variables = exp.getVariables();
         String temp = exp.toString();
         for (int i = 0; i < variables.size(); i++) {
             String regex = "\\{\\{(" + variables.get(i) + ")\\}\\}";

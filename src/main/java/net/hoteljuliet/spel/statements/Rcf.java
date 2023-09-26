@@ -1,38 +1,76 @@
 package net.hoteljuliet.spel.statements;
 
+import com.amazon.randomcutforest.RandomCutForest;
+import com.amazon.randomcutforest.config.Precision;
+import com.amazon.randomcutforest.state.RandomCutForestMapper;
+import com.amazon.randomcutforest.state.RandomCutForestState;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.hoteljuliet.spel.StepBase;
-import net.hoteljuliet.spel.Context;
-import net.hoteljuliet.spel.StepStatement;
-import net.hoteljuliet.spel.Step;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import net.hoteljuliet.spel.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO: implement anomaly detect ion via RCF - must be serializable + restoreable!
+ * TODO: implement anomaly detect ion via RCF - must be serializable
+ * See Also: https://github.com/aws/random-cut-forest-by-aws
  */
 @Step(tag = "rcf")
 public class Rcf extends StepStatement implements Serializable {
-    private final String source;
     private final String dest;
-    private final String delimiter;
+    private final Integer dimensions;
+    private final Integer trees;
+    private final Integer samples;
+    private final String precision;
+    private String json;
+    private List<Double> point;
+    private transient RandomCutForest randomCutForest;
 
     @JsonCreator
-    public Rcf(@JsonProperty(value = "source", required = true) String source,
-               @JsonProperty(value = "delimiter", required = true) String delimiter,
-               @JsonProperty(value = "dest", required = true) String dest) {
+    public Rcf(@JsonProperty(value = "dest", required = true) String dest,
+               @JsonProperty(value = "dimensions", required = true) Integer dimensions,
+               @JsonProperty(value = "trees", required = true) Integer trees,
+               @JsonProperty(value = "samples", required = true) Integer samples,
+               @JsonProperty(value = "precision", required = true) String precision) throws JsonProcessingException {
         super();
-        this.source = source;
-        this.delimiter = delimiter;
         this.dest = dest;
+        this.dimensions = dimensions;
+        this.trees = trees;
+        this.samples = samples;
+        this.precision = precision;
+
+        /*
+        randomCutForest = RandomCutForest.builder().compact(true)
+                .dimensions(dimensions)
+                .numberOfTrees(trees)
+                .sampleSize(samples)
+                .precision(Precision.valueOf(precision))
+                .build();
+
+        RandomCutForestMapper mapper = new RandomCutForestMapper();
+        mapper.setSaveExecutorContextEnabled(true);
+        json = Parser.jsonMapper.writeValueAsString(mapper.toState(randomCutForest));
+        point = new ArrayList<>();
+         */
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        // TODO: implement
-        // see https://github.com/aws/random-cut-forest-by-aws/blob/main/Java/examples/src/main/java/com/amazon/randomcutforest/examples/parkservices/SequentialAnomalyExample.java
+
+        /*
+        if (null == point) point = new ArrayList<>();
+        if (null == randomCutForest && null != json) {
+            RandomCutForestMapper mapper = new RandomCutForestMapper();
+            randomCutForest = mapper.toModel(Parser.jsonMapper.readValue(json, RandomCutForestState.class));
+        }
+
+        if (point.size() == )
+         */
+
+        //randomCutForest.update();
         return EMPTY;
     }
 }
