@@ -15,17 +15,17 @@ import java.util.*;
 public class AddRedis extends StepStatement implements Serializable {
 
     private final Map<String, Object> config;
-    private final String rmap;
+    private final String key;
     private final String dest;
     private transient RedissonClient client;
 
     @JsonCreator
     public AddRedis(@JsonProperty(value = "config", required = true) Map<String, Object> config,
-                    @JsonProperty(value = "rmap", required = true) String rmap,
+                    @JsonProperty(value = "key", required = true) String key,
                     @JsonProperty(value = "dest", required = true) String dest) {
         super();
         this.config = config;
-        this.rmap = rmap;
+        this.key = key;
         this.dest = dest;
     }
 
@@ -33,11 +33,11 @@ public class AddRedis extends StepStatement implements Serializable {
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
         if (null == client) {
-            Config rConfig = Config.fromYAML(Parser.objectMapper.writeValueAsString(config));
+            Config rConfig = Config.fromYAML(Parser.yamlMapper.writeValueAsString(config));
             client = Redisson.create(rConfig);
         }
 
-        RMap<String, Object> redisMap = client.getMap(rmap);
+        RMap<String, Object> redisMap = client.getMap(key);
         HashMap<String, Object> addedMap = new HashMap<>();
         addedMap.putAll(redisMap);
         context.addField(dest, addedMap);

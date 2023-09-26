@@ -4,13 +4,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import net.hoteljuliet.spel.predicates.*;
-import net.hoteljuliet.spel.statements.ForEach;
-import net.hoteljuliet.spel.statements.Sort;
 import org.apache.commons.text.StringSubstitutor;
 import org.reflections.Reflections;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
@@ -18,7 +15,8 @@ import java.util.stream.Collectors;
 public class Parser {
 
     private final LongAdder instanceCounter;
-    public static final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+    public static final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+    public static final ObjectMapper jsonMapper = new ObjectMapper();
     private final Map<String, Class> predicateTypesMap;
     private final Map<String, Class> statementTypesMap;
     private final Set<String> userProvidedNames;
@@ -232,7 +230,7 @@ public class Parser {
     public StepBase buildBaseStep(String type, Map<String, Object> config, Map<String, Class> typesMap) throws Exception {
         if (typesMap.containsKey(type)) {
             Class clazz = typesMap.get(type);
-            return (StepBase) objectMapper.readValue(objectMapper.writeValueAsBytes(config), clazz);
+            return (StepBase) yamlMapper.readValue(yamlMapper.writeValueAsBytes(config), clazz);
         }
         else {
             throw new RuntimeException("no type found for: " + type);

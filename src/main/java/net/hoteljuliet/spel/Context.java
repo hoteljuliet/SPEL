@@ -12,34 +12,39 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
 
-    public final PipelineResult pipelineResult;
-    public final Pipeline pipeline;
-    private final Map<String, Object> backing;
+    public PipelineResult pipelineResult;
+    public Pipeline pipeline;
+    private Map<String, Object> backing;
 
     public Context() {
-        this.pipeline = new Pipeline();
-        this.backing = new HashMap<>();
-        this.pipelineResult = new PipelineResult();
-
+        pipeline = new Pipeline();
+        backing = new HashMap<>();
+        pipelineResult = new PipelineResult();
     }
 
     public Context(Map<String, Object> backing) {
-        this.pipeline = new Pipeline();
-        this.pipelineResult = new PipelineResult();
+        this();
         this.backing = backing;
     }
 
     public Context(Pipeline pipeline, Map<String, Object> backing) {
+        this();
         this.pipeline = pipeline;
-        this.pipelineResult = new PipelineResult();
         this.backing = backing;
     }
 
     public Context(Pipeline pipeline) {
+        this();
         this.pipeline = pipeline;
-        this.pipelineResult = new PipelineResult();
-        this.backing = new HashMap<>();
     }
+
+    public Context(Context other) {
+        this();
+        this.pipeline = other.pipeline;
+        this.pipelineResult = new PipelineResult(other.pipelineResult);
+        this.backing.putAll(other.backing);
+    }
+
 
     @Override
     public int size() {
@@ -363,5 +368,9 @@ public class Context implements Map<String, Object> {
             retVal.put(String.valueOf(objects[i]), objects[i+1]);
         }
         return retVal;
+    }
+
+    public Map<String, Object> getBacking() {
+        return backing;
     }
 }

@@ -18,9 +18,6 @@ public class Pipeline implements Serializable {
     public static final String[] defaultPredicatePackages = {"net.hoteljuliet.spel.predicates"};
     public static final String[] defaultStatementPackages = {"net.hoteljuliet.spel.statements"};
 
-    private static final ObjectMapper objectMapper =
-            new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
-
     // fields from yaml
     public List<Map<String, Object>> config;
     private List<StepBase> stepBases;
@@ -44,7 +41,7 @@ public class Pipeline implements Serializable {
         FileReader fileReader = null;
         try {
             fileReader = new FileReader(file);
-            Pipeline p = objectMapper.readValue(fileReader, Pipeline.class);
+            Pipeline p = Parser.yamlMapper.readValue(fileReader, Pipeline.class);
             p.init();
             return p;
 
@@ -55,7 +52,7 @@ public class Pipeline implements Serializable {
 
     public static Pipeline fromString(String value) {
         try {
-            Pipeline p = objectMapper.readValue(value, Pipeline.class);
+            Pipeline p = Parser.yamlMapper.readValue(value, Pipeline.class);
             p.init();
             return p;
         }
@@ -66,7 +63,7 @@ public class Pipeline implements Serializable {
 
     public static Pipeline fromMap(Map<String, Object> config) {
         try {
-            String value = objectMapper.writeValueAsString(config);
+            String value = Parser.yamlMapper.writeValueAsString(config);
             return fromString(value);
         }
         catch (JsonProcessingException ex) {
@@ -76,7 +73,7 @@ public class Pipeline implements Serializable {
 
     public static Pipeline fromResource(String path) {
         try {
-            Pipeline p = objectMapper.readValue(Pipeline.class.getResourceAsStream(path), Pipeline.class);
+            Pipeline p = Parser.yamlMapper.readValue(Pipeline.class.getResourceAsStream(path), Pipeline.class);
             p.init();
             return p;
         }
