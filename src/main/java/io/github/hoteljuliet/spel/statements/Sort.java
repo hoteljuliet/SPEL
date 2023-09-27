@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+
+/**
+ * Given a list of values and a list of Steps, use the steps in a comparator and sort the list of values.
+ */
 @Step(tag = "sort")
 public class Sort extends StepStatementComplex implements Serializable, Comparator<Map<String, Object>> {
 
