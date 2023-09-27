@@ -2,12 +2,10 @@ package io.github.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.hoteljuliet.spel.Step;
-import com.google.common.primitives.Doubles;
 import io.github.hoteljuliet.spel.Context;
+import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.StepStatement;
 import io.github.hoteljuliet.spel.mustache.TemplateLiteral;
-import redempt.crunch.CompiledExpression;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,15 +14,16 @@ import java.util.Optional;
 @Step(tag = "crunch")
 public class Crunch extends StepStatement implements Serializable {
 
-    private final String dest;
-    private final String expression;
-    private final List<String> variables;
-    private transient CompiledExpression compiledExpression;
+    //private final String dest;
+    //private final String expression;
+    //private final List<String> variables;
+    //private transient CompiledExpression compiledExpression;
 
     @JsonCreator
     public Crunch(@JsonProperty(value = "dest", required = true) String dest,
                   @JsonProperty(value = "exp", required = true) TemplateLiteral exp) {
         super();
+        /*
         this.dest = dest;
         this.variables = exp.getVariables();
         String temp = exp.toString();
@@ -34,11 +33,13 @@ public class Crunch extends StepStatement implements Serializable {
             temp = temp.replaceAll(regex, replacement);
         }
         this.expression = temp;
+         */
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
 
+        /*
         if (null == compiledExpression) compiledExpression = redempt.crunch.Crunch.compileExpression(expression);
 
         double[] vars = new double[variables.size()];
@@ -53,5 +54,7 @@ public class Crunch extends StepStatement implements Serializable {
         double result = compiledExpression.evaluate(vars);
         context.addField(dest, result);
         return EMPTY;
+         */
+        return null;
     }
 }

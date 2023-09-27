@@ -2,4 +2,6 @@
 .idea
 ./target
 ./target/*
+./spel.iml
+spel.iml
 target

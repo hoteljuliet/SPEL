@@ -5,7 +5,9 @@ import io.github.hoteljuliet.spel.Context;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,9 +61,9 @@ public class TemplateLiteral implements Serializable {
         }
     }
 
-    public List<String> getVariables() {
+    public Set<String> getVariables() {
         String string = String.valueOf(object);
-        List<String> variables = new ArrayList<>();
+        Set<String> variables = new HashSet<>();
         Matcher matcher = mustachePattern.matcher(string);
         while (matcher.find()) {
             variables.add(matcher.group(1));
@@ -80,5 +82,9 @@ public class TemplateLiteral implements Serializable {
 
     public static String trimMustache(Object expression) {
         return String.valueOf(expression).replaceAll("\\{\\{|\\}\\}", "");
+    }
+
+    public String getTrimmed() {
+        return trimMustache(object);
     }
 }
