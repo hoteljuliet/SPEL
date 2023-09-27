@@ -43,8 +43,7 @@ public enum FieldType {
     },
     DOUBLE {
         @Override
-        public Object convertFrom(Object value) {
-            return Doubles.tryParse(String.valueOf(value)); }
+        public Object convertFrom(Object value) { return Doubles.tryParse(String.valueOf(value)); }
 
         @Override
         public Boolean isInstance(Object value) {
@@ -64,38 +63,25 @@ public enum FieldType {
     },
     BOOLEAN {
         @Override
-        public Object convertFrom(Object value) {
-            return String.valueOf(value).equalsIgnoreCase("true");
-        }
+        public Object convertFrom(Object value) { return String.valueOf(value).matches("^(t|true|yes|y|1)$"); }
 
         @Override
-        public Boolean isInstance(Object value) {
-            return value instanceof Boolean;
-        }
+        public Boolean isInstance(Object value) { return value instanceof Boolean; }
     },
     LIST {
         @Override
-        public Object convertFrom(Object value) {
-            return (List) value;
-        }
+        public Object convertFrom(Object value) { return (List) value; }
 
         @Override
-        public Boolean isInstance(Object value) {
-            return value instanceof List;
-        }
+        public Boolean isInstance(Object value) { return value instanceof List; }
 
     },
     MAP {
         @Override
-        public Object convertFrom(Object value) {
-            return (Map) value;
-        }
+        public Object convertFrom(Object value) { return (Map) value; }
 
         @Override
-        public Boolean isInstance(Object value) {
-            return value instanceof Map;
-        }
-
+        public Boolean isInstance(Object value) { return value instanceof Map; }
     }
     ;
 

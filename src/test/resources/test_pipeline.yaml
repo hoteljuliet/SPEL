@@ -1,6 +1,16 @@
 stopOnFailure: true
 config:
 
+  - add: {dest: "trueString1", value: "t"}
+  - add: {dest: "falseString1", value: "f"}
+  - math: {exp: "{{trueString1}} && {{falseString1}}", dest: mathDestFalse}
+  - math: {exp: "{{trueString1}} || {{falseString1}}", dest: mathDestTrue}
+  - add: {dest: "trueString2", value: "1"}
+  - add: {dest: "falseString2", value: "0"}
+
+  - math: {exp: "({{trueString1}} && {{falseString1}}) || ({{trueString2}} && {{falseString2}})", dest: mathDestComplex}
+
+
   - add: {dest: "aStringToHex", value: "makeThisHex"}
   - hex: {value: "aStringToHex", dest: "hexString", action: encode}
 

@@ -76,7 +76,7 @@ public class Math extends StepPredicate implements Serializable {
             @Override
             public double apply(double... args) {
                 Boolean left = args[0] == 1.0 ? true : false;
-                Boolean right = args[0] == 1.0 ? true : false;
+                Boolean right = args[1] == 1.0 ? true : false;
                 return (left || right) ? 1.0 : 0.0;
             }
         };
@@ -85,7 +85,7 @@ public class Math extends StepPredicate implements Serializable {
             @Override
             public double apply(double... args) {
                 Boolean left = args[0] == 1.0 ? true : false;
-                Boolean right = args[0] == 1.0 ? true : false;
+                Boolean right = args[1] == 1.0 ? true : false;
                 return (left && right) ? 1.0 : 0.0;
             }
         };
@@ -135,8 +135,17 @@ public class Math extends StepPredicate implements Serializable {
             }
         };
 
+        Operator neq = new Operator("!=", 2, true, Operator.PRECEDENCE_POWER + 1) {
+            @Override
+            public double apply(double... args) {
+                double left = args[0];
+                double right = args[1];
+                return (left != right) ? 1.0 : 0.0;
+            }
+        };
+
         return new ExpressionBuilder(exp.getTrimmed())
-                .operator(or, and, lt, lte, gt, gte, eq)
+                .operator(or, and, lt, lte, gt, gte, eq, neq)
                 .variables(variables)
                 .build();
     }
