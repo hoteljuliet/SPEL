@@ -1,4 +1,4 @@
-ame: release and push to central
+name: release and push to central
 on:
   push:
     tags:
