@@ -27,7 +27,11 @@ public class Match implements Serializable {
     private Map<String, Object> capture = Collections.emptyMap();
 
     /**
-     * Create a new {@code Match} object.
+     * @param subject subject
+     * @param grok grok
+     * @param match match
+     * @param start start
+     * @param end end
      */
     public Match(CharSequence subject, Grok grok, Matcher match, int start, int end) {
         this.subject = subject;
@@ -56,6 +60,7 @@ public class Match implements Serializable {
 
     /**
      * Ignore empty captures.
+     * @param ignore flag
      */
     public void setKeepEmptyCaptures(boolean ignore) {
         // clear any cached captures
@@ -79,17 +84,17 @@ public class Match implements Serializable {
     }
 
     /**
-     * Match to the <tt>subject</tt> the <tt>regex</tt> and save the matched element into a map.
+     * Match to the subject the regex and save the matched element into a map.
      *
      * Multiple values for the same key are stored as list.
-     *
+     * @return matched element
      */
     public Map<String, Object> capture() {
         return capture(false);
     }
 
     /**
-     * Match to the <tt>subject</tt> the <tt>regex</tt> and save the matched element into a map
+     * Match to the subject the regex and save the matched element into a map
      *
      * Multiple values to the same key are flattened to one value: the sole non-null value will be captured.
      * Should there be multiple non-null values a RuntimeException is being thrown.

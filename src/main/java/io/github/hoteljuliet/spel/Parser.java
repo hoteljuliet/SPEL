@@ -34,11 +34,6 @@ public class Parser {
         populateTypesMap(statementPackages, statementTypesMap);
     }
 
-    /**
-     *
-     * @param config
-     * @return
-     */
     public List<StepBase> parse(List<Map<String, Object>> config) {
         if (config == null) {
             throw new RuntimeException("empty config");
@@ -53,11 +48,6 @@ public class Parser {
         return config.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    /**
-     *
-     * @param node
-     * @return
-     */
     public StepBase parse(Map<String, Object> node) {
         String firstKey = firstKey(node);
 
@@ -76,12 +66,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param name
-     * @param node
-     * @return
-     */
     public StepBase parsePredicate(Optional<String> name, Map<String, Object> node) {
 
         Object firstValue = firstValue(node);
@@ -127,11 +111,6 @@ public class Parser {
         return ifPredicate;
     }
 
-    /**
-     *
-     * @param node
-     * @return
-     */
     public StepBase parseStatement(Map<String, Object> node) {
         String type = firstKey(node);
 
@@ -146,29 +125,14 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param node
-     * @return
-     */
     public static String firstKey(Map<String, Object> node) {
         return node.entrySet().iterator().next().getKey();
     }
 
-    /**
-     *
-     * @param node
-     * @return
-     */
     public static Object firstValue(Map<String, Object> node) {
         return node.entrySet().iterator().next().getValue();
     }
 
-    /**
-     *
-     * @param packages
-     * @param typesMap
-     */
     private void populateTypesMap(String[] packages, Map<String, Class> typesMap) {
         for (String packageName : packages) {
             Reflections reflections = new Reflections(packageName);
@@ -185,12 +149,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param type
-     * @param config
-     * @return
-     */
     public StepBase buildStatement(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
@@ -202,12 +160,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param type
-     * @param config
-     * @return
-     */
     public StepBase buildPredicate(String type, Map<String, Object> config) {
         try {
             replaceConfigWithEnvVars(config);
@@ -219,14 +171,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param type
-     * @param config
-     * @param typesMap
-     * @return
-     * @throws Exception
-     */
     public StepBase buildBaseStep(String type, Map<String, Object> config, Map<String, Class> typesMap) throws Exception {
         if (typesMap.containsKey(type)) {
             Class clazz = typesMap.get(type);
@@ -237,13 +181,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param type
-     * @param source
-     * @param config
-     * @return
-     */
     public StepBase buildComplexStatement(String type, String source, List<Map<String, Object>> config) {
 
         try {
@@ -262,12 +199,6 @@ public class Parser {
         }
     }
 
-    /**
-     * TODO: refactor this to use reflections, like above
-     * @param type
-     * @param config
-     * @return
-     */
     public StepBase buildComplexPredicate(String type, List<Map<String, Object>> config) {
 
         try {
@@ -290,10 +221,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param config
-     */
     public void replaceConfigWithEnvVars(Map<String, Object> config) {
         // 1) replace env vars in all configuration
         Map<String, String> env = System.getenv();
@@ -305,11 +232,6 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param name
-     * @return
-     */
     public String buildUniqueNameFromName(String name) {
         if (userProvidedNames.contains(name)) {
             throw new IllegalArgumentException("duplicate name: " + name);
@@ -321,22 +243,12 @@ public class Parser {
         }
     }
 
-    /**
-     *
-     * @param type
-     * @return
-     */
     public String buildUniqueNameFromType(String type) {
         instanceCounter.increment();
         String retVal = type + "_" + instanceCounter.longValue();
         return retVal;
     }
 
-    /**
-     *
-     * @param type
-     * @param config
-     */
     public void buildUniqueNameFromType(String type, Map<String, Object> config) {
         if (config.containsKey("name")) {
             instanceCounter.increment();

@@ -16,10 +16,9 @@ public class Not extends StepPredicateComplex implements Serializable {
     }
 
     /**
-     * return false iff all predicates return true
-     * @param context
-     * @return
-     * @throws Exception
+     * @param context the context
+     * @return false iff all predicates return true
+     * @throws Exception exception
      */
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {

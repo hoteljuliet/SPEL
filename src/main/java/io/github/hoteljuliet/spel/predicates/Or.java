@@ -17,10 +17,9 @@ public class Or extends StepPredicateComplex implements Serializable {
     }
 
     /**
-     * return true iff one predicates return true
-     * @param context
-     * @return
-     * @throws Exception
+     * @param context the context
+     * @return true iff one predicates return true
+     * @throws Exception exception
      */
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {

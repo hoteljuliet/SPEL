@@ -28,11 +28,10 @@ public class Sort extends StepStatementComplex implements Serializable, Comparat
     }
 
     /**
-     * Compares its two arguments for order. Returns a negative integer, zero, or a positive
-     * integer as the first argument is less than, equal to, or greater than the second.
-     * @param map1
-     * @param map2
-     * @return
+     * Compares its two arguments for order.
+     * @param map1 the first ma
+     * @param map2 the second map
+     * @return Returns a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
      */
     @Override
     public int compare(Map<String, Object> map1, Map<String, Object> map2) {

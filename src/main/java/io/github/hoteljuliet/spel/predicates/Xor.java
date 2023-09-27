@@ -15,10 +15,10 @@ public class Xor extends StepPredicateComplex implements Serializable {
     }
 
     /**
-     * return true iff first 2 predicates eval to different values
-     * @param context
-     * @return
-     * @throws Exception
+     *
+     * @param context the context
+     * @return true iff first 2 predicates eval to different values
+     * @throws Exception exception
      */
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {

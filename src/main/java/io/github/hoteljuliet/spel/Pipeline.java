@@ -99,10 +99,6 @@ public class Pipeline implements Serializable {
         return parser.getInstanceCounter().intValue();
     }
 
-    /**
-     *
-     * @return
-     */
     public String toMermaid() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("start" + "((start))").append("\n");
@@ -125,19 +121,10 @@ public class Pipeline implements Serializable {
         return stringBuilder.toString();
     }
 
-    /**
-     *
-     * @return
-     */
     public void execute() {
         execute(new Context(this));
     }
 
-    /**
-     *
-     * @param context
-     * @return
-     */
     public void execute(Context context) {
         stopWatch.reset();
         stopWatch.start();
@@ -167,21 +154,12 @@ public class Pipeline implements Serializable {
         context.pipelineResult.totalMillis = Math.round(runTimeNanos.getSum() / 1000000);
     }
 
-    /**
-     *
-     * @param stepName
-     */
     public Optional<StepBase> find(String stepName) {
         List<StepBase> stack = new ArrayList<>();
         find(stepName, stepBases, stack);
         return stack.isEmpty() ? Optional.empty() : Optional.of(stack.get(0));
     }
 
-    /**
-     *
-     * @param stepName
-     * @param stack
-     */
     private void find(String stepName, List<StepBase> search, List<StepBase> stack) {
         for (StepBase stepBase : search) {
             if (stack.size() > 0) {

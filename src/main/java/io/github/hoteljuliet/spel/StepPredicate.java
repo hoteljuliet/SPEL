@@ -20,8 +20,8 @@ public abstract class StepPredicate extends StepBase implements Serializable {
 
     /**
      * Increment the true/false counters for this predicate
-     * @param evaluation
-     * @param context
+     * @param evaluation the step's return value for doExecute
+     * @param context the context
      */
     @Override
     public void after(Optional<Boolean> evaluation, Context context) {

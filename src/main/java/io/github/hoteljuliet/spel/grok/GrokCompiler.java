@@ -79,9 +79,6 @@ public class GrokCompiler implements Serializable {
         }
     }
 
-    /**
-     * Registers multiple pattern definitions.
-     */
     public void register(Map<String, String> patternDefinitions) {
         Objects.requireNonNull(patternDefinitions);
         patternDefinitions.forEach(this::register);
@@ -106,6 +103,8 @@ public class GrokCompiler implements Serializable {
 
     /**
      * Registers multiple pattern definitions from a given inputStream, and decoded as a UTF-8 source.
+     * @param input input
+     * @throws IOException exception
      */
     public void register(InputStream input) throws IOException {
         register(input, StandardCharsets.UTF_8);
@@ -113,6 +112,9 @@ public class GrokCompiler implements Serializable {
 
     /**
      * Registers multiple pattern definitions from a given inputStream.
+     * @param input input
+     * @param charset charset
+     * @throws IOException exception
      */
     public void register(InputStream input, Charset charset) throws IOException {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(input, charset))) {
@@ -122,6 +124,8 @@ public class GrokCompiler implements Serializable {
 
     /**
      * Registers multiple pattern definitions from a given Reader.
+     * @param input input
+     * @throws IOException exception
      */
     public void register(Reader input) throws IOException {
         new BufferedReader(input).lines().map(patternLinePattern::matcher).filter(Matcher::matches).forEach(m -> register(m.group(1), m.group(2)));
@@ -129,6 +133,9 @@ public class GrokCompiler implements Serializable {
 
     /**
      * Compiles a given Grok pattern and returns a Grok object which can parse the pattern.
+     * @param pattern pattern
+     * @return Grok
+     * @throws IllegalArgumentException exception
      */
     public Grok compile(String pattern) throws IllegalArgumentException {
         return compile(pattern, false);

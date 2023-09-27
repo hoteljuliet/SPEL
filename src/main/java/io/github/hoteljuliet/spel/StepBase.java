@@ -33,10 +33,7 @@ public abstract class StepBase implements Serializable {
         exceptionsCounter = new LimitedCountingMap();
     }
 
-    /**
-     *  TODO: document the need to synchronize doExecute() and clear()
-     *        consider making this method synchronized
-     */
+    // TODO: document the need to synchronize doExecute() and clear() consider making this method synchronized
     public void clear() {
         ;
     }
@@ -44,14 +41,14 @@ public abstract class StepBase implements Serializable {
     /**
      * Where derived classes put their main processing logic
      * @param context
-     * @return
-     * @throws Exception
+     * @return true, false, or empty
+     * @throws Exception exception
      */
     public abstract Optional<Boolean> doExecute(Context context) throws Exception;
 
     /**
      * Called before a Step executes, mostly for metric updates
-     * @param context
+     * @param context the context
      */
     public final void before(Context context) {
         stopWatch.reset();
@@ -60,8 +57,8 @@ public abstract class StepBase implements Serializable {
 
     /**
      * Called after a Step executes, mostly for metric updates
-     * @param evaluation
-     * @param context
+     * @param evaluation step's return from doExecute
+     * @param context the context
      */
     public void after(Optional<Boolean> evaluation, Context context) {
         stopWatch.stop();
@@ -71,9 +68,9 @@ public abstract class StepBase implements Serializable {
     /**
      * Step has an execute to make behavior for all other Steps consistent - derived classes just implement doExecute(),
      * while the base classes define before, after, and exception handling.
-     * @param context
-     * @return
-     * @throws Exception
+     * @param context context
+     * @return true, false, or empty
+     * @throws Exception exception
      */
     public final Optional<Boolean> execute(Context context) throws Exception {
         Optional<Boolean> retVal = EMPTY;
@@ -94,33 +91,16 @@ public abstract class StepBase implements Serializable {
         return retVal;
     }
 
-    /**
-     *
-     */
     public void softFailure() {
         softFailure.increment();
     }
 
-    /**
-     *
-     * @param parent
-     * @param predicatePath
-     * @param stringBuilder
-     */
     public abstract void toMermaid(Optional<StepBase> parent, Optional<Boolean> predicatePath, StringBuilder stringBuilder);
 
-    /**
-     *
-     * @return
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     *
-     * @param name
-     */
     public void setName(String name) {
         this.name = name;
     }

@@ -161,9 +161,6 @@ public class Context implements Map<String, Object> {
         return backing.merge(key, value, remappingFunction);
     }
 
-    /**
-     * Context access utility methods
-     */
     public boolean hasField(String path) {
         Optional<Object> field = getByPath(backing, path);
         return field.isPresent();
@@ -214,7 +211,7 @@ public class Context implements Map<String, Object> {
 
     /**
      * removes field from source
-     * @param path
+     * @param path path to the field to remove
      * @return {@code true} if field has been removed
      *         {@code false} if field wasn't exist
      */
@@ -261,8 +258,8 @@ public class Context implements Map<String, Object> {
 
     /**
      * removes value from a list
-     * @param path
-     * @param value
+     * @param path path to the list
+     * @param value the value to remove from the list
      * @return {@code true} if value removed from list
      *         {@code false} otherwise
      */

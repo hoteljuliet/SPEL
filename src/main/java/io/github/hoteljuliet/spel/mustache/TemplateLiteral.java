@@ -44,10 +44,9 @@ public class TemplateLiteral implements Serializable {
     }
 
     /**
-     *
-     * @param context
-     * @param <T>
-     * @return
+     * @param context the context
+     * @param <T> the type of the value to return
+     * @return the literal value, or the value from the context
      */
     public <T> T get(Context context) {
 
