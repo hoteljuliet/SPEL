@@ -5,7 +5,7 @@
         <server>
             <id>ossrh</id>
             <username>hoteljuliet</username>
-            <password>${env.OSSRH_PASSWORD}</password>
+            <password>${OSSRH_PASSWORD}</password>
         </server>
     </servers>
 </settings>
