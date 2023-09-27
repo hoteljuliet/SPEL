@@ -4,10 +4,22 @@
   <groupId>io.github.hoteljuliet.spel</groupId>
   <artifactId>spel</artifactId>
   <packaging>jar</packaging>
-
   <version>0.0.1-SNAPSHOT</version>
   <name>spel</name>
-  <url>http://maven.apache.org</url>
+  <description>A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing</description>
+  <url>https://github.com/hoteljuliet/SPEL</url>
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Dennis A. Colasurdo Jr.</name>
+      <email>colasurdo.dennis@gmail.com</email>
+    </developer>
+  </developers>
   <dependencies>
     <dependency>
       <groupId>com.amazonaws</groupId>
@@ -302,5 +314,11 @@
       <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
+
+  <scm>
+    <connection>scm:git:git://github.com/hoteljuliet/SPEL.git</connection>
+    <developerConnection>scm:git:ssh://github.com:hoteljuliet/SPEL.git</developerConnection>
+    <url>http://github.com/hoteljuliet/SPEL/tree/master</url>
+  </scm>
 
 </project>
