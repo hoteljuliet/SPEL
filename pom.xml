@@ -232,6 +232,7 @@
           </execution>
         </executions>
       </plugin>
+      <!-- 99% sure we don't want to do this here, but in the flink jars instead
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -251,6 +252,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
