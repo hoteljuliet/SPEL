@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * See https://www.objecthunter.net/exp4j
+ */
 @Step(tag = "math")
 public class Math extends StepPredicate implements Serializable {
     private final TemplateLiteral exp;
