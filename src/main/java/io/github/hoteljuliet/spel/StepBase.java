@@ -1,11 +1,8 @@
 package io.github.hoteljuliet.spel;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class StepBase implements Serializable {
 
@@ -14,23 +11,18 @@ public abstract class StepBase implements Serializable {
     public static final Optional<Boolean> EMPTY = Optional.empty();
 
     protected String name;
-
     public final StopWatch stopWatch;
-    public final SummaryStatistics runTimeNanos;
-    public final LongAdder invocations;
-    public final LongAdder success;
-    public final LongAdder exception;
-    public final LongAdder softFailure;
-    public final LimitedCountingMap exceptionsCounter;
+
+    public AtomicLong totalNs;
+    public AtomicLong maxNs;
+    public AtomicLong avgNs;
+    public AtomicLong invocations;
+    public AtomicLong success;
+    public AtomicLong exception;
+    public AtomicLong softFailure;
 
     public StepBase() {
         stopWatch = new StopWatch();
-        runTimeNanos = new SummaryStatistics();
-        invocations = new LongAdder();
-        success = new LongAdder();
-        exception = new LongAdder();
-        softFailure = new LongAdder();
-        exceptionsCounter = new LimitedCountingMap();
     }
 
     // TODO: document the need to synchronize doExecute() and clear() consider making this method synchronized
@@ -53,6 +45,7 @@ public abstract class StepBase implements Serializable {
     public final void before(Context context) {
         stopWatch.reset();
         stopWatch.start();
+        invocations.getAndIncrement();
     }
 
     /**
@@ -62,7 +55,10 @@ public abstract class StepBase implements Serializable {
      */
     public void after(Optional<Boolean> evaluation, Context context) {
         stopWatch.stop();
-        runTimeNanos.addValue((double)stopWatch.getNanoTime());
+        Long currentNs = stopWatch.getNanoTime();
+        maxNs.set(Math.max(currentNs, maxNs.get()));
+        totalNs.getAndAdd(currentNs);
+        avgNs.set(totalNs.get() / invocations.get());
     }
 
     /**
@@ -76,14 +72,12 @@ public abstract class StepBase implements Serializable {
         Optional<Boolean> retVal = EMPTY;
         try {
             before(context);
-            invocations.increment();
+            invocations.getAndIncrement();
             retVal = doExecute(context);
-            success.increment();
+            success.getAndIncrement();
         }
         catch(Throwable t) {
-            String rootCase = ExceptionUtils.getRootCauseMessage(t);
-            exceptionsCounter.put(rootCase);
-            throw new RuntimeException(t);
+            exception.getAndIncrement();
         }
         finally {
             after(retVal, context);
@@ -92,7 +86,7 @@ public abstract class StepBase implements Serializable {
     }
 
     public void softFailure() {
-        softFailure.increment();
+        softFailure.getAndIncrement();
     }
 
     public abstract void toMermaid(Optional<StepBase> parent, Optional<Boolean> predicatePath, StringBuilder stringBuilder);

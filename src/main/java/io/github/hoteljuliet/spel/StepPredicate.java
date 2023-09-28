@@ -3,19 +3,18 @@ package io.github.hoteljuliet.spel;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class StepPredicate extends StepBase implements Serializable {
 
-    public final LongAdder evalTrue;
-    public final LongAdder evalFalse;
+    public AtomicLong evalTrue;
+    public AtomicLong evalFalse;
     public List<StepBase> onTrue;
     public List<StepBase> onFalse;
     public StepBase predicate;
 
     public StepPredicate() {
-        evalTrue = new LongAdder();
-        evalFalse = new LongAdder();
+        ;
     }
 
     /**
@@ -32,9 +31,6 @@ public abstract class StepPredicate extends StepBase implements Serializable {
         else if (evaluation.equals(FALSE)) {
             evalFalse();
         }
-
-        PredicateResult predicateResult = new PredicateResult(this);
-        context.pipelineResult.predicateResults.put(name, predicateResult);
     }
 
     @Override
@@ -85,11 +81,10 @@ public abstract class StepPredicate extends StepBase implements Serializable {
     }
 
     public void evalTrue() {
-        evalTrue.increment();
+        evalTrue.getAndIncrement();
     }
 
     public void evalFalse() {
-        evalFalse.increment();
+        evalFalse.getAndIncrement();
     }
-
 }

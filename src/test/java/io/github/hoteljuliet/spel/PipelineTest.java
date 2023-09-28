@@ -1,9 +1,13 @@
 package io.github.hoteljuliet.spel;
 
+import io.github.hoteljuliet.spel.metrics.DefaultMetricsProvider;
+import io.github.hoteljuliet.spel.metrics.MetricsProvider;
 import org.junit.Test;
 
 import java.io.*;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +16,7 @@ public class PipelineTest {
     @Test
     public void test_serializable() throws IOException, ClassNotFoundException {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
-        pipeline.parse();
+        pipeline.parse(new DefaultMetricsProvider());
 
         Context context = new Context(pipeline);
         pipeline.execute(context);
@@ -44,30 +48,39 @@ public class PipelineTest {
     @Test
     public void testExamplePipeline() {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
-        Integer numStepsParsed = pipeline.parse();
-
-        //assertThat(numStepsParsed).isEqualTo(95);
+        DefaultMetricsProvider metricsProvider = new DefaultMetricsProvider();
+        Integer numStepsParsed = pipeline.parse(metricsProvider);
+        assertThat(numStepsParsed).isEqualTo(109);
 
         for (int i = 0; i <= 32; i++) {
             Context context = new Context(pipeline);
             pipeline.execute(context);
-            assertThat(context.pipelineResult.getTotalSoftFailures()).isEqualTo(0);
+            // assert pipeline threw no exceptions
+            assertThat(metricsProvider.getMetric(pipeline.name, MetricsProvider.EXCEPTION).get()).isEqualTo(0);
+
+            // assert no steps had a soft failure
+            Map<String, AtomicLong> softFails = metricsProvider.getAllByMetricName(MetricsProvider.SOFT_FAIL);
+            for (Map.Entry<String, AtomicLong> entry : softFails.entrySet()) {
+                assertThat(entry.getValue().get()).isEqualTo(0).withFailMessage( "%s has %d soft failures", entry.getKey(), entry.getValue().get());
+            }
+
+            // assert no steps had an exception
+            Map<String, AtomicLong> exceptions = metricsProvider.getAllByMetricName(MetricsProvider.EXCEPTION);
+            for (Map.Entry<String, AtomicLong> entry : exceptions.entrySet()) {
+                assertThat(entry.getValue().get()).isEqualTo(0).withFailMessage( "%s has %d exceptions", entry.getKey(), entry.getValue().get());
+            }
         }
 
-        System.out.println("Average Millis: " + pipeline.getRunTimeNanos().getMean() / 1000000);
-        System.out.println("Min Millis: " + pipeline.getRunTimeNanos().getMin() / 1000000);
-        System.out.println("Max Millis: " + pipeline.getRunTimeNanos().getMax() / 1000000);
-        System.out.println("Total Millis: " + pipeline.getRunTimeNanos().getSum() / 1000000);
-
-        System.out.println("Stack Traces: " + pipeline.getStackTraces().getMap());
-        assertThat(pipeline.getStackTraces().getMap()).isEmpty();
-        assertThat(pipeline.getTotalFailures().intValue()).isEqualTo(0);
+        Map<String, AtomicLong> pipelineMetrics = metricsProvider.getAllByName(pipeline.name);
+        for (Map.Entry<String, AtomicLong> entry : pipelineMetrics.entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
     }
 
     @Test
     public void testFind() {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
-        Integer numStepsParsed = pipeline.parse();
+        Integer numStepsParsed = pipeline.parse(new DefaultMetricsProvider());
 
         Context context = new Context(pipeline);
         pipeline.execute(context);
@@ -80,7 +93,7 @@ public class PipelineTest {
     @Test
     public void testMermaid() {
         Pipeline pipeline = Pipeline.fromResource("/test_pipeline.yaml");
-        Integer numStepsParsed = pipeline.parse();
+        Integer numStepsParsed = pipeline.parse(new DefaultMetricsProvider());
 
         Context context = new Context(pipeline);
         pipeline.execute(context);

@@ -12,11 +12,10 @@ public abstract class StepStatement extends StepBase implements Serializable {
     @Override
     public void toMermaid(Optional<StepBase> parent, Optional<Boolean> predicatePath, StringBuilder stringBuilder) {
 
-        String text = String.format("%s[%s\\nsoft:%d\\nex:%d\\navg:%.0f]", name, name, softFailure.intValue(), exception.intValue(), runTimeNanos.getMean());
-
+        String text = String.format("%s[%s\\nsoft:%d\\nex:%d\\navg:%d]", name, name, softFailure.get(), exception.get(), avgNs.get());
         stringBuilder.append(text).append("\n");
 
-        if (invocations.longValue() > 0) {
+        if (invocations.get() > 0) {
             Double successRate = (success.doubleValue() - softFailure.doubleValue() / invocations.doubleValue());
             String color = failureRateColor(successRate);
             stringBuilder.append("style " + name + " fill:" + color).append("\n");
@@ -46,8 +45,6 @@ public abstract class StepStatement extends StepBase implements Serializable {
     @Override
     public void after(Optional<Boolean> evaluation, Context context) {
         super.after(evaluation, context);
-        StatementResult statementResult = new StatementResult(this);
-        context.pipelineResult.statementResults.put(name, statementResult);
     }
 
     private String failureRateColor(Double successRate) {

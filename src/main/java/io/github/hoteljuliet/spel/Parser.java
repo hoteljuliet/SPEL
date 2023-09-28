@@ -3,6 +3,8 @@ package io.github.hoteljuliet.spel;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import io.github.hoteljuliet.spel.metrics.DefaultMetricsProvider;
+import io.github.hoteljuliet.spel.metrics.MetricsProvider;
 import io.github.hoteljuliet.spel.predicates.If;
 import org.apache.commons.text.StringSubstitutor;
 import org.reflections.Reflections;
@@ -13,19 +15,24 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Collectors;
 
 public class Parser {
-
-    private final LongAdder instanceCounter;
     public static final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory()).configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
     public static final ObjectMapper jsonMapper = new ObjectMapper();
+    private final LongAdder instanceCounter;
     private final Map<String, Class> predicateTypesMap;
     private final Map<String, Class> statementTypesMap;
     private final Set<String> userProvidedNames;
+    private final MetricsProvider metricsProvider;
 
     public Parser() {
-        this(Pipeline.defaultPredicatePackages, Pipeline.defaultStatementPackages);
+        this(new DefaultMetricsProvider(), Pipeline.defaultPredicatePackages, Pipeline.defaultStatementPackages);
     }
 
     public Parser(String[] predicatePackages, String[] statementPackages) {
+        this(new DefaultMetricsProvider(), predicatePackages, statementPackages);
+    }
+
+    public Parser(MetricsProvider metricsProvider, String[] predicatePackages, String[] statementPackages) {
+        this.metricsProvider = metricsProvider;
         userProvidedNames = new HashSet<>();
         instanceCounter = new LongAdder();
         predicateTypesMap = new HashMap<>();
@@ -108,6 +115,8 @@ public class Parser {
             ifPredicate.setName(buildUniqueNameFromType("if"));
         }
 
+        setMetricsFromProvider(ifPredicate);
+
         return ifPredicate;
     }
 
@@ -174,10 +183,28 @@ public class Parser {
     public StepBase buildBaseStep(String type, Map<String, Object> config, Map<String, Class> typesMap) throws Exception {
         if (typesMap.containsKey(type)) {
             Class clazz = typesMap.get(type);
-            return (StepBase) yamlMapper.readValue(yamlMapper.writeValueAsBytes(config), clazz);
+            StepBase stepBase = (StepBase) yamlMapper.readValue(yamlMapper.writeValueAsBytes(config), clazz);
+            setMetricsFromProvider(stepBase);
+            return stepBase;
         }
         else {
             throw new RuntimeException("no type found for: " + type);
+        }
+    }
+
+    private void setMetricsFromProvider(StepBase stepBase) {
+        // set the metrics in the steps from an external provider
+        stepBase.invocations = metricsProvider.provideNext(stepBase.name, MetricsProvider.INVOCATIONS);
+        stepBase.success = metricsProvider.provideNext(stepBase.name, MetricsProvider.SUCCESS);
+        stepBase.softFailure = metricsProvider.provideNext(stepBase.name, MetricsProvider.SOFT_FAIL);
+        stepBase.exception = metricsProvider.provideNext(stepBase.name, MetricsProvider.EXCEPTION);
+        stepBase.totalNs = metricsProvider.provideNext(stepBase.name, MetricsProvider.TOTAL_NS);
+        stepBase.maxNs = metricsProvider.provideNext(stepBase.name, MetricsProvider.MAX_NS);
+        stepBase.avgNs = metricsProvider.provideNext(stepBase.name, MetricsProvider.AVG_NS);
+        if (stepBase instanceof StepPredicate) {
+            StepPredicate stepPredicate = (StepPredicate)stepBase;
+            stepPredicate.evalTrue = metricsProvider.provideNext(stepPredicate.name, MetricsProvider.EVAL_TRUE);
+            stepPredicate.evalFalse = metricsProvider.provideNext(stepPredicate.name, MetricsProvider.EVAL_FALSE);
         }
     }
 
@@ -192,6 +219,9 @@ public class Parser {
             StepStatementComplex stepStatementComplex = (StepStatementComplex) instance;
             stepStatementComplex.setName(buildUniqueNameFromType(type+source));
             stepStatementComplex.subStatements = parse(config);
+
+            setMetricsFromProvider(stepStatementComplex);
+
             return stepStatementComplex;
         }
         catch(Exception ex) {
@@ -214,6 +244,8 @@ public class Parser {
                 String subType = firstKey(node);
                 stepPredicateComplex.subPredicate.add(buildPredicate(subType, (Map<String, Object>) node.get(subType)));
             }
+            setMetricsFromProvider(stepPredicateComplex);
+
             return stepPredicateComplex;
         }
         catch(Exception ex) {

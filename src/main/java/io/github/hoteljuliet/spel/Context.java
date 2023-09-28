@@ -12,14 +12,12 @@ import static com.google.common.base.Preconditions.checkState;
 
 public class Context implements Map<String, Object> {
 
-    public PipelineResult pipelineResult;
     public Pipeline pipeline;
     private Map<String, Object> backing;
 
     public Context() {
         pipeline = new Pipeline();
         backing = new HashMap<>();
-        pipelineResult = new PipelineResult();
     }
 
     public Context(Map<String, Object> backing) {
@@ -41,7 +39,6 @@ public class Context implements Map<String, Object> {
     public Context(Context other) {
         this();
         this.pipeline = other.pipeline;
-        this.pipelineResult = new PipelineResult(other.pipelineResult);
         this.backing.putAll(other.backing);
     }
 

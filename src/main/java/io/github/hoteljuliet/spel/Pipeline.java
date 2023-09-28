@@ -1,6 +1,7 @@
 package io.github.hoteljuliet.spel;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.github.hoteljuliet.spel.metrics.MetricsProvider;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -10,33 +11,32 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
 public class Pipeline implements Serializable {
 
+    public static final String[] emptyPackage = {};
     public static final String[] defaultPredicatePackages = {"io.github.hoteljuliet.spel.predicates"};
     public static final String[] defaultStatementPackages = {"io.github.hoteljuliet.spel.statements"};
 
     // fields from yaml
+    public String name;
     public List<Map<String, Object>> config;
-    private List<StepBase> stepBases;
+    public List<StepBase> stepBases;
     public Boolean stopOnFailure;
 
-    // fields that are serialized/deserialized
     private StopWatch stopWatch;
-    private SummaryStatistics runTimeNanos;
-    private LimitedCountingMap stackTraces;
-    private LongAdder totalFailures;
+    private AtomicLong totalNs;
+    private AtomicLong maxNs;
+    private AtomicLong avgNs;
+    private AtomicLong invocations;
+    private AtomicLong success;
+    private AtomicLong exception;
 
     public void init() {
         if (null == stopWatch) stopWatch = new StopWatch();
-        if (null == runTimeNanos) runTimeNanos = new SummaryStatistics();
-        if (null == stackTraces) stackTraces = new LimitedCountingMap();
-        if (null == totalFailures) totalFailures = new LongAdder();
     }
 
     public static Pipeline fromFile(String path) {
@@ -85,17 +85,23 @@ public class Pipeline implements Serializable {
         }
     }
 
-    public Integer parse() {
-        Parser parser = new Parser(defaultPredicatePackages, defaultStatementPackages);
-        stepBases = parser.parse(config);
-        return parser.getInstanceCounter().intValue();
+    public Integer parse(MetricsProvider metricsProvider) {
+        return this.parse(metricsProvider, emptyPackage, emptyPackage);
     }
 
-    public Integer parse(String[] predicatePackages, String[] statementPackages) {
+    public Integer parse(MetricsProvider metricsProvider, String[] predicatePackages, String[] statementPackages) {
         String[] allPredicatePackages = ArrayUtils.addAll(defaultPredicatePackages, predicatePackages);
         String[] allStatementPackages = ArrayUtils.addAll(defaultStatementPackages, statementPackages);
-        Parser parser = new Parser(allPredicatePackages, allStatementPackages);
+        Parser parser = new Parser(metricsProvider, allPredicatePackages, allStatementPackages);
         stepBases = parser.parse(config);
+
+        exception = metricsProvider.provideNext(name, MetricsProvider.EXCEPTION);
+        invocations = metricsProvider.provideNext(name, MetricsProvider.INVOCATIONS);
+        success = metricsProvider.provideNext(name, MetricsProvider.SUCCESS);
+        totalNs = metricsProvider.provideNext(name, MetricsProvider.TOTAL_NS);
+        maxNs = metricsProvider.provideNext(name, MetricsProvider.MAX_NS);
+        avgNs = metricsProvider.provideNext(name, MetricsProvider.AVG_NS);
+
         return parser.getInstanceCounter().intValue();
     }
 
@@ -103,9 +109,6 @@ public class Pipeline implements Serializable {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("start" + "((start))").append("\n");
         stringBuilder.append("style start fill: #9c1717").append("\n");
-
-        //stringBuilder.append("end" + "(end)").append("\n");
-        //stringBuilder.append("style end fill: #030303").append("\n");
 
         StepBase pointer = null;
         for (int i = 0; i < stepBases.size(); i++) {
@@ -126,32 +129,38 @@ public class Pipeline implements Serializable {
     }
 
     public void execute(Context context) {
-        stopWatch.reset();
-        stopWatch.start();
-        context.pipelineResult.success = true;
-        for (StepBase stepBase : stepBases) {
-            try {
-                stepBase.execute(context);
-            }
-            catch(Exception ex) {
-                context.pipelineResult.success = true;
-                totalFailures.increment();
-                List<String> stackTrace = ExceptionUtils.getRootCauseStackTraceList(ex);
-                String trace = StringUtils.join(stackTrace, ',');
-                stackTraces.put(trace);
 
-                if (stopOnFailure) {
-                    break;
+        try {
+            // pipeline stopwatch and metrics
+            stopWatch.reset();
+            stopWatch.start();
+            invocations.getAndIncrement();
+
+            // run the steps
+            for (StepBase stepBase : stepBases) {
+                try {
+                    stepBase.execute(context);
+                } catch (Exception ex) {
+                    if (stopOnFailure) {
+                        break;
+                    }
+                } finally {
+                    ; // finally after each step
                 }
             }
-            finally {
-                ;
-            }
+            success.getAndIncrement();
         }
-        stopWatch.stop();
-        runTimeNanos.addValue(stopWatch.getNanoTime());
-        context.pipelineResult.averageMillis = Math.round(runTimeNanos.getMean() / 1000000);
-        context.pipelineResult.totalMillis = Math.round(runTimeNanos.getSum() / 1000000);
+        catch(Exception ex) {
+            exception.getAndIncrement();
+        }
+        finally {
+            // pipeline stopwatch and metrics
+            stopWatch.stop();
+            Long currentNs = stopWatch.getNanoTime();
+            maxNs.set(Math.max(currentNs, maxNs.get()));
+            totalNs.getAndAdd(currentNs);
+            avgNs.set(totalNs.get() / invocations.get());
+        }
     }
 
     public Optional<StepBase> find(String stepName) {
@@ -192,17 +201,5 @@ public class Pipeline implements Serializable {
 
     public List<StepBase> getBaseSteps() {
         return stepBases;
-    }
-
-    public SummaryStatistics getRunTimeNanos() {
-        return runTimeNanos;
-    }
-
-    public LimitedCountingMap getStackTraces() {
-        return stackTraces;
-    }
-
-    public LongAdder getTotalFailures() {
-        return totalFailures;
     }
 }

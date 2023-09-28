@@ -1,3 +1,4 @@
+name: test_pipeline
 stopOnFailure: true
 config:
 
