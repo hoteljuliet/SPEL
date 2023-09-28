@@ -4,6 +4,15 @@ A DSL/EL designed for json transforms, configurable business logic, and appropri
 ## Inspiration
 This project was started after years of great experience working with (Logzio Sawmill)[https://github.com/logzio/sawmill], which is an awesome project and worth checking out.
 
+## Installation
+```
+<dependency>
+  <groupId>io.github.hoteljuliet.spel</groupId>
+  <artifactId>spel</artifactId>
+  <version>0.0.1</version>
+</dependency>
+```
+
 ## Design Goals and Rules:
 * https://en.wikipedia.org/wiki/Principle_of_least_astonishment
 1. Keep everything fast! Steps are measured in nanos, pipelines in millis. A decent sized pipeline of 50-100 Steps should run under 100 ms. 

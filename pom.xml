@@ -4,7 +4,7 @@
   <groupId>io.github.hoteljuliet.spel</groupId>
   <artifactId>spel</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>spel</name>
   <description>A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing</description>
   <url>https://github.com/hoteljuliet/SPEL</url>
@@ -215,7 +215,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>1.5</version>
         <executions>
           <execution>
             <id>sign-artifacts</id>
@@ -304,14 +304,25 @@
   </repositories>
   -->
 
+  <!--
   <distributionManagement>
-    <!--
     <repository>
       <id>github</id>
       <name>GitHub OWNER Apache Maven Packages</name>
       <url>https://maven.pkg.github.com/hoteljuliet/SPEL</url>
     </repository>
-    -->
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+  -->
+
+  <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
       <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
