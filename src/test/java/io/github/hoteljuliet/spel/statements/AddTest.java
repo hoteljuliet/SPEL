@@ -18,6 +18,13 @@ public class AddTest {
     private final Object value;
     private final Object expected;
 
+    public AddTest(Map<String, Object> contextValues, String dest, Object value, Object expected) {
+        this.contextValues = contextValues;
+        this.dest = dest;
+        this.value = value;
+        this.expected = expected;
+    }
+
     @Parameterized.Parameters()
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -36,12 +43,6 @@ public class AddTest {
                 {Context.mapOf("float", 12.06f), "addedFloat", "{{float}}", 12.06f},
                 {Context.mapOf("double", 12.06d), "addedDouble", "{{double}}", 12.06d}
         });
-    }
-    public AddTest(Map<String, Object> contextValues, String dest, Object value, Object expected) {
-        this.contextValues = contextValues;
-        this.dest = dest;
-        this.value = value;
-        this.expected = expected;
     }
 
     @Test

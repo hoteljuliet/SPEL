@@ -20,20 +20,20 @@ public class B64Test {
     private final Action action;
     private final Object expected;
 
-    @Parameterized.Parameters()
-    public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { Context.mapOf("string", "happy days"), "string", "_output.string", Action.ENCODE, "aGFwcHkgZGF5cw=="},
-                { Context.mapOf("string", "Z29sZGVuIGdpcmxz"), "string", "_output.string", Action.DECODE, "golden girls"}
-        });
-    }
-
     public B64Test(Map<String, Object> contextValues, String source, String dest, Action action, Object expected) {
         this.contextValues = contextValues;
         this.source = source;
         this.dest = dest;
         this.action = action;
         this.expected = expected;
+    }
+
+    @Parameterized.Parameters()
+    public static Iterable<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { Context.mapOf("string", "happy days"), "string", "_output.string", Action.ENCODE, "aGFwcHkgZGF5cw=="},
+                { Context.mapOf("string", "Z29sZGVuIGdpcmxz"), "string", "_output.string", Action.DECODE, "golden girls"}
+        });
     }
 
     @Test

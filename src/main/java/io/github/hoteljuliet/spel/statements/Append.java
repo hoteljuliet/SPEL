@@ -31,17 +31,10 @@ public class Append extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object v = value.get(context);
-        if (context.hasField(list)) {
-            List<Object> l = context.getField(list);
-            l.add(value);
-            context.replaceFieldValue(list, l);
-        }
-        else {
-            List<Object> l = new ArrayList<>();
-            l.add(value);
-            context.addField(list, l);
-        }
+        Object fieldValue = value.get(context);
+        List<Object> l = context.getField(list);
+        l.add(fieldValue);
+        context.replaceFieldValue(list, l);
         return StepBase.EMPTY;
     }
 }

@@ -24,18 +24,18 @@ public class NowTest {
     private final String zone;
     private final Object expected;
 
-    @Parameterized.Parameters()
-    public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "now", "MM-dd-YY", "UTC", DateTimeFormatter.ofPattern("MM-dd-YY").format(ZonedDateTime.now(ZoneId.of("UTC")))},
-        });
-    }
-
     public NowTest(String dest, String format, String zone, Object expected) {
         this.dest = dest;
         this.format = format;
         this.zone = zone;
         this.expected = expected;
+    }
+
+    @Parameterized.Parameters()
+    public static Iterable<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { "now", "MM-dd-YY", "UTC", DateTimeFormatter.ofPattern("MM-dd-YY").format(ZonedDateTime.now(ZoneId.of("UTC")))},
+        });
     }
 
     @Test

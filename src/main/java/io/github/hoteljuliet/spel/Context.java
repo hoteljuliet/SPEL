@@ -351,6 +351,14 @@ public class Context implements Map<String, Object> {
         return writer.toString();
     }
 
+    public static List<Object> listOf(Object... objects) {
+        var retVal = new ArrayList<Object>();
+        for (Object o : objects) {
+            retVal.add(o);
+        }
+        return retVal;
+    }
+
     public static Map<String, Object> mapOf(Object... objects) {
 
         if (objects.length % 2 != 0) {
