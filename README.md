@@ -23,6 +23,19 @@ Perhaps best of all, you can create your own Statements/Predicates, and mix/matc
 
 SPEL is not Turing Complete by any means, but it does support a set of useful actions (called Statements) and if/else flow control with complex Predicates.
 
+---
+
+### Designed with an eye to Apache Flink
+After building [Apache Flink](https://flink.apache.org/) jobs for a number of years using a DSL, it became obvious that the right DSL combined with FLink's Operators could do almost everything. 
+In order for this to work, the DSL had to be designed with Flink's State, Checkpoints and Metrics Systems in mind. Once that is done, 
+a single [Process Function](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/operators/process_function/) that is driven by a DSL pipeline can handle a 
+number of use cases:
+1. Stateless transformation - of Strings -> Maps (using grok), or Maps -> Maps and then canonicalize the events (using other DSL steps) before sinking.
+2. Statelful aggregation - if both the event and the state are supplied in the Context, the DSL can modify both/either and calculate state based on events.
+3. Enrichment - the DSL can set the rate of the timer, and use steps like AddS3 or AddRedis when being invoked in onTimer() to save external enrichment data to the state object.
+4. Keying - the DSL can drive a [KeySelector](https://nightlies.apache.org/flink/flink-docs-master/api/java/org/apache/flink/api/java/functions/KeySelector.html), allowing for complex key-generation logic.
+5. Join
+6. Reduce
 
 ### (To see an example pipeline from the unit tests, click [here](https://github.com/hoteljuliet/SPEL/blob/main/src/test/resources/test_pipeline.yaml))
 
