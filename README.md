@@ -37,7 +37,7 @@ fully Serializable in order to be stored in [Value State](https://nightlies.apac
 2. Statelful aggregation - if both the event and the state are supplied in the Context, the DSL can modify both/either and calculate state based on events.
 3. Enrichment - the DSL can set the rate of the timer, and use steps like AddS3 or AddRedis when being invoked in onTimer() to save external enrichment data to the state object.
 4. Data Quality Checks - the DSL provides functionality much like [Deequ's Compliance](https://github.com/awslabs/deequ/blob/master/src/main/scala/com/amazon/deequ/analyzers/Compliance.scala) Analyzer
-5. Filtering - the DSL can set a field in the Context (for example "_collect") that the Process Function pivot's on to collect the event or not.
+5. Filtering - the DSL can set a field in the Context (for example "_collect") that the Process Function pivots on to collect the event or not.
 6. ML Model Inference generation - 
 
 Other common use cases can also be config-drive by a DSL: 
