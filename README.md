@@ -31,7 +31,7 @@ SPEL is not Turing Complete by any means, but it does support a set of useful ac
 After building [Apache Flink](https://flink.apache.org/) jobs for a number of years using a DSL, it became obvious that the right DSL combined with FLink's Operators could do almost everything. 
 In order for this to work, the DSL had to be designed with Flink's State, Checkpoints, and Metrics systems in mind. For example, the DSL elements that maintain state themselves would have to be 
 fully Serializable in order to be stored in [Value State](https://nightlies.apache.org/flink/flink-docs-master/api/java/org/apache/flink/api/common/state/ValueState.html) or
-[List State](https://nightlies.apache.org/flink/flink-docs-master/api/java/org/apache/flink/api/common/state/ListState.html). Once those design details are finalized, a single 
+[List State](https://nightlies.apache.org/flink/flink-docs-master/api/java/org/apache/flink/api/common/state/ListState.html). Once those design details are realized, a single 
 [Process Function](https://nightlies.apache.org/flink/flink-docs-master/docs/dev/datastream/operators/process_function/) that is "driven" by a DSL pipeline can handle a number of use cases:
 1. Stateless transformation - of Strings -> Maps (using grok), or Maps -> Maps and then canonicalize the events (using other DSL steps) before sinking.
 2. Statelful aggregation - if both the event and the state are supplied in the Context, the DSL can modify both/either and calculate state based on events.
