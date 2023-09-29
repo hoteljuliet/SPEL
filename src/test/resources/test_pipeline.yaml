@@ -1,23 +1,17 @@
 name: test_pipeline
 stopOnFailure: true
 config:
-
   - add: {out: "trueString1", in: "t"}
   - add: {out: "falseString1", in: "f"}
   - math: {exp: "{{trueString1}} && {{falseString1}}", out: mathDestFalse}
   - math: {exp: "{{trueString1}} || {{falseString1}}", out: mathDestTrue}
   - add: {out: "trueString2", in: "1"}
   - add: {out: "falseString2", in: "0"}
-
   - math: {exp: "({{trueString1}} && {{falseString1}}) || ({{trueString2}} && {{falseString2}})", out: mathDestComplex}
-
-
   - add: {out: "aStringToHex", in: "makeThisHex"}
   - hex: {in: "aStringToHex", out: "hexString", action: encode}
-
   - add: {out: "aHexString", in: "6d616b6554686973486578"}
   - hex: {in: "aHexString", out: "AsciiFromHexString", action: decode}
-
   - add: {out: "listToSort", in: [{"age" : 5}, {"age" : 9}, {"age" : 4}, {"age" : 12}]}
   - sort-listToSort:
       - if:
@@ -32,7 +26,6 @@ config:
         math: {exp: "{{map1.age}} == {{map2.age}}"}
         then:
           - add: {out: "_compare", in: 0}
-
   - ramp: {out: ramp, peak: 8 }
   - add: {out: "apacheLog", in: "112.169.19.192 - - [06/Mar/2013:01:36:30 +0900] \"GET / HTTP/1.1\" 200 44346 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.152 Safari/537.22\""}
   - grok: {in: "apacheLog", patterns: ["%{COMBINEDAPACHELOG}"], onlyNamed: true, out: "grokMap"}
@@ -113,7 +106,6 @@ config:
     contains: {in: someString, values: [a, b, c, y]}
     then:
       - add: {out: "matches1", in: "someString in: [a, b, c, y]"}
-
   - if-firstLevel?:
     contains: {in: someString, values: [a, b, c, y]}
     then:
