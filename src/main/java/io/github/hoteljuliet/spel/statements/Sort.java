@@ -17,6 +17,10 @@ import java.util.Optional;
 @Step(tag = "sort")
 public class Sort extends StepStatementComplex implements Serializable, Comparator<Map<String, Object>> {
 
+    /**
+     * The field where the output of the comparison is expected to be stored.
+     */
+    public static final String COMPARE_OUTPUT = "_compare";
     private final String list;
 
     public Sort(String source) {
@@ -49,6 +53,6 @@ public class Sort extends StepStatementComplex implements Serializable, Comparat
             }
             catch(Exception ignored) {}
         }
-        return sortContext.getField("_compare");
+        return sortContext.getField(COMPARE_OUTPUT);
     }
 }

@@ -12,13 +12,13 @@ import java.util.Optional;
 
 @Step(tag = "random-string")
 public class RandomString extends StepStatement implements Serializable {
-    private final String dest;
+    private final String out;
     private final Integer length;
 
     @JsonCreator
-    public RandomString(@JsonProperty(value = "dest", required = true) String dest,
+    public RandomString(@JsonProperty(value = "out", required = true) String out,
                         @JsonProperty(value = "length", required = true) Integer length) {
-        this.dest = dest;
+        this.out = out;
         this.length = length;
 
     }
@@ -26,7 +26,7 @@ public class RandomString extends StepStatement implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         String randomString = RandomStringUtils.randomAlphanumeric(length);
-        context.addField(dest, randomString);
+        context.addField(out, randomString);
         return EMPTY;
     }
 }

@@ -15,19 +15,25 @@ import java.util.Optional;
 
 @Step(tag = "hash")
 public class Hash extends StepStatement implements Serializable {
-    private final String value;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final String algo;
     private transient MessageDigest messageDigest;
     private transient Base64 base64;
 
+    /**
+     * 
+     * @param in a path in the Context to a String
+     * @param out a path in the Context to where a B64-formatted string of the hash will be placed
+     * @param algo the hashing algorithm to use, See {@link java.security.MessageDigest}
+     */
     @JsonCreator
-    public Hash(@JsonProperty(value = "value", required = true) String value,
-                @JsonProperty(value = "dest", required = true) String dest,
+    public Hash(@JsonProperty(value = "in", required = true) String in,
+                @JsonProperty(value = "out", required = true) String out,
                 @JsonProperty(value = "algo", required = true) String algo) {
         super();
-        this.value = value;
-        this.dest = dest;
+        this.in = in;
+        this.out = out;
         this.algo = algo;
         this.messageDigest = DigestUtils.getDigest(algo);
         this.base64 = new Base64();
@@ -39,10 +45,10 @@ public class Hash extends StepStatement implements Serializable {
         if (null == base64) base64 = new Base64();
         if (null == messageDigest) messageDigest = DigestUtils.getDigest(algo);
 
-        String v = context.getField(value);
-        byte[] hashed = messageDigest.digest(v.getBytes(StandardCharsets.UTF_8));
+        String value = context.getField(in);
+        byte[] hashed = messageDigest.digest(value.getBytes(StandardCharsets.UTF_8));
         String b64 = base64.encodeAsString(hashed);
-        context.addField(dest, b64);
+        context.addField(out, b64);
         return EMPTY;
     }
 }

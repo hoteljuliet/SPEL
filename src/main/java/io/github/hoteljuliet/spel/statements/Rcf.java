@@ -18,7 +18,7 @@ import java.util.Optional;
  */
 @Step(tag = "rcf")
 public class Rcf extends StepStatement implements Serializable {
-    private final String dest;
+    private final String out;
     private final Integer dimensions;
     private final Integer trees;
     private final Integer samples;
@@ -28,13 +28,13 @@ public class Rcf extends StepStatement implements Serializable {
     private transient RandomCutForest randomCutForest;
 
     @JsonCreator
-    public Rcf(@JsonProperty(value = "dest", required = true) String dest,
+    public Rcf(@JsonProperty(value = "out", required = true) String out,
                @JsonProperty(value = "dimensions", required = true) Integer dimensions,
                @JsonProperty(value = "trees", required = true) Integer trees,
                @JsonProperty(value = "samples", required = true) Integer samples,
                @JsonProperty(value = "precision", required = true) String precision) throws JsonProcessingException {
         super();
-        this.dest = dest;
+        this.out = out;
         this.dimensions = dimensions;
         this.trees = trees;
         this.samples = samples;

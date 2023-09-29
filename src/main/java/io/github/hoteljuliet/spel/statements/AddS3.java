@@ -19,30 +19,34 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * perform a get object that returns json, turn into a map, and add to context at dest
+ * Perform a get object that returns json, turn into a map, and add to context at dest
  */
 @Step(tag = "add-s3")
 public class AddS3 extends StepStatement implements Serializable {
 
-    private final Map<String, Object> config;
     private final TemplateLiteral bucket;
     private final TemplateLiteral key;
     private final TemplateLiteral region;
-    private final String dest;
+    private final String out;
     private transient AmazonS3 amazonS3;
 
+    /**
+     * Add an S3 Object in JSON format to the Context
+     * @param bucket S3 bucket
+     * @param key S3 object key
+     * @param region S3 region
+     * @param out the path into the context where the value will be added
+     */
     @JsonCreator
-    public AddS3(@JsonProperty(value = "config", required = true) Map<String, Object> config,
-                 @JsonProperty(value = "bucket", required = true) TemplateLiteral bucket,
+    public AddS3(@JsonProperty(value = "bucket", required = true) TemplateLiteral bucket,
                  @JsonProperty(value = "key", required = true) TemplateLiteral key,
                  @JsonProperty(value = "region", required = true) TemplateLiteral region,
-                 @JsonProperty(value = "dest", required = true) String dest) {
+                 @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.config = config;
         this.bucket = bucket;
         this.key = key;
         this.region = region;
-        this.dest = dest;
+        this.out = out;
     }
 
     @Override
@@ -61,7 +65,7 @@ public class AddS3 extends StepStatement implements Serializable {
         S3Object s3Object = amazonS3.getObject(s3Bucket, s3Key);
         S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
         Map<String, Object> addedMap = Parser.jsonMapper.readValue(s3ObjectInputStream, Map.class);
-        context.addField(dest, addedMap);
+        context.addField(out, addedMap);
         s3ObjectInputStream.close();
         return EMPTY;
     }

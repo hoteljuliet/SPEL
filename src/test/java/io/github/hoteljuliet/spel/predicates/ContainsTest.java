@@ -13,7 +13,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
-public class InTest {
+public class ContainsTest {
     private final Map<String, Object> contextValues;
     private final TemplateLiteral value;
     private final TemplateLiteral list;
@@ -33,7 +33,7 @@ public class InTest {
                {Context.mapOf("value", 1, "list", Arrays.asList(1, 2, 3)), "{{value}}", "{{list}}", true}
         });
     }
-    public InTest(Map<String, Object> contextValues, Object value, Object list, Boolean expected) {
+    public ContainsTest(Map<String, Object> contextValues, Object value, Object list, Boolean expected) {
         this.contextValues = contextValues;
         this.list = new TemplateLiteral(list);
         this.value = new TemplateLiteral(value);
@@ -43,8 +43,8 @@ public class InTest {
     @Test
     public void test() throws Exception {
         Context context = new Context(contextValues);
-        In in = new In(value, list);
-        Optional<Boolean> result = in.doExecute(context);
+        Contains contains = new Contains(value, list);
+        Optional<Boolean> result = contains.doExecute(context);
         assertThat(result.isPresent());
         assertThat(result.get()).isEqualTo(expected);
     }

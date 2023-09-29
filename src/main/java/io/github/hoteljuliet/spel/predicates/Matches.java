@@ -14,22 +14,22 @@ import java.util.regex.Pattern;
 @Step(tag = "matches")
 public class Matches extends StepPredicate implements Serializable {
 
-    private final String path;
+    private final String in;
     private final String regex;
     private final Pattern pattern;
 
     @JsonCreator
-    public Matches(@JsonProperty(value = "value", required = true) String path,
+    public Matches(@JsonProperty(value = "in", required = true) String in,
                    @JsonProperty(value = "regex", required = true) String regex) {
         super();
-        this.path = path;
+        this.in = in;
         this.regex = regex;
         this.pattern = Pattern.compile(regex);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String v = context.getField(path);
+        String v = context.getField(in);
         Matcher matcher = pattern.matcher(v);
         return matcher.matches() ? TRUE : FALSE;
     }

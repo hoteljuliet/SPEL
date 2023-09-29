@@ -10,6 +10,9 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * A wrapper to a Map or String, Object. Provides path-like access to nested Map fields - i.e., fieldA.fieldB.
+ */
 public class Context implements Map<String, Object> {
 
     public Pipeline pipeline;

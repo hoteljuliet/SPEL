@@ -12,29 +12,35 @@ import java.io.Serializable;
 import java.util.Optional;
 
 /**
- * given a source and substring, output to dest the number of times the substring appears in the value of source
+ * given a in and substring, output to out the number of times the substring appears in the value of in
  */
 @Step(tag = "count-match")
 public class CountMatch extends StepStatement implements Serializable {
-    private final TemplateLiteral source;
-    private final String dest;
+    private final TemplateLiteral in;
+    private final String out;
     private final TemplateLiteral sub;
 
+    /**
+     * 
+     * @param in a {@link io.github.hoteljuliet.spel.mustache.TemplateLiteral} to find substrings in
+     * @param sub a {@link io.github.hoteljuliet.spel.mustache.TemplateLiteral} that is the substring to search for
+     * @param out the path in the context where the substring match count will be placed
+     */
     @JsonCreator
-    public CountMatch(@JsonProperty(value = "source", required = true) TemplateLiteral source,
+    public CountMatch(@JsonProperty(value = "in", required = true) TemplateLiteral in,
                       @JsonProperty(value = "sub", required = true) TemplateLiteral sub,
-                      @JsonProperty(value = "dest", required = true) String dest) {
+                      @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
+        this.in = in;
         this.sub = sub;
-        this.dest = dest;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = source.get(context);
+        String value = in.get(context);
         String subString = sub.get(context);
-        context.addField(dest, StringUtils.countMatches(value, subString));
+        context.addField(out, StringUtils.countMatches(value, subString));
         return EMPTY;
     }
 }

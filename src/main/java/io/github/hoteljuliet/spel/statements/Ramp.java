@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 @Step(tag = "ramp")
 public class Ramp extends StepStatement implements Serializable {
-    private final String dest;
+    private final String out;
     private final Integer peak;
     private Integer ramp;
     private Boolean rampingUp;
@@ -23,10 +23,10 @@ public class Ramp extends StepStatement implements Serializable {
     private final String suffix;
 
     @JsonCreator
-    public Ramp(@JsonProperty(value = "dest", required = true) String dest,
+    public Ramp(@JsonProperty(value = "out", required = true) String out,
                 @JsonProperty(value = "peak", required = true) Integer peak) {
         super();
-        this.dest = dest;
+        this.out = out;
         this.peak = peak;
         this.ramp = 0;
         suffix = "_" + RandomStringUtils.randomAlphabetic(8);
@@ -44,7 +44,7 @@ public class Ramp extends StepStatement implements Serializable {
         else {
             ramp -= 1;
         }
-        context.addField(dest + suffix, ramp);
+        context.addField(out + suffix, ramp);
         return EMPTY;
     }
 }

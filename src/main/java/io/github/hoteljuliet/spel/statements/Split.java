@@ -17,26 +17,26 @@ import java.util.Optional;
  */
 @Step(tag = "split")
 public class Split extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final String delimiter;
 
     @JsonCreator
-    public Split(@JsonProperty(value = "source", required = true) String source,
+    public Split(@JsonProperty(value = "in", required = true) String in,
                  @JsonProperty(value = "delimiter", required = true) String delimiter,
-                 @JsonProperty(value = "dest", required = true) String dest) {
+                 @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
+        this.in = in;
         this.delimiter = delimiter;
-        this.dest = dest;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(source);
+        String value = context.getField(in);
         String[] split = value.split(delimiter);
         List<String> output = Arrays.asList(split);
-        context.addField(dest, output);
+        context.addField(out, output);
         return StepBase.EMPTY;
     }
 }

@@ -14,24 +14,28 @@ import java.util.Optional;
 @Step(tag = "json-map")
 public class JsonMap extends StepStatement implements Serializable {
 
-    private String source;
-    private String dest;
+    private String in;
+    private String out;
     private ObjectMapper objectMapper;
 
+    /**
+     * Given a JSON Map String, map it to a Map and add it to the context.
+     * @param in a path to a JSON String in the context
+     * @param out a path in the Context to where the mapped Map will be placed
+     */
     @JsonCreator
-    public JsonMap(@JsonProperty(value = "source", required = true) String source,
-                   @JsonProperty(value = "dest", required = true) String dest) {
-        this.source = source;
-        this.dest = dest;
+    public JsonMap(@JsonProperty(value = "in", required = true) String in,
+                   @JsonProperty(value = "out", required = true) String out) {
+        this.in = in;
+        this.out = out;
         objectMapper = new ObjectMapper();
-        // TODO allow mapper config changes?
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(source);
+        String value = context.getField(in);
         Object mappedValue = objectMapper.readValue(value, Map.class);
-        context.addField(dest, mappedValue);
+        context.addField(out, mappedValue);
         return EMPTY;
     }
 }

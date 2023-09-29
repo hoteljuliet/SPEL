@@ -16,27 +16,34 @@ import java.util.Optional;
 @Step(tag = "cardinality")
 public class Cardinality extends StepStatement implements Serializable {
 
-    private final String value;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Integer precision;
     private final HyperLogLogPlus hyperLogLogPlus;
 
+    /**
+     * Compute the cardinality of a string and put the result into the context
+     * Based on https://github.com/addthis/stream-lib/blob/master/src/main/java/com/clearspring/analytics/stream/cardinality/HyperLogLogPlus.java
+     * @param in the path to a String value in the context
+     * @param precision an integer in the range 4-18
+     * @param out the path in the context where the computed cardinality will be placed
+     */
     @JsonCreator
-    public Cardinality(@JsonProperty(value = "value", required = true) String value,
+    public Cardinality(@JsonProperty(value = "in", required = true) String in,
                        @JsonProperty(value = "precision", required = true) Integer precision,
-                       @JsonProperty(value = "dest", required = true) String dest) {
+                       @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.value = value;
+        this.in = in;
         this.precision = precision;
-        this.dest = dest;
+        this.out = out;
         this.hyperLogLogPlus = new HyperLogLogPlus(precision);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object target = context.getField(value);
+        Object target = context.getField(in);
         Boolean ignored = hyperLogLogPlus.offer(target);
-        context.addField(dest, hyperLogLogPlus.cardinality());
+        context.addField(out, hyperLogLogPlus.cardinality());
         return EMPTY;
     }
 }

@@ -16,21 +16,27 @@ import java.util.Optional;
  */
 @Step(tag = "add")
 public class Add extends StepStatement implements Serializable {
-    private final TemplateLiteral templateLiteral;
-    private final String dest;
+    private final TemplateLiteral in;
+    private final String out;
 
+
+    /**
+     * Add a value to the context
+     * @param in the value to add. See {@link io.github.hoteljuliet.spel.mustache.TemplateLiteral}
+     * @param out the path into the context where the value will be added
+     */
     @JsonCreator
-    public Add(@JsonProperty(value = "value", required = true) TemplateLiteral templateLiteral,
-               @JsonProperty(value = "dest", required = true) String dest) {
+    public Add(@JsonProperty(value = "in", required = true) TemplateLiteral in,
+               @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.templateLiteral = templateLiteral;
-        this.dest = dest;
+        this.in = in;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object value = templateLiteral.get(context);
-        context.addField(dest, value);
+        Object value = in.get(context);
+        context.addField(out, value);
         return EMPTY;
     }
 }

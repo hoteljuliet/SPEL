@@ -14,19 +14,19 @@ import java.util.Optional;
  */
 @Step(tag = "strip")
 public class Strip extends StepStatement implements Serializable {
-    private final String value;
+    private final String in;
 
     @JsonCreator
-    public Strip(@JsonProperty(value = "value", required = true) String value) {
+    public Strip(@JsonProperty(value = "in", required = true) String in) {
         super();
-        this.value = value;
+        this.in = in;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String v = context.getField(value);
-        String stripped = v.replaceAll("\\s+","");
-        context.replaceFieldValue(value, stripped);
+        String value = context.getField(in);
+        String stripped = value.replaceAll("\\s+","");
+        context.replaceFieldValue(in, stripped);
         return EMPTY;
     }
 }

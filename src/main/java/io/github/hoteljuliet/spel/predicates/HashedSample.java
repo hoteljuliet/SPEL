@@ -12,18 +12,18 @@ import java.util.Optional;
 @Step(tag = "hash-sample")
 public class HashedSample extends StepPredicate implements Serializable {
     private final Integer percentage;
-    private final String path;
+    private final String in;
 
     @JsonCreator
     public HashedSample(@JsonProperty(value = "pct", required = true) Integer percentage,
-                        @JsonProperty(value = "path", required = true) String path) {
+                        @JsonProperty(value = "in", required = true) String in) {
         super();
         this.percentage = percentage;
-        this.path = path;
+        this.in = in;
     }
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(path);
+        String value = context.getField(in);
         return (value.hashCode() % 100 < percentage) ? TRUE : FALSE;
     }
 }

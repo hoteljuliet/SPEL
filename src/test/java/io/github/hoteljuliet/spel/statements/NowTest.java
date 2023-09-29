@@ -19,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class NowTest {
 
-    private final String dest;
+    private final String out;
     private final String format;
     private final String zone;
     private final Object expected;
 
-    public NowTest(String dest, String format, String zone, Object expected) {
-        this.dest = dest;
+    public NowTest(String out, String format, String zone, Object expected) {
+        this.out = out;
         this.format = format;
         this.zone = zone;
         this.expected = expected;
@@ -40,11 +40,11 @@ public class NowTest {
 
     @Test
     public void test() throws Exception {
-        Now now = new Now(dest, format, zone);
+        Now now = new Now(out, format, zone);
         Context context = new Context();
         now.doExecute(context);
-        assertThat(context.hasField(dest)).isTrue();
-        String actual = context.getField(dest);
+        assertThat(context.hasField(out)).isTrue();
+        String actual = context.getField(out);
         assertThat(actual).isEqualTo(expected);
     }
 }

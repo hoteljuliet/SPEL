@@ -14,26 +14,32 @@ import java.util.Optional;
 @Step(tag = "flatten")
 public class Flatten extends StepStatement {
 
-    private String source;
+    private String in;
     private String root;
-    private String dest;
+    private String out;
 
+    /**
+     * Flatten a Map within the context
+     * @param in a path to a Map in the context
+     * @param root the symbol to use as the root of the flattened Map
+     * @param out the path in the context where the flattened Map will be placed
+     */
     @JsonCreator
-    public Flatten(@JsonProperty(value = "source", required = true) String source,
+    public Flatten(@JsonProperty(value = "in", required = true) String in,
                    @JsonProperty(value = "root", required = true) String root,
-                   @JsonProperty(value = "dest", required = true) String dest) {
+                   @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
+        this.in = in;
         this.root = root;
-        this.dest = dest;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Map<String, Object> original = context.getField(source);
+        Map<String, Object> original = context.getField(in);
         Map<String, Object> flattened = new HashMap<>();
         flatten(root, original, flattened);
-        context.addField(dest, flattened);
+        context.addField(out, flattened);
         return EMPTY;
     }
 

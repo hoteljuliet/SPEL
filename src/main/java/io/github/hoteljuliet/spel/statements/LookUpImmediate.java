@@ -18,31 +18,31 @@ import java.util.Optional;
 // TODO: consolidate with TemplateLiteral
 @Step(tag = "lookup-i")
 public class LookUpImmediate extends StepStatement implements Serializable {
-    private final List<String> sources;
-    private final List<String> dests;
+    private final List<String> in;
+    private final List<String> out;
     private final String defaultValue;
     private final Map<Object, Object> dict;
     @JsonCreator
-    public LookUpImmediate(@JsonProperty(value = "sources", required = true) List<String> sources,
-                           @JsonProperty(value = "dests", required = true) List<String> dests,
+    public LookUpImmediate(@JsonProperty(value = "in", required = true) List<String> in,
+                           @JsonProperty(value = "out", required = true) List<String> out,
                            @JsonProperty(value = "default", required = true) String defaultValue,
                            @JsonProperty(value = "dict", required = true) Map<Object, Object> dict) {
         super();
-        this.sources = sources;
-        this.dests = dests;
+        this.in = in;
+        this.out = out;
         this.defaultValue = defaultValue;
         this.dict = dict;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        for (int i = 0; i < sources.size() && i < dests.size(); i++) {
-            Object value = context.getField(sources.get(i));
+        for (int i = 0; i < in.size() && i < out.size(); i++) {
+            Object value = context.getField(in.get(i));
             if (dict.containsKey(value)) {
                 Object lookup = dict.get(value);
-                context.addField(dests.get(i), lookup);
+                context.addField(out.get(i), lookup);
             } else {
-                context.addField(dests.get(i), defaultValue);
+                context.addField(out.get(i), defaultValue);
             }
         }
         return EMPTY;

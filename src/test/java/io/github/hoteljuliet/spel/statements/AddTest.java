@@ -13,15 +13,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AddTest {
-    private final Map<String, Object> contextValues;
-    private final String dest;
-    private final Object value;
+    private final Map<String, Object> backing;
+    private final String out;
+    private final Object in;
     private final Object expected;
 
-    public AddTest(Map<String, Object> contextValues, String dest, Object value, Object expected) {
-        this.contextValues = contextValues;
-        this.dest = dest;
-        this.value = value;
+    public AddTest(Map<String, Object> backing, String out, Object in, Object expected) {
+        this.backing = backing;
+        this.out = out;
+        this.in = in;
         this.expected = expected;
     }
 
@@ -47,11 +47,11 @@ public class AddTest {
 
     @Test
     public void test() throws Exception {
-        Context context = new Context(contextValues);
-        Add add = new Add(new TemplateLiteral(value), dest);
+        Context context = new Context(backing);
+        Add add = new Add(new TemplateLiteral(in), out);
         add.doExecute(context);
-        assertThat(context.hasField(dest)).isTrue();
-        Object added = context.getField(dest);
+        assertThat(context.hasField(out)).isTrue();
+        Object added = context.getField(out);
         assertThat(added).isEqualTo(expected);
     }
 }

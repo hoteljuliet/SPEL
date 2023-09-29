@@ -22,17 +22,24 @@ public class AddRedis extends StepStatement implements Serializable {
 
     private final Map<String, Object> config;
     private final String key;
-    private final String dest;
+    private final String out;
     private transient RedissonClient client;
 
+
+    /**
+     * Add a Map from Redis to the context
+     * @param config Redisson client config
+     * @param key the key of the Map in Redis
+     * @param out the path into the context where the map will be added
+     */
     @JsonCreator
     public AddRedis(@JsonProperty(value = "config", required = true) Map<String, Object> config,
                     @JsonProperty(value = "key", required = true) String key,
-                    @JsonProperty(value = "dest", required = true) String dest) {
+                    @JsonProperty(value = "out", required = true) String out) {
         super();
         this.config = config;
         this.key = key;
-        this.dest = dest;
+        this.out = out;
     }
 
     @Override
@@ -46,7 +53,7 @@ public class AddRedis extends StepStatement implements Serializable {
         RMap<String, Object> redisMap = client.getMap(key);
         HashMap<String, Object> addedMap = new HashMap<>();
         addedMap.putAll(redisMap);
-        context.addField(dest, addedMap);
+        context.addField(out, addedMap);
         return EMPTY;
     }
 }

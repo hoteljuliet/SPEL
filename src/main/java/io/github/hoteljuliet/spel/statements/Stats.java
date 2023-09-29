@@ -14,22 +14,22 @@ import java.util.Optional;
 
 @Step(tag = "stats")
 public class Stats extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final SummaryStatistics summaryStatistics;
 
     @JsonCreator
-    public Stats(@JsonProperty(value = "source", required = true) String source,
-                 @JsonProperty(value = "dest", required = true) String dest) {
+    public Stats(@JsonProperty(value = "in", required = true) String in,
+                 @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
-        this.dest = dest;
+        this.in = in;
+        this.out = out;
         this.summaryStatistics = new SummaryStatistics();
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Double value = context.getField(source);
+        Double value = context.getField(in);
         summaryStatistics.addValue(value);
         Map<String, Double> map = new HashMap<>();
         map.put("mean", summaryStatistics.getMean());
@@ -38,7 +38,7 @@ public class Stats extends StepStatement implements Serializable {
         map.put("variance", summaryStatistics.getVariance());
         map.put("sigma", summaryStatistics.getStandardDeviation());
         map.put("sum", summaryStatistics.getSum());
-        context.addField(dest, map);
+        context.addField(out, map);
         return EMPTY;
     }
 

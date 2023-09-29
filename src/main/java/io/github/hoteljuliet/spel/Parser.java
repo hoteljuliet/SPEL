@@ -149,7 +149,8 @@ public class Parser {
             for (Class clazz : stepTypes) {
                 Step stepAnnotation = (Step) clazz.getAnnotation(Step.class);
                 if (typesMap.containsKey(stepAnnotation.tag())) {
-                    throw new RuntimeException("duplicate step tag: " + stepAnnotation.tag());
+                    throw new RuntimeException(" - Step tags must be unique, but a duplicate step tag has been found. " +
+                            "Check @Step annotations for a duplicate: " + stepAnnotation.tag());
                 }
                 else {
                     typesMap.put(stepAnnotation.tag(), clazz);

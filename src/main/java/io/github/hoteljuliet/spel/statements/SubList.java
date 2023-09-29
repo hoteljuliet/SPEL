@@ -16,25 +16,25 @@ import java.util.Optional;
 @Step(tag = "sublist")
 public class SubList extends StepStatement implements Serializable {
 
-    private final String list;
+    private final String in;
     private final Integer from;
     private final Integer to;
 
     @JsonCreator
-    public SubList(@JsonProperty(value = "list", required = true) String list,
-                   @JsonProperty(value = "list", required = true) Integer from,
-                   @JsonProperty(value = "list", required = true) Integer to) {
+    public SubList(@JsonProperty(value = "in", required = true) String in,
+                   @JsonProperty(value = "from", required = true) Integer from,
+                   @JsonProperty(value = "to", required = true) Integer to) {
         super();
-        this.list = list;
+        this.in = in;
         this.from = from;
         this.to = to;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        List<Map<String, Object>> originalList = context.getField(list);
-        List<Map<String, Object>> subList = originalList.subList(from, to);
-        context.replaceFieldValue(list, subList);
+        List<Object> originalList = context.getField(in);
+        List<Object> subList = originalList.subList(from, to);
+        context.replaceFieldValue(in, subList);
         return EMPTY;
     }
 }

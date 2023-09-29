@@ -19,6 +19,13 @@ import java.util.Optional;
 public class Clear extends StepStatement implements Serializable {
     private List<String> names;
 
+
+    /**
+     * This Step is different in that it does not operate on the context itself, but on other Steps.
+     * Steps that hold state can be cleared using this Step. Useful for clearing Bloom Filters or other
+     * data structures periodically.
+     * @param names a list of Step names to clear
+     */
     @JsonCreator
     public Clear(@JsonProperty(value = "names", required = true) List<String> names) {
         super();

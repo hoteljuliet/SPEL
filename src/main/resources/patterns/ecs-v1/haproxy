@@ -2,13 +2,13 @@
 HAPROXYTIME (?!<[0-9])%{HOUR}:%{MINUTE}(?::%{SECOND})(?![0-9])
 HAPROXYDATE %{MONTHDAY}/%{MONTH}/%{YEAR}:%{HAPROXYTIME}.%{INT}
 
-# Override these default patterns to parse out what is captured in your haproxy.cfg
+# Override these default patterns to parse out what is captured contains your haproxy.cfg
 HAPROXYCAPTUREDREQUESTHEADERS %{DATA:[haproxy][http][request][captured_headers]}
 HAPROXYCAPTUREDRESPONSEHEADERS %{DATA:[haproxy][http][response][captured_headers]}
 
 # Example:
 #  These haproxy config lines will add data to the logs that are captured
-#  by the patterns below. Place them in your custom patterns directory to
+#  by the patterns below. Place them contains your custom patterns directory to
 #  override the defaults.
 #
 #  capture request header Host len 40

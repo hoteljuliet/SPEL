@@ -16,27 +16,35 @@ import java.util.Optional;
  */
 @Step(tag = "char")
 public class Char extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Charset from;
     private final Charset to;
+
+    /**
+     * Convert a string from one character encoding to another
+     * @param in a path to a String in the context
+     * @param from the original charset, must be one of {@link java.nio.charset.Charset}
+     * @param to the target charset, must be one of {@link java.nio.charset.Charset}
+     * @param out the path in the context where the reformatted string will be placed
+     */
     @JsonCreator
-    public Char(@JsonProperty(value = "source", required = true) String source,
+    public Char(@JsonProperty(value = "in", required = true) String in,
                 @JsonProperty(value = "from", required = true) String from,
                 @JsonProperty(value = "to", required = true) String to,
-                @JsonProperty(value = "dest", required = true) String dest) {
+                @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
+        this.in = in;
         this.from = Charset.forName(from);
         this.to = Charset.forName(to);
-        this.dest = dest;
+        this.out = out;
     }
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(source);
+        String value = context.getField(in);
         byte[] bytes = value.getBytes(from);
         String converted = new String(bytes, to);
-        context.addField(dest, converted);
+        context.addField(out, converted);
         return StepBase.EMPTY;
     }
 }

@@ -12,10 +12,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A utility class that makes predicate/step configuration easier. Only use when a configuration could be from
- * the Context or a literal value.
+ * A literal Object value or a "mustached" path to a value in the context.
+ * For example, could be either a literal (1, "1", 1.0, true, etc) or a template to a value ({{fieldA.fieldB}}).
  *
- * Typically, Steps are just dealing with the paths to values. I.e., base64(x.y.z).
+ * A utility class that makes predicate/step configuration easier. Only use when a configuration could be from
+ * the Context or a literal value. If a value MUST be from the context, just use a simple String path.
+ *
+ * Typically, Steps are just dealing with the paths to values. I.e., base64(in="x.y.z").
  *
  * In other cases, a value could be a constant/literal value OR "the value of a field in the context".
  * This is useful in many situations to make the Steps more flexible - For Example: "In":

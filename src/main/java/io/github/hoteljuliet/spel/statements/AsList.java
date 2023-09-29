@@ -15,25 +15,30 @@ import java.util.Optional;
 @Step(tag = "as-list")
 public class AsList extends StepStatement implements Serializable {
 
-    private List<TemplateLiteral> values;
-    private String list;
+    private List<TemplateLiteral> in;
+    private String out;
 
+    /**
+     * Create a list from multiple values and add the List to the context
+     * @param in a List of {@link io.github.hoteljuliet.spel.mustache.TemplateLiteral} to create a list from.
+     * @param out the path into the context where a List will be created
+     */
     @JsonCreator
-    public AsList(@JsonProperty(value = "values", required = true) List<TemplateLiteral> values,
-                  @JsonProperty(value = "list", required = true) String list) {
+    public AsList(@JsonProperty(value = "in", required = true) List<TemplateLiteral> in,
+                  @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.values = values;
-        this.list = list;
+        this.in = in;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        List<Object> l = new ArrayList<>();
-        for (TemplateLiteral t : values) {
-            Object value = t.get(context);
-            l.add(value);
+        List<Object> addedList = new ArrayList<>();
+        for (TemplateLiteral templateLiteral : in) {
+            Object value = templateLiteral.get(context);
+            addedList.add(value);
         }
-        context.addField(list, l);
+        context.addField(out, addedList);
         return EMPTY;
     }
 }

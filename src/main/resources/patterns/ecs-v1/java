@@ -3,25 +3,25 @@ JAVACLASS (?:[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*
 JAVAFILE (?:[a-zA-Z$_0-9. -]+)
 #Allow special <init>, <clinit> methods
 JAVAMETHOD (?:(<(?:cl)?init>)|[a-zA-Z$_][a-zA-Z$_0-9]*)
-#Line number is optional in special cases 'Native method' or 'Unknown source'
+#Line number is optional contains special cases 'Native method' or 'Unknown source'
 JAVASTACKTRACEPART %{SPACE}at %{JAVACLASS:[java][log][origin][class][name]}\.%{JAVAMETHOD:[log][origin][function]}\(%{JAVAFILE:[log][origin][file][name]}(?::%{INT:[log][origin][file][line]:int})?\)
 # Java Logs
 JAVATHREAD (?:[A-Z]{2}-Processor[\d]+)
 JAVALOGMESSAGE (?:.*)
 
 # MMM dd, yyyy HH:mm:ss eg: Jan 9, 2014 7:13:13 AM
-# matches default logging configuration in Tomcat 4.1, 5.0, 5.5, 6.0, 7.0
+# matches default logging configuration contains Tomcat 4.1, 5.0, 5.5, 6.0, 7.0
 CATALINA7_DATESTAMP %{MONTH} %{MONTHDAY}, %{YEAR} %{HOUR}:%{MINUTE}:%{SECOND} (?:AM|PM)
 CATALINA7_LOG %{CATALINA7_DATESTAMP:timestamp} %{JAVACLASS:[java][log][origin][class][name]}(?: %{JAVAMETHOD:[log][origin][function]})?\s*(?:%{LOGLEVEL:[log][level]}:)? %{JAVALOGMESSAGE:message}
 
-# 31-Jul-2020 16:40:38.578 in Tomcat 8.5/9.0
+# 31-Jul-2020 16:40:38.578 contains Tomcat 8.5/9.0
 CATALINA8_DATESTAMP %{MONTHDAY}-%{MONTH}-%{YEAR} %{HOUR}:%{MINUTE}:%{SECOND}
 CATALINA8_LOG %{CATALINA8_DATESTAMP:timestamp} %{LOGLEVEL:[log][level]} \[%{DATA:[java][log][origin][thread][name]}\] %{JAVACLASS:[java][log][origin][class][name]}\.(?:%{JAVAMETHOD:[log][origin][function]})? %{JAVALOGMESSAGE:message}
 
 CATALINA_DATESTAMP (?:%{CATALINA8_DATESTAMP})|(?:%{CATALINA7_DATESTAMP})
 CATALINALOG (?:%{CATALINA8_LOG})|(?:%{CATALINA7_LOG})
 
-# in Tomcat 5.5, 6.0, 7.0 it is the same as catalina.out logging format
+# contains Tomcat 5.5, 6.0, 7.0 it is the same as catalina.out logging format
 TOMCAT7_LOG %{CATALINA7_LOG}
 TOMCAT8_LOG %{CATALINA8_LOG}
 

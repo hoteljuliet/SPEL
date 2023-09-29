@@ -15,33 +15,33 @@ import java.util.Optional;
 
 @Step(tag = "delimit")
 public class Delimit extends StepStatement implements Serializable {
-    private String source;
+    private String in;
     private Character delimiter;
     private Character quote;
-    private List<String> dests;
+    private List<String> out;
 
     @JsonCreator
-    public Delimit(@JsonProperty(value = "source", required = true) String source,
+    public Delimit(@JsonProperty(value = "in", required = true) String in,
                    @JsonProperty(value = "delimiter", required = true) Character delimiter,
                    @JsonProperty(value = "quote", required = true) Character quote,
-                   @JsonProperty(value = "dests", required = true) List<String> dests) {
+                   @JsonProperty(value = "out", required = true) List<String> out) {
         super();
-        this.source = source;
+        this.in = in;
         this.delimiter = delimiter;
-        this.dests = dests;
+        this.out = out;
         this.quote = quote;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(source);
+        String value = context.getField(in);
         // TODO: rip this out and do it without a library, just pure java
         CSVParser parser = CSVParser.parse(value, CSVFormat.DEFAULT.withDelimiter(delimiter).withQuote(quote).withTrim());
         List<CSVRecord> records = parser.getRecords();
 
         for (CSVRecord record : records) {
-            for (int i = 0; i < record.size() && i < dests.size(); i++) {
-                context.addField(dests.get(i), record.get(i));
+            for (int i = 0; i < record.size() && i < out.size(); i++) {
+                context.addField(out.get(i), record.get(i));
             }
         }
         return EMPTY;

@@ -15,15 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Parameterized.class)
 public class B64Test {
     private final Map<String, Object> contextValues;
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Action action;
     private final Object expected;
 
-    public B64Test(Map<String, Object> contextValues, String source, String dest, Action action, Object expected) {
+    public B64Test(Map<String, Object> contextValues, String in, String out, Action action, Object expected) {
         this.contextValues = contextValues;
-        this.source = source;
-        this.dest = dest;
+        this.in = in;
+        this.out = out;
         this.action = action;
         this.expected = expected;
     }
@@ -39,10 +39,10 @@ public class B64Test {
     @Test
     public void test() throws Exception {
         Context context = new Context(new Pipeline(), contextValues);
-        B64 b64 = new B64(source, dest, action);
+        B64 b64 = new B64(in, out, action);
         b64.doExecute(context);
-        assertThat(context.hasField(dest)).isTrue();
-        Object added = context.getField(dest);
+        assertThat(context.hasField(out)).isTrue();
+        Object added = context.getField(out);
         assertThat(added).isEqualTo(expected);
     }
 }

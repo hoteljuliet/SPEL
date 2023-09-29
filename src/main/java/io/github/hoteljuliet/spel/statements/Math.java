@@ -21,15 +21,15 @@ public class Math extends StepStatement implements Serializable {
 
     private final TemplateLiteral exp;
     private final Set<String> variables;
-    private final String dest;
+    private final String out;
     private transient Expression expression;
 
     @JsonCreator
     public Math(@JsonProperty(value = "exp", required = true) TemplateLiteral exp,
-                @JsonProperty(value = "dest", required = true) String dest) {
+                @JsonProperty(value = "out", required = true) String out) {
         super();
         this.exp = exp;
-        this.dest = dest;
+        this.out = out;
         this.variables = exp.getVariables();
     }
 
@@ -40,7 +40,7 @@ public class Math extends StepStatement implements Serializable {
         }
         Map<String, Double> variablesMap = io.github.hoteljuliet.spel.predicates.Math.resolveVariables(variables, context);
         expression.setVariables(variablesMap);
-        context.put(dest, expression.evaluate());
+        context.put(out, expression.evaluate());
         return EMPTY;
     }
 }

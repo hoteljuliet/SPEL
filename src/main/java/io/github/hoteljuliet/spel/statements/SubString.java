@@ -15,28 +15,28 @@ import java.util.Optional;
  */
 @Step(tag = "substring")
 public class SubString extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Integer from;
     private final Integer to;
 
     @JsonCreator
-    public SubString(@JsonProperty(value = "source", required = true) String source,
-                     @JsonProperty(value = "dest", required = true) String dest,
+    public SubString(@JsonProperty(value = "in", required = true) String in,
+                     @JsonProperty(value = "out", required = true) String out,
                      @JsonProperty(value = "from", required = true) Integer from,
                      @JsonProperty(value = "to", required = true) Integer to) {
         super();
-        this.source = source;
-        this.dest = dest;
+        this.in = in;
+        this.out = out;
         this.from = from;
         this.to = to;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String value = context.getField(source);
+        String value = context.getField(in);
         String substring = value.substring(from, to);
-        context.addField(dest, substring);
+        context.addField(out, substring);
         return StepBase.EMPTY;
     }
 }

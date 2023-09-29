@@ -15,16 +15,16 @@ import java.util.Optional;
 @Step(tag = "duplicate")
 public class Duplicate extends StepPredicate {
 
-    private final String source;
+    private final String in;
     private final Integer insertions;
     private final Double fpp;
     private BloomFilter<byte[]> bloomFilter;
 
-    public Duplicate(@JsonProperty(value = "source", required = true) String source,
+    public Duplicate(@JsonProperty(value = "in", required = true) String in,
                      @JsonProperty(value = "insertions", required = true) Integer insertions,
                      @JsonProperty(value = "fpp", required = true) Double fpp) {
         super();
-        this.source = source;
+        this.in = in;
         this.insertions = insertions;
         this.fpp = fpp;
         bloomFilter = BloomFilter.create(Funnels.byteArrayFunnel(), insertions, fpp);
@@ -33,8 +33,8 @@ public class Duplicate extends StepPredicate {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         synchronized (this) {
-            if (context.hasField(source)) {
-                String value = context.getField(source);
+            if (context.hasField(in)) {
+                String value = context.getField(in);
                 if (bloomFilter.mightContain(value.getBytes())) {
                     return TRUE;
                 } else {

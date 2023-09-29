@@ -11,26 +11,26 @@ import java.io.Serializable;
 import java.util.Optional;
 @Step(tag = "perc95")
 public class Perc95 extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Integer compression;
     private final TDigest tDigest;
     @JsonCreator
-    public Perc95(@JsonProperty(value = "source", required = true) String source,
+    public Perc95(@JsonProperty(value = "in", required = true) String in,
                   @JsonProperty(value = "compression", required = true) Integer compression,
-                  @JsonProperty(value = "dest", required = true) String dest) {
+                  @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
+        this.in = in;
         this.compression = compression;
-        this.dest = dest;
+        this.out = out;
         this.tDigest = TDigest.createDigest(compression);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Double value = context.getField(source);
+        Double value = context.getField(in);
         tDigest.add(value);
-        context.addField(dest, tDigest.quantile(95.0));
+        context.addField(out, tDigest.quantile(95.0));
         return EMPTY;
     }
 }

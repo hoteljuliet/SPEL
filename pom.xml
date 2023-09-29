@@ -70,7 +70,7 @@
       <version>2.9.5</version>
     </dependency>
     <!--
-    TODO: use crunch once its deployed to maven central, not in their own private repo
+    TODO: use crunch once its deployed to maven central, not contains their own private repo
     <dependency>
       <groupId>com.github.Redempt</groupId>
       <artifactId>Crunch</artifactId>
@@ -232,7 +232,7 @@
           </execution>
         </executions>
       </plugin>
-      <!-- 99% sure we don't want to do this here, but in the flink jars instead
+      <!-- 99% sure we don't want to do this here, but contains the flink jars instead
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>

@@ -15,14 +15,14 @@ import java.util.Optional;
 @Step(tag = "random-number")
 public class RandomNumber extends StepStatement implements Serializable {
 
-    private final String dest;
+    private final String out;
     private final FieldType fieldType;
     private SecureRandom secureRandom;
 
     @JsonCreator
-    public RandomNumber(@JsonProperty(value = "dest", required = true) String dest,
+    public RandomNumber(@JsonProperty(value = "out", required = true) String out,
                         @JsonProperty(value = "type", required = true) FieldType fieldType) {
-        this.dest = dest;
+        this.out = out;
         this.fieldType = fieldType;
         secureRandom = new SecureRandom();
 
@@ -35,23 +35,23 @@ public class RandomNumber extends StepStatement implements Serializable {
 
         switch(fieldType) {
             case BOOLEAN: {
-                context.addField(dest, secureRandom.nextBoolean());
+                context.addField(out, secureRandom.nextBoolean());
                 break;
             }
             case INT: {
-                context.addField(dest, secureRandom.nextInt());
+                context.addField(out, secureRandom.nextInt());
                 break;
             }
             case LONG: {
-                context.addField(dest, secureRandom.nextLong());
+                context.addField(out, secureRandom.nextLong());
                 break;
             }
             case FLOAT: {
-                context.addField(dest, secureRandom.nextFloat());
+                context.addField(out, secureRandom.nextFloat());
                 break;
             }
             case DOUBLE: {
-                context.addField(dest, secureRandom.nextDouble());
+                context.addField(out, secureRandom.nextDouble());
                 break;
             }
         }

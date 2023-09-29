@@ -17,23 +17,31 @@ import java.util.Optional;
 
 @Step(tag = "keyed-hash")
 public class KeyedHash extends StepStatement implements Serializable {
-    private final String value;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Integer iterations;
     private final String salt;
     private final String password;
     private transient Mac mac;
     private transient Base64 base64;
 
+    /**
+     * A keyed hash, performed with PBKDF2WithHmacSHA256
+     * @param in a path to a String to hash.
+     * @param out a path in the Context to where a B64-formatted string of the hash will be placed
+     * @param iterations the number of iterations, See {@link javax.crypto.spec.PBEKeySpec}
+     * @param salt the salt, See {@link javax.crypto.spec.PBEKeySpec}
+     * @param password the password, See {@link javax.crypto.spec.PBEKeySpec}. Note that ${X} will be replaced with the Environment variable X.
+     */
     @JsonCreator
-    public KeyedHash(@JsonProperty(value = "value", required = true) String value,
-                     @JsonProperty(value = "dest", required = true) String dest,
+    public KeyedHash(@JsonProperty(value = "in", required = true) String in,
+                     @JsonProperty(value = "out", required = true) String out,
                      @JsonProperty(value = "iter", required = true) Integer iterations,
                      @JsonProperty(value = "salt", required = true) String salt,
                      @JsonProperty(value = "pass", required = true) String password) {
         super();
-        this.value = value;
-        this.dest = dest;
+        this.in = in;
+        this.out = out;
         this.iterations = iterations;
         this.salt = salt;
         this.password = password;
@@ -55,10 +63,10 @@ public class KeyedHash extends StepStatement implements Serializable {
                 throw new RuntimeException(ex);
             }
         }
-        String fieldValue = context.getField(value);
+        String fieldValue = context.getField(in);
         byte[] tag = mac.doFinal(fieldValue.getBytes(StandardCharsets.UTF_8));
         String b64 = base64.encodeAsString(tag);
-        context.addField(dest, b64);
+        context.addField(out, b64);
         return EMPTY;
     }
 }

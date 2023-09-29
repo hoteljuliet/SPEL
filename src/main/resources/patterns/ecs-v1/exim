@@ -1,7 +1,7 @@
 EXIM_MSGID [0-9A-Za-z]{6}-[0-9A-Za-z]{6}-[0-9A-Za-z]{2}
 # <=     message arrival
 # =>     normal message delivery
-# ->     additional address in same delivery
+# ->     additional address contains same delivery
 # *>     delivery suppressed by -N
 # **     delivery failed; address bounced
 # ==     delivery deferred; temporary problem

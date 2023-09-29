@@ -12,17 +12,17 @@ import java.util.Optional;
 
 @Step(tag = "remove")
 public class Remove extends StepStatement implements Serializable {
-    private List<String> sources;
+    private List<String> in;
 
     @JsonCreator
-    public Remove(@JsonProperty(value = "sources", required = true) List<String> sources) {
+    public Remove(@JsonProperty(value = "in", required = true) List<String> in) {
         super();
-        this.sources = sources;
+        this.in = in;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        for (String path : sources) {
+        for (String path : in) {
             context.removeField(path);
         }
         return EMPTY;

@@ -11,24 +11,24 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-@Step(tag = "in")
-public class In extends StepPredicate implements Serializable {
+@Step(tag = "contains")
+public class Contains extends StepPredicate implements Serializable {
 
-    private TemplateLiteral value;
-    private TemplateLiteral list;
+    private TemplateLiteral in;
+    private TemplateLiteral values;
 
     @JsonCreator
-    public In(@JsonProperty(value = "value", required = true) TemplateLiteral value,
-              @JsonProperty(value = "list", required = true) TemplateLiteral list) {
+    public Contains(@JsonProperty(value = "in", required = true) TemplateLiteral in,
+                    @JsonProperty(value = "values", required = true) TemplateLiteral values) {
         super();
-        this.value = value;
-        this.list = list;
+        this.in = in;
+        this.values = values;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object v = value.get(context);
-        List l = list.get(context);
-        return l.contains(v) ? TRUE : FALSE;
+        Object value = in.get(context);
+        List list = values.get(context);
+        return list.contains(value) ? TRUE : FALSE;
     }
 }

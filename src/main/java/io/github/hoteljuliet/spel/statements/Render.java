@@ -20,23 +20,28 @@ import java.util.Optional;
 @Step(tag = "render")
 public class Render extends StepStatement implements Serializable {
     private final static MustacheFactory mustacheFactory = new UnescapedMustacheFactory();
-    private final String dest;
+    private final String out;
     private final String exp;
     private transient Mustache template;
 
+    /**
+     * Create a new string from multiple values in the Context
+     * @param exp a "mustache" expression of paths to use in the creation of a new string.
+     * @param out the path in the context the new String will be placed.
+     */
     @JsonCreator
     public Render(@JsonProperty(value = "exp", required = true) String exp,
-                  @JsonProperty(value = "dest", required = true) String dest) {
+                  @JsonProperty(value = "out", required = true) String out) {
         super();
         this.exp = exp;
-        this.dest = dest;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (null == template) template = compile(String.valueOf(exp));
         String rendered = context.render(template);
-        context.addField(dest, rendered);
+        context.addField(out, rendered);
         return StepBase.EMPTY;
     }
 

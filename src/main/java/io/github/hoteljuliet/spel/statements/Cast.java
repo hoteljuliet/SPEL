@@ -16,25 +16,30 @@ import java.util.Optional;
 @Step(tag = "cast")
 public class Cast extends StepStatement implements Serializable {
 
-    private final String value;
+    private final String in;
     private final FieldType fieldType;
 
+    /**
+     * Cast a value from one type to another, useful for when you receive "numerical strings" like "10.05".
+     * @param in a path to the value in the context
+     * @param fieldType the type to cast to, must be one of {@link io.github.hoteljuliet.spel.FieldType}
+     */
     @JsonCreator
-    public Cast(@JsonProperty(value = "value", required = true) String value,
+    public Cast(@JsonProperty(value = "in", required = true) String in,
                 @JsonProperty(value = "to", required = true) FieldType fieldType) {
-        this.value = value;
+        this.in = in;
         this.fieldType = fieldType;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object original = context.getField(value);
+        Object original = context.getField(in);
         Object afterCast = fieldType.convertFrom(original);
         if (null == afterCast) {
             softFailure();
         }
         else {
-            context.replaceFieldValue(value, afterCast);
+            context.replaceFieldValue(in, afterCast);
         }
         return EMPTY;
     }

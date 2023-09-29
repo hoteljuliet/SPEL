@@ -15,27 +15,27 @@ import java.util.Optional;
  */
 @Step(tag = "replace")
 public class Replace extends StepStatement implements Serializable {
-    private final String value;
+    private final String in;
     private final TemplateLiteral from;
     private final TemplateLiteral to;
 
     @JsonCreator
-    public Replace(@JsonProperty(value = "value", required = true) String value,
+    public Replace(@JsonProperty(value = "in", required = true) String in,
                    @JsonProperty(value = "from", required = true) TemplateLiteral from,
                    @JsonProperty(value = "to", required = true) TemplateLiteral to) {
         super();
-        this.value = value;
+        this.in = in;
         this.from = from;
         this.to = to;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        String fieldValue = context.getField(value);
+        String fieldValue = context.getField(in);
         String fromValue = from.get(context);
         String toValue = to.get(context);
         String replaced = fieldValue.replaceAll(fromValue,toValue);
-        context.replaceFieldValue(value, replaced);
+        context.replaceFieldValue(in, replaced);
         return EMPTY;
     }
 }

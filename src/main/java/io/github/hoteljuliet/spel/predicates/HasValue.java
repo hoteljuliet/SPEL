@@ -13,21 +13,21 @@ import java.util.Optional;
 
 @Step(tag = "has-value")
 public class HasValue extends StepPredicate implements Serializable {
-    private final String path;
+    private final String in;
     private final List<Object> values;
 
     @JsonCreator
-    public HasValue(@JsonProperty(value = "path", required = true) String path,
+    public HasValue(@JsonProperty(value = "in", required = true) String in,
                     @JsonProperty(value = "values", required = true) List<Object> values) {
         super();
-        this.path = path;
+        this.in = in;
         this.values = values;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(path)) {
-            Object fieldValue = context.get(path);
+        if (context.hasField(in)) {
+            Object fieldValue = context.get(in);
             return values.contains(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
         }
         else {

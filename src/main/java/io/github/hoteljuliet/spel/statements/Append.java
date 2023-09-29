@@ -18,23 +18,29 @@ import java.util.Optional;
  */
 @Step(tag = "append")
 public class Append extends StepStatement implements Serializable {
-    private final TemplateLiteral value;
-    private final String list;
+    private final TemplateLiteral in;
+    private final String out;
 
+
+    /**
+     * Append a value to a List in the context
+     * @param in the value to append. See {@link io.github.hoteljuliet.spel.mustache.TemplateLiteral}
+     * @param out the path into the context to a List where the value will be appended
+     */
     @JsonCreator
-    public Append(@JsonProperty(value = "value", required = true) TemplateLiteral value,
-                  @JsonProperty(value = "list", required = true) String list) {
+    public Append(@JsonProperty(value = "in", required = true) TemplateLiteral in,
+                  @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.value = value;
-        this.list = list;
+        this.in = in;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Object fieldValue = value.get(context);
-        List<Object> l = context.getField(list);
-        l.add(fieldValue);
-        context.replaceFieldValue(list, l);
+        Object fieldValue = in.get(context);
+        List<Object> listValue = context.getField(out);
+        listValue.add(fieldValue);
+        context.replaceFieldValue(out, listValue);
         return StepBase.EMPTY;
     }
 }

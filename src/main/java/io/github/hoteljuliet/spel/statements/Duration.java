@@ -17,34 +17,42 @@ import java.util.Optional;
  */
 @Step(tag = "duration")
 public class Duration extends StepStatement implements Serializable {
-    private final String from;
-    private final String to;
-    private final String pattern;
-    private final String unit;
+    private final String start;
+    private final String end;
+    private final String format;
+    private final ChronoUnit unit;
     private final String dest;
     private transient DateTimeFormatter dateTimeFormatter;
 
+    /**
+     * Gives the paths to 2 dates, output the duration in the unit provided to the destination provided
+     * @param start - a path to the date string
+     * @param end - a path to a date string
+     * @param format - the format of the date strings, See {@link java.time.format.DateTimeFormatter}
+     * @param unit - the unit of the time duration, See {@link java.time.temporal.ChronoUnit}
+     * @param dest - the path in the context where the calculated duration will be placed
+     */
     @JsonCreator
-    public Duration(@JsonProperty(value = "from", required = true) String from,
-                    @JsonProperty(value = "to", required = true) String to,
-                    @JsonProperty(value = "pattern", required = true) String pattern,
+    public Duration(@JsonProperty(value = "start", required = true) String start,
+                    @JsonProperty(value = "end", required = true) String end,
+                    @JsonProperty(value = "format", required = true) String format,
                     @JsonProperty(value = "unit", required = true) String unit,
                     @JsonProperty(value = "dest", required = true) String dest) {
         super();
-        this.from = from;
-        this.to = to;
-        this.pattern = pattern;
-        this.unit = unit;
+        this.start = start;
+        this.end = end;
+        this.format = format;
+        this.unit = ChronoUnit.valueOf(unit);
         this.dest = dest;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (null == dateTimeFormatter) dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+        if (null == dateTimeFormatter) dateTimeFormatter = DateTimeFormatter.ofPattern(format);
 
-        ZonedDateTime start = ZonedDateTime.parse(context.getField(from), dateTimeFormatter);
-        ZonedDateTime end = ZonedDateTime.parse(context.getField(to), dateTimeFormatter);
-        Long duration = ChronoUnit.valueOf(unit).between(start, end);
+        ZonedDateTime startTime = ZonedDateTime.parse(context.getField(start), dateTimeFormatter);
+        ZonedDateTime endTime = ZonedDateTime.parse(context.getField(end), dateTimeFormatter);
+        Long duration = this.unit.between(startTime, endTime);
         context.addField(dest, duration);
         return EMPTY;
     }

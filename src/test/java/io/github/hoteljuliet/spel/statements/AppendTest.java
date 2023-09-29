@@ -18,14 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AppendTest {
-    private final Map<String, Object> contextValues;
-    private final TemplateLiteral value;
+    private final Map<String, Object> backing;
+    private final TemplateLiteral in;
     private final String list;
     private final Object expected;
 
-    public AppendTest(Map<String, Object> contextValues, Object value, String list, Object expected) {
-        this.contextValues = contextValues;
-        this.value = new TemplateLiteral(value);
+    public AppendTest(Map<String, Object> backing, Object in, String list, Object expected) {
+        this.backing = backing;
+        this.in = new TemplateLiteral(in);
         this.list = list;
         this.expected = expected;
     }
@@ -42,8 +42,8 @@ public class AppendTest {
 
     @Test
     public void test() throws Exception {
-        Append append = new Append(value, list);
-        Context context = new Context(contextValues);
+        Append append = new Append(in, list);
+        Context context = new Context(backing);
         append.doExecute(context);
         List actual = context.getField(list);
         assertThat(actual).isEqualTo(expected);

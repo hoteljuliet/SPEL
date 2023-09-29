@@ -19,19 +19,19 @@ public class Regression extends StepStatement implements Serializable {
     private final String x;
     private final String y;
     private final TemplateLiteral predict;
-    private final String dest;
+    private final String out;
     private final SimpleRegression regression;
 
     @JsonCreator
     public Regression(@JsonProperty(value = "x", required = true) String x,
                       @JsonProperty(value = "y", required = true) String y,
                       @JsonProperty(value = "predict", required = true) TemplateLiteral predict,
-                      @JsonProperty(value = "dest", required = true) String dest) {
+                      @JsonProperty(value = "out", required = true) String out) {
         super();
         this.x = x;
         this.y = y;
         this.predict = predict;
-        this.dest = dest;
+        this.out = out;
         this.regression = new SimpleRegression();
     }
 
@@ -48,7 +48,7 @@ public class Regression extends StepStatement implements Serializable {
             output.put("slopeStdErr", regression.getSlopeStdErr());
             Double predictX = predict.get(context);
             output.put("predictedY", regression.predict(predictX));
-            context.addField(dest, output);
+            context.addField(out, output);
         }
         return StepBase.EMPTY;
     }

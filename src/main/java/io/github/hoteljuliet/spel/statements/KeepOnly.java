@@ -15,18 +15,22 @@ import java.util.Optional;
  */
 @Step(tag = "keep-only")
 public class KeepOnly extends StepStatement implements Serializable {
-    private final List<String> values;
+    private final List<String> in;
 
+    /**
+     * Remove all fields in the context, except those specified
+     * @param in a list of paths in the Context to keep, all others will be removed
+     */
     @JsonCreator
-    public KeepOnly(@JsonProperty(value = "values", required = true) List<String> values) {
+    public KeepOnly(@JsonProperty(value = "in", required = true) List<String> in) {
         super();
-        this.values = values;
+        this.in = in;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Context newContext = new Context();
-        for (String value : values) {
+        for (String value : in) {
             Object object = context.getField(value);
             newContext.addField(value, object);
         }

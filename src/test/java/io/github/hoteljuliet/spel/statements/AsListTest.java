@@ -15,18 +15,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(Parameterized.class)
 public class AsListTest {
-    private final Map<String, Object> contextValues;
-    private final List<TemplateLiteral> values;
-    private final String list;
+    private final Map<String, Object> backing;
+    private final List<TemplateLiteral> in;
+    private final String out;
     private final Object expected;
 
-    public AsListTest(Map<String, Object> contextValues, List<Object> values, String list, Object expected) {
-        this.contextValues = contextValues;
-        this.values = new ArrayList<>();
-        for (Object o : values) {
-            this.values.add(new TemplateLiteral(o));
+    public AsListTest(Map<String, Object> backing, List<Object> in, String out, Object expected) {
+        this.backing = backing;
+        this.in = new ArrayList<>();
+        for (Object o : in) {
+            this.in.add(new TemplateLiteral(o));
         }
-        this.list = list;
+        this.out = out;
         this.expected = expected;
     }
 
@@ -39,10 +39,10 @@ public class AsListTest {
 
     @Test
     public void test() throws Exception {
-        AsList asList = new AsList(values, list);
-        Context context = new Context(contextValues);
+        AsList asList = new AsList(in, out);
+        Context context = new Context(backing);
         asList.doExecute(context);
-        List actual = context.getField(list);
+        List actual = context.getField(out);
         assertThat(actual).isEqualTo(expected);
     }
 }

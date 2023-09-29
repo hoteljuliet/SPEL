@@ -2,132 +2,132 @@ name: test_pipeline
 stopOnFailure: true
 config:
 
-  - add: {dest: "trueString1", value: "t"}
-  - add: {dest: "falseString1", value: "f"}
-  - math: {exp: "{{trueString1}} && {{falseString1}}", dest: mathDestFalse}
-  - math: {exp: "{{trueString1}} || {{falseString1}}", dest: mathDestTrue}
-  - add: {dest: "trueString2", value: "1"}
-  - add: {dest: "falseString2", value: "0"}
+  - add: {out: "trueString1", in: "t"}
+  - add: {out: "falseString1", in: "f"}
+  - math: {exp: "{{trueString1}} && {{falseString1}}", out: mathDestFalse}
+  - math: {exp: "{{trueString1}} || {{falseString1}}", out: mathDestTrue}
+  - add: {out: "trueString2", in: "1"}
+  - add: {out: "falseString2", in: "0"}
 
-  - math: {exp: "({{trueString1}} && {{falseString1}}) || ({{trueString2}} && {{falseString2}})", dest: mathDestComplex}
+  - math: {exp: "({{trueString1}} && {{falseString1}}) || ({{trueString2}} && {{falseString2}})", out: mathDestComplex}
 
 
-  - add: {dest: "aStringToHex", value: "makeThisHex"}
-  - hex: {value: "aStringToHex", dest: "hexString", action: encode}
+  - add: {out: "aStringToHex", in: "makeThisHex"}
+  - hex: {in: "aStringToHex", out: "hexString", action: encode}
 
-  - add: {dest: "aHexString", value: "6d616b6554686973486578"}
-  - hex: {value: "aHexString", dest: "AsciiFromHexString", action: decode}
+  - add: {out: "aHexString", in: "6d616b6554686973486578"}
+  - hex: {in: "aHexString", out: "AsciiFromHexString", action: decode}
 
-  - add: {dest: "listToSort", value: [{"age" : 5}, {"age" : 9}, {"age" : 4}, {"age" : 12}]}
+  - add: {out: "listToSort", in: [{"age" : 5}, {"age" : 9}, {"age" : 4}, {"age" : 12}]}
   - sort-listToSort:
       - if:
         math: {exp: "{{map1.age}} < {{map2.age}}"}
         then:
-          - add: {dest: "_compare", value: -1}
+          - add: {out: "_compare", in: -1}
       - if:
         math: {exp: "{{map1.age}} > {{map2.age}}"}
         then:
-          - add: {dest: "_compare", value: 1}
+          - add: {out: "_compare", in: 1}
       - if:
         math: {exp: "{{map1.age}} == {{map2.age}}"}
         then:
-          - add: {dest: "_compare", value: 0}
+          - add: {out: "_compare", in: 0}
 
-  - ramp: {dest: ramp, peak: 8 }
-  - add: {dest: "apacheLog", value: "112.169.19.192 - - [06/Mar/2013:01:36:30 +0900] \"GET / HTTP/1.1\" 200 44346 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.152 Safari/537.22\""}
-  - grok: {value: "apacheLog", patterns: ["%{COMBINEDAPACHELOG}"], onlyNamed: true, dest: "grokMap"}
-  - add: {dest: "aLong", value: 5}
-  - cast: {value: "aLong", to: "double"}
-  - add: {dest: "aLongCopy", value: "{{aLong}}"}
-  - add: {dest: "listOfMaps", value: [{name: dennis, age: 25}, {name: dennis, age: 25}, {name: dennis, age: 15}] }
+  - ramp: {out: ramp, peak: 8 }
+  - add: {out: "apacheLog", in: "112.169.19.192 - - [06/Mar/2013:01:36:30 +0900] \"GET / HTTP/1.1\" 200 44346 \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.152 Safari/537.22\""}
+  - grok: {in: "apacheLog", patterns: ["%{COMBINEDAPACHELOG}"], onlyNamed: true, out: "grokMap"}
+  - add: {out: "aLong", in: 5}
+  - cast: {in: "aLong", to: "double"}
+  - add: {out: "aLongCopy", in: "{{aLong}}"}
+  - add: {out: "listOfMaps", in: [{name: dennis, age: 25}, {name: dennis, age: 25}, {name: dennis, age: 15}] }
   - foreach-listOfMaps:
-      - remove: {sources: ["i.age"]}
+      - remove: {in: ["i.age"]}
   - if:
     random-sample: {pct: 5}
     then:
-      - add: {dest: "fivePct", value: true}
-  - add: {dest: "fuzzy1", value: "a string to match"}
+      - add: {out: "fivePct", in: true}
+  - add: {out: "fuzzy1", in: "a string to match"}
   - if-fuzzyRatio:
     fuzzy-ratio: {first: "{{fuzzy1}}", second: "a string to march", ratio: 90}
     then:
-      - add: {name: good, dest: "fuzzy1Good", value: true}
+      - add: {name: good, out: "fuzzy1Good", in: true}
     else:
-      - add: {name: bad1, dest: "fuzzy1Good1", value: false}
-      - add: {name: bad2, dest: "fuzzy1Good2", value: false}
+      - add: {name: bad1, out: "fuzzy1Good1", in: false}
+      - add: {name: bad2, out: "fuzzy1Good2", in: false}
   - if:
     fuzzy-ratio: {first: "a string to match", second: "a string to march", ratio: 90}
     then:
-      - add: {dest: "fuzzy1Good", value: true}
-  - add: {dest: translate1, value: '404'}
-  - translate: {value: translate1, default: "unknown", dict: { "404": "NOT FOUND"}}
-  - cardinality: {value: translate1, precision: 5, dest: card}
-  - add: {dest: kvString1, value: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
-  - key-value: {source: kvString1, delimiter: ',', separator: '=',  dest: kvMap1}
-  - add: {dest: kvString2, value: 'this:that; you:me; potatoe:potatoh; tomatoe:tomahtoh'}
-  - key-value: {source: kvString2, delimiter: ';', separator: ':',  dest: kvMap2}
-  - now: {dest: "now1", format: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
-  - now: {dest: "now2", format: "unix_ms", zone: Z}
-  - now: {dest: "now3", format: "unix_s", zone: Z}
-  - add: {dest: jsonMapString, value: '{ "this": "that" }'}
-  - json-map: {source: jsonMapString, dest: jsonMapped}
-  - add: {dest: jsonListString, value: '[ "this", "that" ]'}
-  - json-list: {source: jsonListString, dest: jsonListed}
+      - add: {out: "fuzzy1Good", in: true}
+  - add: {out: translate1, in: '404'}
+  - translate: {in: translate1, default: "unknown", dict: { "404": "NOT FOUND"}}
+  - cardinality: {in: translate1, precision: 5, out: card}
+  - add: {out: kvString1, in: 'this=that, you=me, potatoe=potatoh, tomatoe=tomahtoh'}
+  - key-value: {in: kvString1, delimiter: ',', separator: '=',  out: kvMap1}
+  - add: {out: kvString2, in: 'this:that; you:me; potatoe:potatoh; tomatoe:tomahtoh'}
+  - key-value: {in: kvString2, delimiter: ';', separator: ':',  out: kvMap2}
+  - now: {out: "now1", format: "MM-dd-YY", zone: Z, name: "myFavoriteNow"}
+  - now: {out: "now2", format: "unix_ms", zone: Z}
+  - now: {out: "now3", format: "unix_s", zone: Z}
+  - add: {out: jsonMapString, in: '{ "this": "that" }'}
+  - json-map: {in: jsonMapString, out: jsonMapped}
+  - add: {out: jsonListString, in: '[ "this", "that" ]'}
+  - json-list: {in: jsonListString, out: jsonListed}
   - foreach-jsonListed:
-      - hash : {value: "i", dest: "i", algo: "SHA-256"}
-  - as-list: {values: [now1, now2, now3], list: list1}
-  - append: {value: jsonMapString, list: list1}
-  - add: {dest: "a.a", value: 1.0}
-  - add: {dest: "z.z", value: 1.0}
-  - math: {dest: "mathResult_math", exp: "{{a.a}} + {{z.z}}"}
-  - add: {dest: "user", value: "${USER}"}
-  - add: {dest: "copy", value: "{{a.a}}"}
-  - add: {dest: "a.b", value: 2.0}
-  - add: {dest: "x", value: "y"}
-  - add: {dest: "x.y", value: "1"}
-  - lookup-i: {sources: ["x.y"], dests: ["x.y.lookup"], default: "unknown", dict: {"1": "some_metadata"} }
-  - add: {dest: "x.z", value: "this is a string"}
-  - add: {dest: "x.csv", value: "this, is, a, csv, string"}
-  - add: {dest: "p.pipe", value: "this|is|a|piped|string"}
-  - add: {dest: "notANumber", value: "notANumber"}
-  - b64: {value: "x.z", dest: "encoded", action: encode}
-  - b64: {value: "encoded", dest: "decoded", action: decode}
-  - hash: {value: "decoded", dest: "hashed", algo: "SHA-256"}
-  - keyed-hash: {value: "decoded", dest: "hashed", iter: 10000, salt: "somesalt", pass: "${USER}"}
-  - delimit: {source: x.csv, delimiter: ',', quote: '"', dests: [a.first, a.second, a.third, a.fourth, a.fifth] }
-  - delimit: {source: p.pipe, delimiter: '|', quote: '"', dests: [b.first, b.second, b.third, b.fourth, b.fifth] }
+      - hash : {in: "i", out: "i", algo: "SHA-256"}
+  - as-list: {in: [now1, now2, now3], out: list1}
+  - append: {in: jsonMapString, out: list1}
+  - add: {out: "a.a", in: 1.0}
+  - add: {out: "z.z", in: 1.0}
+  - math: {out: "mathResult_math", exp: "{{a.a}} + {{z.z}}"}
+  - add: {out: "user", in: "${USER}"}
+  - add: {out: "copy", in: "{{a.a}}"}
+  - add: {out: "a.b", in: 2.0}
+  - add: {out: "x", in: "y"}
+  - add: {out: "x.y", in: "1"}
+  - lookup-i: {in: ["x.y"], out: ["x.y.lookup"], default: "unknown", dict: {"1": "some_metadata"} }
+  - add: {out: "x.z", in: "this is a string"}
+  - add: {out: "x.csv", in: "this, is, a, csv, string"}
+  - add: {out: "p.pipe", in: "this|is|a|piped|string"}
+  - add: {out: "notANumber", in: "notANumber"}
+  - b64: {in: "x.z", out: "encoded", action: encode}
+  - b64: {in: "encoded", out: "decoded", action: decode}
+  - hash: {in: "decoded", out: "hashed", algo: "SHA-256"}
+  - keyed-hash: {in: "decoded", out: "hashed", iter: 10000, salt: "somesalt", pass: "${USER}"}
+  - delimit: {in: x.csv, delimiter: ',', quote: '"', out: [a.first, a.second, a.third, a.fourth, a.fifth] }
+  - delimit: {in: p.pipe, delimiter: '|', quote: '"', out: [b.first, b.second, b.third, b.fourth, b.fifth] }
   - if-isGratermath?:
     math: {exp: "{{a.a}} > {{a.b}}"}
     then:
-      - remove: {sources: ["x.y"]}
+      - remove: {in: ["x.y"]}
   - if-matches?:
-    matches: {value: "user", regex: ".*dennis*"}
+    matches: {in: "user", regex: ".*dennis*"}
     then:
-      - add: {dest: "matches1", value: "user does not match .*dennis*"}
+      - add: {out: "matches1", in: "user does not match .*dennis*"}
   - if-notMatches?:
     not:
-      - matches: {value: "user", regex: ".*truck*"}
+      - matches: {in: "user", regex: ".*truck*"}
     then:
-      - add: {dest: "matches1", value: "user does not match .*truck*"}
-  - add: {dest: someString, value: y}
+      - add: {out: "matches1", in: "user does not match .*truck*"}
+  - add: {out: someString, in: y}
   - if:
-    in: {value: someString, list: [a, b, c, y]}
+    contains: {in: someString, values: [a, b, c, y]}
     then:
-      - add: {dest: "matches1", value: "someString in: [a, b, c, y]"}
+      - add: {out: "matches1", in: "someString in: [a, b, c, y]"}
 
   - if-firstLevel?:
-    in: {value: someString, list: [a, b, c, y]}
+    contains: {in: someString, values: [a, b, c, y]}
     then:
-      - add: {dest: "thisIsForTesting", value: "some kind of test value"}
+      - add: {out: "thisIsForTesting", in: "some kind of test value"}
       - if-secondLevel?:
-        in: {value: someString, list: [a, b, c, y]}
+        contains: {in: someString, values: [a, b, c, y]}
         then:
-          - add: {dest: "nextedIf", value: "worked"}
+          - add: {out: "nextedIf", in: "worked"}
   - rename: {dict: {"a.a" : "a1.a1", "z.z" : "z1.z1"}}
-  - add: {dest: someDouble, value: 12345.123456789}
-  - round: {value: someDouble, format: "######.###" }
-  - add: {dest: whitespace, value: "lots o spaces         here"}
-  - strip: {value: whitespace}
-  - add: {dest: s1, value: "string1"}
-  - add: {dest: s2, value: "string2"}
-  - add: {dest: s3, value: "string3"}
-  - concat: {values: [s1, s2, s3], dest: concatenation, delimiter: ""}
+  - add: {out: someDouble, in: 12345.123456789}
+  - round: {in: someDouble, format: "######.###" }
+  - add: {out: whitespace, in: "lots o spaces         here"}
+  - strip: {in: whitespace}
+  - add: {out: s1, in: "string1"}
+  - add: {out: s2, in: "string2"}
+  - add: {out: s3, in: "string3"}
+  - concat: {in: [s1, s2, s3], out: concatenation, delimiter: ""}

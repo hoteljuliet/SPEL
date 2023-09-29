@@ -15,35 +15,35 @@ import java.util.Optional;
 
 @Step(tag = "quantile")
 public class Quantile extends StepStatement implements Serializable {
-    private final String source;
-    private final String dest;
+    private final String in;
+    private final String out;
     private final Integer compression;
     private final List<Double> quantiles;
     private final TDigest tDigest;
 
     @JsonCreator
-    public Quantile(@JsonProperty(value = "source", required = true) String source,
+    public Quantile(@JsonProperty(value = "in", required = true) String in,
                     @JsonProperty(value = "compression", required = true) Integer compression,
                     @JsonProperty(value = "quantiles", required = true) List<Double> quantiles,
-                    @JsonProperty(value = "dest", required = true) String dest) {
+                    @JsonProperty(value = "out", required = true) String out) {
         super();
-        this.source = source;
+        this.in = in;
         this.compression = compression;
         this.quantiles = quantiles;
-        this.dest = dest;
+        this.out = out;
         this.tDigest = TDigest.createDigest(compression);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        Double value = context.getField(source);
+        Double value = context.getField(in);
         tDigest.add(value);
 
         Map<String, Double> map = new HashMap<>();
         for (Double d : quantiles) {
             map.put(String.valueOf(d), tDigest.quantile(d));
         }
-        context.addField(dest, map);
+        context.addField(out, map);
         return EMPTY;
     }
 }
