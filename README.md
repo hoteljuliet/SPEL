@@ -131,12 +131,13 @@ for a full example.
 
 ---
 
-- ### Serializable
+- ### Mustache Templates
+- ### Fully Serializable
 - ### Complex/Stateful Statements
   - #### Clearing State
   - #### Deduplication
   - #### Sorting
-  - #### KMeans
+  - #### KMeans 
   - #### Cardinality
 
 ---
