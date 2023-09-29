@@ -115,7 +115,7 @@ for a full example.
 5. Keep the names of steps and parameters short
 6. Keep the naming of parameters:
     1. logical, the yaml file should read like simple spoken english - ex: "if value in list"
-    2. consistent and simple: value, value(s), source(s), dest(s), to, from, dict, list, action
+    2. consistent and simple: in, out, to, from, dict, list, action
 7. Make more, smaller steps vs bigger ones with lots of options. ~50 lines for a stepBase is normal/average.
 8. Use jackson annotations for all parsing rules, optional fields, etc
 9. The Pipeline and all Steps must be completely serializable (otherwise they can't be stored as State)
