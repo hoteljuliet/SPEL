@@ -24,6 +24,6 @@ public class HashedSample extends StepPredicate implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         String value = context.getField(in);
-        return (value.hashCode() % 100 < percentage) ? TRUE : FALSE;
+        return (java.lang.Math.abs(value.hashCode()) % 100 < percentage) ? TRUE : FALSE;
     }
 }
