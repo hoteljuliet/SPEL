@@ -115,7 +115,7 @@ public class Parser {
             ifPredicate.setName(buildUniqueNameFromType("if"));
         }
 
-        setMetricsFromProvider(ifPredicate);
+        ifPredicate.initMetrics(metricsProvider);
 
         return ifPredicate;
     }
@@ -185,27 +185,11 @@ public class Parser {
         if (typesMap.containsKey(type)) {
             Class clazz = typesMap.get(type);
             StepBase stepBase = (StepBase) yamlMapper.readValue(yamlMapper.writeValueAsBytes(config), clazz);
-            setMetricsFromProvider(stepBase);
+            stepBase.initMetrics(metricsProvider);
             return stepBase;
         }
         else {
             throw new RuntimeException("no type found for: " + type);
-        }
-    }
-
-    private void setMetricsFromProvider(StepBase stepBase) {
-        // set the metrics in the steps from an external provider
-        stepBase.invocations = metricsProvider.provideNext(stepBase.name, MetricsProvider.INVOCATIONS);
-        stepBase.success = metricsProvider.provideNext(stepBase.name, MetricsProvider.SUCCESS);
-        stepBase.softFailure = metricsProvider.provideNext(stepBase.name, MetricsProvider.SOFT_FAIL);
-        stepBase.exception = metricsProvider.provideNext(stepBase.name, MetricsProvider.EXCEPTION);
-        stepBase.totalNs = metricsProvider.provideNext(stepBase.name, MetricsProvider.TOTAL_NS);
-        stepBase.maxNs = metricsProvider.provideNext(stepBase.name, MetricsProvider.MAX_NS);
-        stepBase.avgNs = metricsProvider.provideNext(stepBase.name, MetricsProvider.AVG_NS);
-        if (stepBase instanceof StepPredicate) {
-            StepPredicate stepPredicate = (StepPredicate)stepBase;
-            stepPredicate.evalTrue = metricsProvider.provideNext(stepPredicate.name, MetricsProvider.EVAL_TRUE);
-            stepPredicate.evalFalse = metricsProvider.provideNext(stepPredicate.name, MetricsProvider.EVAL_FALSE);
         }
     }
 
@@ -221,7 +205,7 @@ public class Parser {
             stepStatementComplex.setName(buildUniqueNameFromType(type+source));
             stepStatementComplex.subStatements = parse(config);
 
-            setMetricsFromProvider(stepStatementComplex);
+            stepStatementComplex.initMetrics(metricsProvider);
 
             return stepStatementComplex;
         }
@@ -245,7 +229,7 @@ public class Parser {
                 String subType = firstKey(node);
                 stepPredicateComplex.subPredicate.add(buildPredicate(subType, (Map<String, Object>) node.get(subType)));
             }
-            setMetricsFromProvider(stepPredicateComplex);
+            stepPredicateComplex.initMetrics(metricsProvider);
 
             return stepPredicateComplex;
         }

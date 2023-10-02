@@ -1,5 +1,7 @@
 package io.github.hoteljuliet.spel;
 
+import io.github.hoteljuliet.spel.metrics.MetricsProvider;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -23,14 +25,19 @@ public abstract class StepPredicate extends StepBase implements Serializable {
      * @param context the context
      */
     @Override
-    public void after(Optional<Boolean> evaluation, Context context) {
-        super.after(evaluation, context);
+    public Optional<Boolean> after(Optional<Boolean> evaluation, Context context) {
+        Optional<Boolean> retVal = super.after(evaluation, context);
         if (evaluation.equals(TRUE)) {
             evalTrue();
         }
         else if (evaluation.equals(FALSE)) {
             evalFalse();
         }
+        else if (evaluation.equals(EMPTY)) {
+            evalFalse();
+            retVal = FALSE;
+        }
+        return retVal;
     }
 
     @Override
@@ -86,5 +93,12 @@ public abstract class StepPredicate extends StepBase implements Serializable {
 
     public void evalFalse() {
         evalFalse.getAndIncrement();
+    }
+
+    @Override
+    public void initMetrics(MetricsProvider metricsProvider) {
+        super.initMetrics(metricsProvider);
+        evalTrue = metricsProvider.provideNext(name, MetricsProvider.EVAL_TRUE);
+        evalFalse = metricsProvider.provideNext(name, MetricsProvider.EVAL_FALSE);
     }
 }

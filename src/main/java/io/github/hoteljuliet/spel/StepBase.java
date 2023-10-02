@@ -1,5 +1,7 @@
 package io.github.hoteljuliet.spel;
 
+import io.github.hoteljuliet.spel.metrics.MetricsProvider;
+
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -53,12 +55,13 @@ public abstract class StepBase implements Serializable {
      * @param evaluation step's return from doExecute
      * @param context the context
      */
-    public void after(Optional<Boolean> evaluation, Context context) {
+    public Optional<Boolean> after(Optional<Boolean> evaluation, Context context) {
         stopWatch.stop();
         Long currentNs = stopWatch.getNanoTime();
         maxNs.set(Math.max(currentNs, maxNs.get()));
         totalNs.getAndAdd(currentNs);
         avgNs.set(totalNs.get() / invocations.get());
+        return evaluation;
     }
 
     /**
@@ -80,7 +83,7 @@ public abstract class StepBase implements Serializable {
             exception.getAndIncrement();
         }
         finally {
-            after(retVal, context);
+            retVal = after(retVal, context);
         }
         return retVal;
     }
@@ -97,5 +100,15 @@ public abstract class StepBase implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void initMetrics(MetricsProvider metricsProvider) {
+        invocations = metricsProvider.provideNext(name, MetricsProvider.INVOCATIONS);
+        success = metricsProvider.provideNext(name, MetricsProvider.SUCCESS);
+        softFailure = metricsProvider.provideNext(name, MetricsProvider.SOFT_FAIL);
+        exception = metricsProvider.provideNext(name, MetricsProvider.EXCEPTION);
+        totalNs = metricsProvider.provideNext(name, MetricsProvider.TOTAL_NS);
+        maxNs = metricsProvider.provideNext(name, MetricsProvider.MAX_NS);
+        avgNs = metricsProvider.provideNext(name, MetricsProvider.AVG_NS);
     }
 }

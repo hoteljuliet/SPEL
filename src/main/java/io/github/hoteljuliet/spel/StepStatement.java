@@ -42,11 +42,6 @@ public abstract class StepStatement extends StepBase implements Serializable {
         }
     }
 
-    @Override
-    public void after(Optional<Boolean> evaluation, Context context) {
-        super.after(evaluation, context);
-    }
-
     private String failureRateColor(Double successRate) {
         if (successRate == 1) return "#859900";
         if (successRate > .99) return "#b58900";

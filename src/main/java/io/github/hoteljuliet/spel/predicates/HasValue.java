@@ -26,13 +26,7 @@ public class HasValue extends StepPredicate implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(in)) {
-            Object fieldValue = context.get(in);
-            return values.contains(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
-        }
-        else {
-            softFailure();
-            return StepBase.FALSE;
-        }
+        Object fieldValue = context.get(in);
+        return values.contains(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
     }
 }
