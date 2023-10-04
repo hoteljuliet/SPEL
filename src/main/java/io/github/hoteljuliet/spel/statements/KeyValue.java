@@ -45,7 +45,7 @@ public class KeyValue extends StepStatement implements Serializable {
         String[] kvPairs = value.split(delimiter);
         for (String pair : kvPairs) {
             String[] parts = pair.split(separator);
-            result.put(parts[0].trim(), parts[1].trim());
+            result.put(parts[0], parts[1]);
         }
         context.addField(out, result);
         return EMPTY;
