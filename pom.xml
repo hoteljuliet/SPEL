@@ -4,7 +4,7 @@
   <groupId>io.github.hoteljuliet.spel</groupId>
   <artifactId>spel</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <name>spel</name>
   <description>A DSL/EL designed for json transforms, configurable business logic, and appropriate for stream processing</description>
   <url>https://github.com/hoteljuliet/SPEL</url>
