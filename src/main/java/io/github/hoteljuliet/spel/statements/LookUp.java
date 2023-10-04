@@ -17,13 +17,13 @@ import java.util.Optional;
 // TODO: consolidate with TemplateLiteral
 @Step(tag = "lookup")
 public class LookUp extends StepStatement implements Serializable {
-    private final List<String> in;
-    private final List<String> out;
+    private final String in;
+    private final String out;
     private final String defaultValue;
     private final String dict;
     @JsonCreator
-    public LookUp(@JsonProperty(value = "in", required = true) List<String> in,
-                  @JsonProperty(value = "out", required = true) List<String> out,
+    public LookUp(@JsonProperty(value = "in", required = true) String in,
+                  @JsonProperty(value = "out", required = true) String out,
                   @JsonProperty(value = "default", required = true) String defaultValue,
                   @JsonProperty(value = "dict", required = true) String dict) {
         super();
@@ -36,14 +36,12 @@ public class LookUp extends StepStatement implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Map<String, Object> lookupDict = context.getField(dict);
-        for (int i = 0; i < in.size() && i < out.size(); i++) {
-            Object value = context.getField(in.get(i));
-            if (lookupDict.containsKey(value)) {
-                Object lookup = lookupDict.get(value);
-                context.addField(out.get(i), lookup);
-            } else {
-                context.addField(out.get(i), defaultValue);
-            }
+        Object value = context.getField(in);
+        if (lookupDict.containsKey(value)) {
+            Object lookup = lookupDict.get(value);
+            context.addField(out, lookup);
+        } else {
+            context.addField(out, defaultValue);
         }
         return EMPTY;
     }
