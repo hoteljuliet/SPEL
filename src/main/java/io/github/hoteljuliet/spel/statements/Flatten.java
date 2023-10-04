@@ -45,9 +45,7 @@ public class Flatten extends StepStatement {
 
     public void flatten(String key, Map<String, Object> in, Map<String, Object> out) {
         for (Map.Entry<String, Object> entry : in.entrySet()) {
-
             String newKey = key + "." + entry.getKey();
-
             if (entry.getValue() instanceof Map) {
                 flatten(newKey, (Map<String, Object>) entry.getValue(), out);
             }
