@@ -29,7 +29,7 @@
     <dependency>
       <groupId>org.redisson</groupId>
       <artifactId>redisson</artifactId>
-      <version>3.20.0</version>
+      <version>3.23.5</version>
     </dependency>
     <!--
     TODO: explore this library for mainframe-specific needs
