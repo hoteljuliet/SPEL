@@ -34,6 +34,9 @@ public abstract class StepPredicate extends StepBase implements Serializable {
             evalFalse();
         }
         else if (evaluation.equals(EMPTY)) {
+            // if a predicate returned EMPTY, something went wrong (exception thrown, etc)
+            // increment soft failure, and default to false
+            softFailure();
             evalFalse();
             retVal = FALSE;
         }

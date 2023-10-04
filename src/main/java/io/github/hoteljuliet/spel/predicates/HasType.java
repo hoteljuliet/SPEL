@@ -22,14 +22,8 @@ public class HasType extends StepPredicate implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (context.hasField(path)) {
-            Object fieldValue = context.get(path);
-            return type.isInstance(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
-        }
-        else {
-            softFailure();
-            return StepBase.FALSE;
-        }
+        Object fieldValue = context.get(path);
+        return type.isInstance(fieldValue) ? StepBase.TRUE : StepBase.FALSE;
     }
 }
 
