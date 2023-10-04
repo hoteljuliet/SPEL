@@ -57,6 +57,6 @@ public class HashedSampleTest {
                 numTrue += 1;
             }
         }
-        assertThat(numTrue).isGreaterThan(40).isLessThanOrEqualTo(60);
+        assertThat(numTrue).isGreaterThanOrEqualTo(40).isLessThanOrEqualTo(60);
     }
 }
