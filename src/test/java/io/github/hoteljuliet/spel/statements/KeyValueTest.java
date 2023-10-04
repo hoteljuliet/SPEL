@@ -34,6 +34,8 @@ public class KeyValueTest {
         return Arrays.asList(new Object[][] {
             // Note: split does not strip whitespace, users are expected to use strip before split
             { Context.mapOf("field", "k1=v1, k2=v2, k3=v3"), "field", ",", "=", "map", Context.mapOf("k1", "v1", " k2", "v2", " k3", "v3")},
+
+            { Context.mapOf("field", "k1:v1|k2:v2|k3:v3"), "field", "\\|", ":", "map", Context.mapOf("k1", "v1", "k2", "v2", "k3", "v3")},
         });
     }
 
