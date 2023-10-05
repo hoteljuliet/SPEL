@@ -40,7 +40,7 @@ public class Intersection extends StepStatement implements Serializable {
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Collection<Object> firstCollection = first.get(context);
-        Collection<Object> secondCollection = first.get(context);
+        Collection<Object> secondCollection = second.get(context);
 
         List<Object> result = firstCollection.stream()
                 .distinct()
