@@ -3,30 +3,21 @@ package io.github.hoteljuliet.spel.statements;
 import com.clearspring.analytics.stream.frequency.ConservativeAddSketch;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Joiner;
 import io.github.hoteljuliet.spel.Context;
 import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.StepStatement;
-import io.github.hoteljuliet.spel.mustache.TemplateLiteral;
-import org.apache.commons.lang3.RandomUtils;
 
 import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
 
 /**
-  *        int numItems = 10000000;
- *         int maxScale = 15000;
- *         double epsOfTotalCount = 0.00075;
- *         double errorRange = epsOfTotalCount;
- *         double confidence = 0.99;
  *
- *         int[] actualFreq = new int[maxScale];
- *         IFrequency sketch = new ConservativeAddSketch(epsOfTotalCount, confidence, seed);
- *         IFrequency baseSketch = new CountMinSketch(epsOfTotalCount, confidence, seed);
  */
-@Step(tag = "common")
-public class Common extends StepStatement implements Serializable {
+@Step(tag = "k-common")
+public class KCommon extends StepStatement implements Serializable {
 
     private final String in;
     private final String out;
@@ -36,12 +27,19 @@ public class Common extends StepStatement implements Serializable {
     private final Map<Object, Long> common;
     private ConservativeAddSketch conservativeAddSketch;
 
+    /**
+     * @param in a path in the context to a String to find the k most common values of
+     * @param eps the eps - TODO: document
+     * @param confidence confidence, max value is 1.00
+     * @param k the number of common values to track
+     * @param out a path into the context to place the map of common values
+     */
     @JsonCreator
-    public Common(@JsonProperty(value = "in", required = true) String in,
-                  @JsonProperty(value = "eps", required = true) Double eps,
-                  @JsonProperty(value = "confidence", required = true) Double confidence,
-                  @JsonProperty(value = "k", required = true) Integer k,
-                  @JsonProperty(value = "out", required = true) String out) {
+    public KCommon(@JsonProperty(value = "in", required = true) String in,
+                   @JsonProperty(value = "eps", required = true) Double eps,
+                   @JsonProperty(value = "confidence", required = true) Double confidence,
+                   @JsonProperty(value = "k", required = true) Integer k,
+                   @JsonProperty(value = "out", required = true) String out) {
         super();
         this.in = in;
         this.k = k;
@@ -91,6 +89,7 @@ public class Common extends StepStatement implements Serializable {
                 Random random = new Random();
                 conservativeAddSketch = new ConservativeAddSketch(this.eps, this.confidence, random.nextInt());
             }
+            common.clear();
         }
     }
 }
