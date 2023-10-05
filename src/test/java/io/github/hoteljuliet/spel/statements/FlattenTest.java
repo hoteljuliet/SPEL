@@ -32,9 +32,7 @@ public class FlattenTest {
            {Context.mapOf("root", Context.mapOf("fieldA", Context.mapOf("fieldB", "valueB"))), "root", "$", "flattened", Context.mapOf("$.fieldA.fieldB", "valueB")},
 
            {Context.mapOf("root", Context.mapOf("fieldA", Context.mapOf("fieldB", Context.listOf(0, 1, 2)))), "root", "$", "flattened",
-                   Context.mapOf("$.fieldA.fieldB[0]", 0, "$.fieldA.fieldB[1]", 1, "$.fieldA.fieldB[2]", 2)
-
-           },
+                   Context.mapOf("$.fieldA.fieldB[0]", 0, "$.fieldA.fieldB[1]", 1, "$.fieldA.fieldB[2]", 2)},
 
         });
     }
