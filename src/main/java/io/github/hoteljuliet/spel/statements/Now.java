@@ -3,6 +3,7 @@ package io.github.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.hoteljuliet.spel.Context;
+import io.github.hoteljuliet.spel.DateFormats;
 import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.StepStatement;
 
@@ -15,12 +16,10 @@ import java.util.Optional;
 @Step(tag = "now")
 public class Now extends StepStatement implements Serializable {
 
-    public static final String UNIX_MILLIS = "unix_ms";
-    public static final String UNIX_SECONDS= "unix_s";
     private final String out;
     private final String format;
     private final ZoneId zone;
-    private transient Optional<DateTimeFormatter> toFormatter;
+    private transient DateTimeFormatter formatter;
 
     /**
      *
@@ -40,29 +39,11 @@ public class Now extends StepStatement implements Serializable {
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
+        if (null == formatter) formatter = DateFormats.of(format).withZone(zone);
 
-        if (null == toFormatter) {
-            if (format.equalsIgnoreCase(UNIX_MILLIS) || format.equalsIgnoreCase(UNIX_SECONDS)) {
-                toFormatter = Optional.empty();
-            }
-            else {
-                toFormatter = Optional.of(DateTimeFormatter.ofPattern(format));
-            }
-        }
-
-        ZonedDateTime original = ZonedDateTime.now(this.zone);
-        if (format.equalsIgnoreCase(UNIX_MILLIS)) {
-            String reformatted = String.valueOf(original.toInstant().toEpochMilli());
-            context.addField(out, reformatted);
-        }
-        else if (format.equalsIgnoreCase(UNIX_SECONDS)) {
-            String reformatted = String.valueOf(original.toInstant().getEpochSecond());
-            context.addField(out, reformatted);
-        }
-        else {
-            String reformatted = original.format(toFormatter.get());
-            context.addField(out, reformatted);
-        }
+        ZonedDateTime original = ZonedDateTime.now(zone);
+        String reformatted = original.format(formatter);
+        context.addField(out, reformatted);
         return EMPTY;
     }
 }

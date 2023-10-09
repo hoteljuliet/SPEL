@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
-@Step(tag = "date")
-public class Date extends StepStatement implements Serializable {
+@Step(tag = "unix")
+public class Unix extends StepStatement implements Serializable {
     private final String in;
     private final String out;
     private final String from;
@@ -31,34 +31,40 @@ public class Date extends StepStatement implements Serializable {
 
 
     /**
-     * Reformats a date String into another date String
+     * Reformats a long unix timestamp (seconds or millis) to a String
      * @param in a path to the date string to reformat
      * @param out the path in the context where the new date string will be placed
      * @param from the original date format, See {@link java.time.format.DateTimeFormatter}
      * @param to the desired output date format, See {@link java.time.format.DateTimeFormatter}
      */
     @JsonCreator
-    public Date(@JsonProperty(value = "in", required = true) String in,
+    public Unix(@JsonProperty(value = "in", required = true) String in,
                 @JsonProperty(value = "out", required = true) String out,
                 @JsonProperty(value = "from", required = true) String from,
                 @JsonProperty(value = "to", required = true) String to,
-                @JsonProperty(value = "fromZone", required = false) String fromZone,
+                @JsonProperty(value = "fromZone", required = true) String fromZone,
                 @JsonProperty(value = "fromZone", required = false) String toZone) {
         super();
         this.in = in;
         this.out = out;
         this.from = from;
         this.to = to;
-        this.fromZone = (null == fromZone) ? null : ZoneId.of(fromZone);
+        this.fromZone = ZoneId.of(fromZone);
         this.toZone = (null == toZone) ? null : ZoneId.of(toZone);
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (null == fromFormatter) fromFormatter = (null == fromZone) ? DateFormats.of(from) : DateFormats.of(from).withZone(fromZone);
+        if (null == fromFormatter) fromFormatter = DateFormats.of(from).withZone(fromZone);
         if (null == toFormatter) toFormatter = (null == toZone) ? DateFormats.of(to) : DateFormats.of(to).withZone(toZone);
-        String value = context.getField(in);
-        ZonedDateTime original = ZonedDateTime.parse(value.toString(), fromFormatter);
+        Long value = context.getField(in);
+
+        if (from.equalsIgnoreCase("UNIX_S")) {
+            value = value * 1000;
+        }
+
+        Instant instant = Instant.ofEpochMilli(value);
+        ZonedDateTime original = ZonedDateTime.ofInstant(instant, fromZone);
         String reformatted = original.format(toFormatter);
         context.addField(out, reformatted);
         return EMPTY;
