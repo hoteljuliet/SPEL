@@ -26,7 +26,7 @@ public class RandomNumber extends StepStatement implements Serializable {
         this.fieldType = fieldType;
         secureRandom = new SecureRandom();
 
-        Preconditions.checkArgument(fieldType != FieldType.STRING && fieldType != FieldType.MAP && fieldType != FieldType.LIST, "field type must be a numeric type");
+        Preconditions.checkArgument(fieldType != FieldType.BOOLEAN && fieldType != FieldType.STRING && fieldType != FieldType.MAP && fieldType != FieldType.LIST, "field type must be a numeric type");
     }
 
     @Override
@@ -34,10 +34,6 @@ public class RandomNumber extends StepStatement implements Serializable {
         if (null == secureRandom) secureRandom = new SecureRandom();
 
         switch(fieldType) {
-            case BOOLEAN: {
-                context.addField(out, secureRandom.nextBoolean());
-                break;
-            }
             case INT: {
                 context.addField(out, secureRandom.nextInt());
                 break;

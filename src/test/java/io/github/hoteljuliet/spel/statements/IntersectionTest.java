@@ -35,6 +35,11 @@ public class IntersectionTest {
                     new TemplateLiteral("{{field}}"), new TemplateLiteral(Context.listOf(2, 3, 4)),
                     "intersection", Context.listOf(2, 3, 4)},
 
+
+            {Context.mapOf("field", Context.listOf(Context.mapOf("v1", "k1"), Context.mapOf("v2", "k2"))),
+                    new TemplateLiteral("{{field}}"), new TemplateLiteral(Context.listOf(Context.mapOf("v2", "k2"))),
+                    "intersection", Context.listOf(Context.mapOf("v2", "k2"))},
+
         });
     }
 
