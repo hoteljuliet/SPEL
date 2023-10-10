@@ -34,7 +34,7 @@ public class Replace extends StepStatement implements Serializable {
         String fieldValue = context.getField(in);
         String fromValue = from.get(context);
         String toValue = to.get(context);
-        String replaced = fieldValue.replaceAll(fromValue,toValue);
+        String replaced = fieldValue.replaceAll(fromValue, toValue);
         context.replaceFieldValue(in, replaced);
         return EMPTY;
     }
