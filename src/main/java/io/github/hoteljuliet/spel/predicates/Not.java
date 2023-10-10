@@ -2,8 +2,8 @@ package io.github.hoteljuliet.spel.predicates;
 
 import io.github.hoteljuliet.spel.Context;
 import io.github.hoteljuliet.spel.Step;
-import io.github.hoteljuliet.spel.StepPredicateComplex;
 import io.github.hoteljuliet.spel.StepBase;
+import io.github.hoteljuliet.spel.StepPredicateComplex;
 
 import java.io.Serializable;
 import java.util.Optional;

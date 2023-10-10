@@ -2,7 +2,6 @@ package io.github.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.hoteljuliet.spel.Context;
 import io.github.hoteljuliet.spel.Parser;
 import io.github.hoteljuliet.spel.Step;

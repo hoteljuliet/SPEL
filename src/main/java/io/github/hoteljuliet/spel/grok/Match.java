@@ -1,16 +1,12 @@
 package io.github.hoteljuliet.spel.grok;
 
-import static java.lang.String.format;
+import io.github.hoteljuliet.spel.grok.Converter.IConverter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 
-import io.github.hoteljuliet.spel.grok.Converter.IConverter;
+import static java.lang.String.format;
 
 /**
  * {@code Match} is a representation in {@code Grok} world of your log.

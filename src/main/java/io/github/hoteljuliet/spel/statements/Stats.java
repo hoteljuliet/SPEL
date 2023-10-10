@@ -3,8 +3,8 @@ package io.github.hoteljuliet.spel.statements;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.hoteljuliet.spel.Context;
-import io.github.hoteljuliet.spel.StepStatement;
 import io.github.hoteljuliet.spel.Step;
+import io.github.hoteljuliet.spel.StepStatement;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 import java.io.Serializable;

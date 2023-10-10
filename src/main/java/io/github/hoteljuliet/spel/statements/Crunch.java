@@ -8,7 +8,6 @@ import io.github.hoteljuliet.spel.StepStatement;
 import io.github.hoteljuliet.spel.mustache.TemplateLiteral;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Optional;
 
 @Step(tag = "crunch")

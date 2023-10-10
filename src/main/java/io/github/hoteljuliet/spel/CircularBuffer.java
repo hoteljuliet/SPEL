@@ -2,7 +2,6 @@ package io.github.hoteljuliet.spel;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.Optional;
 
 public class CircularBuffer<T extends Object> implements Serializable {
 

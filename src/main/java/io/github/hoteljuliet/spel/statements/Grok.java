@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.hoteljuliet.spel.Context;
 import io.github.hoteljuliet.spel.Step;
+import io.github.hoteljuliet.spel.StepStatement;
 import io.github.hoteljuliet.spel.grok.GrokCompiler;
 import io.github.hoteljuliet.spel.grok.Match;
-import io.github.hoteljuliet.spel.StepStatement;
 
 import java.io.Serializable;
 import java.util.ArrayList;

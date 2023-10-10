@@ -2,9 +2,9 @@ package io.github.hoteljuliet.spel.statements;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Joiner;
 import io.github.hoteljuliet.spel.Context;
 import io.github.hoteljuliet.spel.Step;
-import com.google.common.base.Joiner;
 import io.github.hoteljuliet.spel.StepStatement;
 import io.github.hoteljuliet.spel.mustache.TemplateLiteral;
 

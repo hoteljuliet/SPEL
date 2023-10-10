@@ -1,6 +1,6 @@
 package io.github.hoteljuliet.spel.grok;
 
-import static java.lang.String.format;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
+import static java.lang.String.format;
 
 public class GrokCompiler implements Serializable {
 

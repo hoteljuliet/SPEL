@@ -2,8 +2,8 @@ package io.github.hoteljuliet.spel.predicates;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.Context;
+import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.StepPredicate;
 
 import java.io.Serializable;

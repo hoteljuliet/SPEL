@@ -1,5 +1,8 @@
 package io.github.hoteljuliet.spel.grok;
 
+import io.github.hoteljuliet.spel.grok.Converter.IConverter;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -8,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.StringUtils;
-import io.github.hoteljuliet.spel.grok.Converter.IConverter;
 
 /**
  * {@code Grok} parse arbitrary text and structure it.

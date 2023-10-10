@@ -1,10 +1,10 @@
 package io.github.hoteljuliet.spel.predicates;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.hoteljuliet.spel.Context;
-import io.github.hoteljuliet.spel.Step;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import io.github.hoteljuliet.spel.Context;
+import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.StepPredicate;
 
 import java.util.Optional;
