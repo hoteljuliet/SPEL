@@ -1,45 +1,37 @@
 package io.github.hoteljuliet.spel;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Optional;
 
-public class CircularBuffer<T extends Object> {
+public class CircularBuffer<T extends Object> implements Serializable {
 
-    private int capacity;
-    private int readSequence;
-    private int writeSequence;
+    private Integer capacity;
+    private Integer index;
+    private Long rollovers;
     private T[] data;
 
-    public CircularBuffer(Class<T> clazz, int capacity) {
+    public CircularBuffer(Class<T> clazz, Integer capacity) {
         this.capacity = capacity;
-        this.data = (T[]) Array.newInstance(clazz, capacity);
-        this.readSequence = 0;
-        this.writeSequence = -1;
+        data = (T[]) Array.newInstance(clazz, capacity);
+        index = 0;
+        rollovers = 0l;
     }
 
-    public boolean offer(T element) {
-        boolean isFull = (writeSequence - readSequence) + 1 == capacity;
-        if (!isFull) {
-            int nextWriteSeq = writeSequence + 1;
-            data[nextWriteSeq % capacity] = element;
-            writeSequence++;
-            return true;
+    public void add(T element) {
+        if (index == capacity) {
+            index = 0;
+            rollovers += 1;
         }
-        return false;
-    }
-
-    public Optional<T> poll() {
-        boolean isEmpty = writeSequence < readSequence;
-        Optional<T> retVal = Optional.empty();
-        if (!isEmpty) {
-            T nextValue = data[readSequence % capacity];
-            readSequence++;
-            retVal = Optional.of(nextValue);
-        }
-        return retVal;
+        data[index] = element;
+        index += 1;
     }
 
     public T[] getData() {
         return data;
+    }
+
+    public Long getRollovers() {
+        return rollovers;
     }
 }

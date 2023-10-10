@@ -13,22 +13,15 @@ public class CircularBufferTest {
 
         int i = 0;
         for (; i < 16; i++) {
-            Boolean accepted = circularBuffer.offer(i);
-            assertThat(accepted).isTrue();
+            circularBuffer.add(i);
         }
         for (; i < 32; i++) {
-            Boolean accepted = circularBuffer.offer(i);
-            assertThat(accepted).isFalse();
+            circularBuffer.add(i);
         }
 
         Integer[] data = circularBuffer.getData();
         for (i = 0; i < data.length; i++) {
-            assertThat(data[i]).isLessThanOrEqualTo(15);
-        }
-
-        for (i = 0; i < 16; i++) {
-            Optional<Integer> datum = circularBuffer.poll();
-            assertThat(datum.isPresent()).isTrue();
+            assertThat(data[i]).isGreaterThanOrEqualTo(15);
         }
     }
 }
