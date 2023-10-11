@@ -6,6 +6,7 @@ import io.github.hoteljuliet.spel.*;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -22,7 +23,7 @@ public class HoltWinters extends StepStatement implements Serializable {
     private final Integer period;
     private final Boolean multiplicative;
     private final String out;
-    private final CircularBuffer<Double> circularBuffer;
+    private final FixedFifo<Double> fixedFifo;
 
     @JsonCreator
     public HoltWinters(@JsonProperty(value = "in", required = true) String in,
@@ -42,22 +43,21 @@ public class HoltWinters extends StepStatement implements Serializable {
         this.period = period;
         this.multiplicative = multiplicative;
         this.out = out;
-        circularBuffer = new CircularBuffer<>(Double.class, capacity);
+        fixedFifo = new FixedFifo<>(capacity);
     }
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         Double value = context.getField(in);
-        circularBuffer.add(value);
+        fixedFifo.add(value);
 
-        if ((circularBuffer.getRollovers() * capacity) > (period * 2)) {
-            Optional<Double> output = holtWinters(circularBuffer.getData(), alpha, beta, gamma, period, multiplicative);
-            if (output.isPresent()) {
-                context.addField(out, output.get());
-            }
-            else {
-                softFailure();
-            }
+        Optional<Double> output = holtWinters(fixedFifo.getList(), alpha, beta, gamma, period, multiplicative);
+        if (output.isPresent()) {
+            context.addField(out, output.get());
         }
+        else {
+            softFailure();
+        }
+
         return StepBase.EMPTY;
     }
 
@@ -81,9 +81,9 @@ public class HoltWinters extends StepStatement implements Serializable {
      * @param period the expected periodicity of the data
      * @param multiplicative true if multiplicative HW should be used. False for additive
      */
-    private Optional<Double> holtWinters(Double[] values, double alpha, double beta, double gamma, int period, boolean multiplicative) {
+    private Optional<Double> holtWinters(List<Double> values, double alpha, double beta, double gamma, int period, boolean multiplicative) {
 
-        if (values.length == 0 || values.length < period * 2) {
+        if (values.size() == 0 || values.size() < period * 2) {
             return Optional.empty();
         }
 
@@ -98,10 +98,10 @@ public class HoltWinters extends StepStatement implements Serializable {
         double last_b = 0;
 
         // Seasonal value
-        double[] seasonal = new double[values.length];
+        double[] seasonal = new double[values.size()];
 
         int counter = 0;
-        double[] vs = new double[values.length];
+        double[] vs = new double[values.size()];
         for (double v : values) {
             if (Double.isNaN(v) == false) {
                 vs[counter] = v + padding;
@@ -150,7 +150,7 @@ public class HoltWinters extends StepStatement implements Serializable {
             last_b = b;
         }
 
-        int idx = values.length - period;
+        int idx = values.size() - period;
         if (multiplicative) {
             return Optional.of((s + b) * seasonal[idx]);
         }

@@ -2,12 +2,14 @@ package io.github.hoteljuliet.spel.statements;
 
 import com.google.common.collect.EvictingQueue;
 import io.github.hoteljuliet.spel.Context;
+import io.github.hoteljuliet.spel.metrics.DefaultMetricsProvider;
 import org.assertj.core.data.Percentage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,14 +48,15 @@ public class HoltWintersTest {
     public void test() throws Exception {
         Random random = new Random();
         HoltWinters holtWinters = new HoltWinters(in, capacity, alpha, beta, gamma, period, multiplicative, out);
-        EvictingQueue<Double> window = EvictingQueue.create(capacity);
+        holtWinters.initMetrics(new DefaultMetricsProvider());
+        LinkedList<Double> window = new LinkedList<>();
         Context context = new Context();
 
-        for (int i = 0; i < (capacity * 2); i++) {
+        for (int i = 0; i < capacity; i++) {
             Double randomDouble = random.nextDouble();
             context.addField(in, randomDouble);
             holtWinters.doExecute(context);
-            window.offer(randomDouble);
+            window.addFirst(randomDouble);
         }
 
         // Smoothed value
