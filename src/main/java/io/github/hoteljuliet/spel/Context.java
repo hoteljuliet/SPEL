@@ -327,6 +327,7 @@ public class Context implements Map<String, Object> {
         pathTokens.add(sb.toString());
         return pathTokens;
     }
+
     public boolean replaceFieldValue(String path,Object newValue){
         if (hasField(path)) {
             removeField(path);

@@ -31,11 +31,12 @@ public class B64 extends StepStatement implements Serializable {
                @JsonProperty(value = "out", required = true) String out,
                @JsonProperty(value = "action", required = true) Action action) {
         super();
+        Preconditions.checkArgument(action.equals(Action.ENCODE) || action.equals(Action.DECODE), "unsupported action %s", action);
+
         this.in = in;
         this.out = out;
         this.action = action;
         this.base64 = new Base64();
-        Preconditions.checkArgument(action.equals(Action.ENCODE) || action.equals(Action.DECODE), "invalid action %s", action);
     }
 
     @Override

@@ -16,8 +16,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SplitTest {
     private final Map<String, Object> backing;
     private final String in;
-    private final String out;
     private final String delimiter;
+    private final String out;
     private final Object expected;
 
     public SplitTest(Map<String, Object> backing, String in, String delimiter, String out, Object expected) {

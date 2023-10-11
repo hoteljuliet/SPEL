@@ -16,14 +16,11 @@ import java.util.Optional;
 @Step(tag = "date")
 public class Date extends StepStatement implements Serializable {
     private final String in;
-    private final String out;
     private final String from;
     private final String to;
-
-    private final ZoneId fromZone;
-
-    private final ZoneId toZone;
-
+    private final Optional<ZoneId> fromZone;
+    private final Optional<ZoneId> toZone;
+    private final String out;
     private transient DateTimeFormatter fromFormatter;
     private transient DateTimeFormatter toFormatter;
 
@@ -37,24 +34,24 @@ public class Date extends StepStatement implements Serializable {
      */
     @JsonCreator
     public Date(@JsonProperty(value = "in", required = true) String in,
-                @JsonProperty(value = "out", required = true) String out,
                 @JsonProperty(value = "from", required = true) String from,
                 @JsonProperty(value = "to", required = true) String to,
                 @JsonProperty(value = "fromZone", required = false) String fromZone,
-                @JsonProperty(value = "fromZone", required = false) String toZone) {
+                @JsonProperty(value = "fromZone", required = false) String toZone,
+                @JsonProperty(value = "out", required = true) String out) {
         super();
         this.in = in;
-        this.out = out;
         this.from = from;
         this.to = to;
-        this.fromZone = (null == fromZone) ? null : ZoneId.of(fromZone);
-        this.toZone = (null == toZone) ? null : ZoneId.of(toZone);
+        this.fromZone = (null == fromZone) ? Optional.empty() : Optional.of(ZoneId.of(fromZone));
+        this.toZone = (null == toZone) ? Optional.empty() : Optional.of(ZoneId.of(toZone));
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
-        if (null == fromFormatter) fromFormatter = (null == fromZone) ? DateFormats.of(from) : DateFormats.of(from).withZone(fromZone);
-        if (null == toFormatter) toFormatter = (null == toZone) ? DateFormats.of(to) : DateFormats.of(to).withZone(toZone);
+        if (null == fromFormatter) fromFormatter = (fromZone.isEmpty()) ? DateFormats.of(from) : DateFormats.of(from).withZone(fromZone.get());
+        if (null == toFormatter) toFormatter = (toZone.isEmpty()) ? DateFormats.of(to) : DateFormats.of(to).withZone(toZone.get());
         String value = context.getField(in);
         ZonedDateTime original = ZonedDateTime.parse(value.toString(), fromFormatter);
         String reformatted = original.format(toFormatter);

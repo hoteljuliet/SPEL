@@ -20,11 +20,8 @@ public class Unix extends StepStatement implements Serializable {
     private final String out;
     private final String from;
     private final String to;
-
     private final ZoneId fromZone;
-
-    private final ZoneId toZone;
-
+    private final Optional<ZoneId> toZone;
     private transient DateTimeFormatter fromFormatter;
     private transient DateTimeFormatter toFormatter;
 
@@ -38,31 +35,42 @@ public class Unix extends StepStatement implements Serializable {
      */
     @JsonCreator
     public Unix(@JsonProperty(value = "in", required = true) String in,
-                @JsonProperty(value = "out", required = true) String out,
                 @JsonProperty(value = "from", required = true) String from,
                 @JsonProperty(value = "to", required = true) String to,
                 @JsonProperty(value = "fromZone", required = true) String fromZone,
-                @JsonProperty(value = "fromZone", required = false) String toZone) {
+                @JsonProperty(value = "fromZone", required = false) String toZone,
+                @JsonProperty(value = "out", required = true) String out) {
         super();
         this.in = in;
-        this.out = out;
         this.from = from;
         this.to = to;
         this.fromZone = ZoneId.of(fromZone);
-        this.toZone = (null == toZone) ? null : ZoneId.of(toZone);
+        this.toZone = (null == toZone) ? Optional.empty() : Optional.of(ZoneId.of(toZone));
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         if (null == fromFormatter) fromFormatter = DateFormats.of(from).withZone(fromZone);
-        if (null == toFormatter) toFormatter = (null == toZone) ? DateFormats.of(to) : DateFormats.of(to).withZone(toZone);
-        Long value = context.getField(in);
+        if (null == toFormatter) toFormatter = (toZone.isEmpty()) ? DateFormats.of(to) : DateFormats.of(to).withZone(toZone.get());
+        Object value = context.getField(in);
+        Long longValue = 0l;
 
-        if (from.equalsIgnoreCase("UNIX_S")) {
-            value = value * 1000;
+        if (value instanceof Integer) {
+            longValue = ((Integer)value).longValue();
+        }
+        else if (value instanceof Long) {
+            longValue = (Long)value;
+        }
+        else {
+            softFailure();
         }
 
-        Instant instant = Instant.ofEpochMilli(value);
+        if (from.equalsIgnoreCase("UNIX_S")) {
+            longValue = longValue * 1000;
+        }
+
+        Instant instant = Instant.ofEpochMilli(longValue);
         ZonedDateTime original = ZonedDateTime.ofInstant(instant, fromZone);
         String reformatted = original.format(toFormatter);
         context.addField(out, reformatted);

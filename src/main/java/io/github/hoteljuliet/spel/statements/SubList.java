@@ -16,22 +16,25 @@ public class SubList extends StepStatement implements Serializable {
     private final String in;
     private final Integer from;
     private final Integer to;
+    private final String out;
 
     @JsonCreator
     public SubList(@JsonProperty(value = "in", required = true) String in,
                    @JsonProperty(value = "from", required = true) Integer from,
-                   @JsonProperty(value = "to", required = true) Integer to) {
+                   @JsonProperty(value = "to", required = true) Integer to,
+                   @JsonProperty(value = "out", required = true) String out) {
         super();
         this.in = in;
         this.from = from;
         this.to = to;
+        this.out = out;
     }
 
     @Override
     public Optional<Boolean> doExecute(Context context) throws Exception {
         List<Object> originalList = context.getField(in);
         List<Object> subList = originalList.subList(from, to);
-        context.replaceFieldValue(in, subList);
+        context.addField(out, subList);
         return EMPTY;
     }
 }
