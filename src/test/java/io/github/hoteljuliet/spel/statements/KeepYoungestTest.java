@@ -43,7 +43,28 @@ public class KeepYoungestTest {
                     Context.mapOf("field", Context.mapOf("e", 5), "eventTime", System.currentTimeMillis() - 5000,  "now", System.currentTimeMillis())
             ),
             "field", "eventTime", "now", 4000l, "keptValues",
-            Context.listOf(Context.mapOf("b", 2), Context.mapOf("a", 1))},
+            Context.listOf(Context.mapOf("d", 4), Context.mapOf("c", 3), Context.mapOf("b", 2), Context.mapOf("a", 1))},
+
+            {Context.listOf(
+                    Context.mapOf("field", Context.mapOf("a", 1), "eventTime", System.currentTimeMillis() - 1000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("b", 2), "eventTime", System.currentTimeMillis() - 2000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("c", 3), "eventTime", System.currentTimeMillis() - 3000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("d", 4), "eventTime", System.currentTimeMillis() - 4000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("e", 5), "eventTime", System.currentTimeMillis() - 5000,  "now", System.currentTimeMillis())
+            ),
+            "field", "eventTime", "now", 3000l, "keptValues",
+            Context.listOf(Context.mapOf("c", 3), Context.mapOf("b", 2), Context.mapOf("a", 1))},
+
+            {Context.listOf(
+                    Context.mapOf("field", Context.mapOf("a", 1), "eventTime", System.currentTimeMillis() - 1000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("b", 2), "eventTime", System.currentTimeMillis() - 2000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("c", 3), "eventTime", System.currentTimeMillis() - 3000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("d", 4), "eventTime", System.currentTimeMillis() - 4000, "now", System.currentTimeMillis()),
+                    Context.mapOf("field", Context.mapOf("e", 5), "eventTime", System.currentTimeMillis() - 5000,  "now", System.currentTimeMillis())
+            ),
+            "field", "eventTime", "now", 2000l, "keptValues",
+            Context.listOf(Context.mapOf("b", 2), Context.mapOf("a", 1))}
+
         });
     }
 
@@ -59,21 +80,4 @@ public class KeepYoungestTest {
         List actual = context.getField(out);
         assertThat(actual).isEqualTo(expected);
     }
-
-    @Test
-    public void testEvictions() throws Exception {
-        KeepYoungest keepYoungest = new KeepYoungest(in, eventTime, now, max, out);
-        Context context = null;
-        for (Map<String, Object> map : backing) {
-            Long nowValue = (Long) map.get("now");
-            map.put("now", nowValue + 1000);
-
-            context = new Context(map);
-            keepYoungest.doExecute(context);
-        }
-
-        List actual = context.getField(out);
-        assertThat(actual).isEqualTo(Context.listOf(Context.mapOf("b", 2), Context.mapOf("a", 1)));
-    }
-
 }

@@ -7,7 +7,6 @@ import io.github.hoteljuliet.spel.Step;
 import io.github.hoteljuliet.spel.StepStatement;
 
 import java.io.Serializable;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -51,8 +50,13 @@ public class KeepYoungest extends StepStatement implements Serializable {
 
         Map.Entry<Long, Map<String, Object>> evicted = values.floorEntry(cutoff);
         while(null != evicted) {
-            values.remove(evicted.getKey());
-            evicted = values.floorEntry(cutoff);
+            if (evicted.getKey() < cutoff) {
+                values.remove(evicted.getKey());
+                evicted = values.floorEntry(cutoff);
+            }
+            else {
+                break;
+            }
         }
 
         List<Map<String, Object>> valuesList = new ArrayList<>(values.values());
