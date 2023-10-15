@@ -95,10 +95,10 @@ public class PipelineTest {
 
     @Test
     public void test5() throws Exception {
-        List<String> prefixes = new ArrayList<>();
-        prefixes.add("net.hoteljuliet.spel");
+        List<String> beanPackages = new ArrayList<>();
+        beanPackages.add("net.hoteljuliet.spel");
 
-        ApplicationContext.initialize(prefixes);
+        ApplicationContext.initialize(beanPackages); //load in the ExampleBean to the context
 
         ExampleValue exampleValue = new ExampleValue();
         ApplicationContext.initialize(exampleValue);

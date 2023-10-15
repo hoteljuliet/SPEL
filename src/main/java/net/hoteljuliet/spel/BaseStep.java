@@ -9,6 +9,10 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
+/**
+ * BaseStep abstract class outlines a SPEL step. Includes runtime statistics fields, execution methods, and restore
+ * methods
+ */
 public abstract class BaseStep implements Serializable {
 
     public static final Optional<Boolean> TRUE = Optional.of(true);

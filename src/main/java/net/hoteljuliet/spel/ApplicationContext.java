@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Context that contains application data in memory in a Map<String, Object> structure.
+ * Provides three initialization methods
+ */
 public class ApplicationContext {
 
     private static final ObjectMapper objectMapper =
@@ -18,6 +22,12 @@ public class ApplicationContext {
 
     public static Map<String, Object> applicationContext;
 
+    /**
+     * Initialize ApplicationContext from Bean classes. Initialize the map with the class names as keys and an
+     * inner map of field values for properties of the class.
+     * @param beanPackages list of packages containing Java Beans
+     * @throws Exception exceptions encountered in initialization
+     */
     public static void initialize(List<String> beanPackages) throws Exception {
         applicationContext = new HashMap<>();
 
@@ -40,9 +50,27 @@ public class ApplicationContext {
         }
     }
 
+    /**
+     * Initialize the application context from a generic object using default predicate packages and statement packages
+     * from the Pipeline class. This would include net.hoteljuliet.spel.predicates and net.hoteljuliet.spel.statements
+     * @param instance an object instance
+     * @throws Exception a generic exception
+     */
     public static void initialize(Object instance) throws Exception {
         initialize(instance, Pipeline.defaultPredicatePackages, Pipeline.defaultStatementPackages);
     }
+
+    /**
+     * Initialize the application context from a generic object. Takes a string of predicate packages and statement
+     * packages. Executes a base step on the loaded application context from expressions from the fields in the object
+     * that have the Value annotation. The provided package and statement packages are used for parsing the
+     * Map<String, Object> that Jackson's ObjectMapper populates from the object's field values.
+     * The initialization function then sets field with the resolved fieldValue from the executed base step.
+     * @param instance an object instance
+     * @param predicatePackages a list of packages of predicates
+     * @param statementPackages a list of packages for statements
+     * @throws Exception any Exception
+     */
 
     public static void initialize(Object instance, String[] predicatePackages, String[] statementPackages) throws Exception {
         Field[] fields = instance.getClass().getDeclaredFields();

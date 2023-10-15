@@ -12,6 +12,9 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkState;
 
+/**
+ * The backing data structure of SPEL; stores application data in memory
+ */
 public class Context implements Map<String, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
